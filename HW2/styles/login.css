@@ -40,15 +40,3 @@
     margin-left: var(--space-size);
 }
 
-.link:active .link:link {
-    color: var(--light-blue-900);
-}
-
-.link:visited {
-    color: var(--brown-500);
-}
-
-.link:hover {
-    color: var(--light-blue-700);
-}
-
