@@ -29,6 +29,7 @@
     --brown-500: #795548;
 
     --font-size: 18px;
+    --space-size: 5px;
 }
 
 html {
@@ -205,18 +206,20 @@ nav .text {
     display: flex;
     align-items: center;
     flex-direction: row;
+    justify-content: center;
+    width: 100%;
 }
 
 input[type="text"] {
     display: block;
-    width: 70%;
+    width: 60%;
     box-shadow: none;
     border-radius: 0;
     border: none;
     padding: 5px;
     border-bottom: solid 1px var(--init-border-color);
     transition: box-shadow 0.3s, border 0.3s;
-    margin: 1rem auto;
+    margin: 1rem 0.5rem;
 }
 
 input[type="text"]:focus {

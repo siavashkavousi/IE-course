@@ -3,3 +3,21 @@
 	date: 5-11-2016;
 	version: 0.1;
 */
+
+#terms {
+    margin-left: var(--space-size);
+}
+
+#register-button {
+    background-color: var(--light-blue-900);
+    margin-bottom: 1rem;
+}
+
+#register-button:hover {
+    background-color: var(--light-blue-700);
+}
+
+#register-button:focus {
+    background-color: var(--light-blue-600);
+    outline: none;
+}
