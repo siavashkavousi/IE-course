@@ -158,12 +158,13 @@ body {
 /* Globals */
 
 nav {
-    margin: 0 auto;
+    margin: 0;
     padding-left: 15%;
     padding-right: 15%;
     background-color: var(--navbar-color);
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 nav .text {
@@ -235,4 +236,8 @@ button {
     height: 2rem;
     color: white;
     margin-top: 1rem;
+}
+
+.link:hover {
+    color: var(--light-blue-700);
 }
