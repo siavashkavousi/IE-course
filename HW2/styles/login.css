@@ -4,15 +4,15 @@
 	version: 0.1;
 */
 
-.login-button {
+#login-button {
     background-color: var(--pink);
 }
 
-.login-button:hover {
+#login-button:hover {
     background-color: var(--light-pink);
 }
 
-.login-button:focus {
+#login-button:focus {
     background-color: var(--lighter-pink);
     outline: none;
 }
@@ -31,14 +31,13 @@
 }
 
 .card-bottom {
-    width: 100%;
     background-color: var(--light-grey);
-    text-align: center;
     margin-top: 1rem;
 }
 
 #no_acc {
     display: inline-block;
+    margin-left: var(--space-size);
 }
 
 .link:active .link:link {
