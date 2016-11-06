@@ -4,6 +4,154 @@
 	version: 0.1;
 */
 
+:root {
+    --main-color: #1565C0;
+
+    --navbar-color: #37474F;
+
+    --text-color: #616161;
+    --text-color-hover: #757575;
+    --text-color-focus: #9E9E9E;
+
+    --init-border-color: #dcdcdc;
+    --final-border-color: #707070;
+
+    --shadow-color: #969696;
+    --dark-shadow-color: #757575;
+
+    --pink: #E91E63;
+    --light-pink: #EC407A;
+    --lighter-pink: #F06292;
+    --light-grey: #ECEFF1;
+    --light-blue-900: #01579B;
+    --light-blue-700: #0288D1;
+    --brown-500: #795548;
+
+    --font-size: 18px;
+}
+
+html {
+    direction: rtl;
+    height: 100%;
+    font-family: Shabnam, serif;
+    font-size: var(--font-size);
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    font-family: inherit;
+    box-sizing: inherit;
+}
+
 body {
-	background-color: #1565C0;
+    margin: 0;
+    height: inherit;
+    background-color: var(--main-color);
+}
+
+@font-face {
+    font-family: Shabnam;
+    src: url('../assets/fonts/Shabnam-FD.eot');
+    src: url('../assets/fonts/Shabnam-FD.eot?#iefix') format('embedded-opentype'),
+    url('../assets/fonts/Shabnam-FD.woff') format('woff'),
+    url('../assets/fonts/Shabnam-FD.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Shabnam;
+    src: url('../assets/fonts/Shabnam-Bold-FD.eot');
+    src: url('../assets/fonts/Shabnam-Bold-FD.eot?#iefix') format('embedded-opentype'),
+    url('../assets/fonts/Shabnam-Bold-FD.woff') format('woff'),
+    url('../assets/fonts/Shabnam-Bold-FD.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Shabnam;
+    src: url('../assets/fonts/Shabnam-Light-FD.eot');
+    src: url('../assets/fonts/Shabnam-Light-FD.eot?#iefix') format('embedded-opentype'),
+    url('../assets/fonts/Shabnam-Light-FD.woff') format('woff'),
+    url('../assets/fonts/Shabnam-Light-FD.ttf') format('truetype');
+    font-weight: 300;
+}
+
+nav {
+    margin: 0 auto;
+    padding-left: 15%;
+    padding-right: 15%;
+    background-color: var(--navbar-color);
+    display: flex;
+    justify-content: space-between;
+}
+
+nav .text {
+    font-weight: bold;
+    color: white;
+    display: block;
+}
+
+.main-content {
+    display: table;
+    width: 100%;
+    height: 85%
+}
+
+.vertical-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    width: 30%;
+    min-width: 380px;
+    font-weight: bold;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 0 5px 3px var(--dark-shadow-color);
+}
+
+.card-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+input[type="text"] {
+    display: block;
+    width: 70%;
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+    padding: 5px;
+    border-bottom: solid 1px var(--init-border-color);
+    transition: box-shadow 0.3s, border 0.3s;
+    margin: 1rem auto;
+}
+
+input[type="text"]:focus {
+    border-bottom: solid 1px var(--final-border-color);
+    box-shadow: 0 0 5px 1px var(--shadow-color);
+}
+
+button {
+    font-weight: bold;
+    font-size: large;
+    border: none;
+    width: 70%;
+    height: 2rem;
+    color: white;
+    margin-top: 1rem;
 }

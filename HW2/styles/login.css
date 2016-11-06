@@ -3,3 +3,53 @@
 	date: 5-11-2016;
 	version: 0.1;
 */
+
+.login-button {
+    background-color: var(--pink);
+}
+
+.login-button:hover {
+    background-color: var(--light-pink);
+}
+
+.login-button:focus {
+    background-color: var(--lighter-pink);
+    outline: none;
+}
+
+#forgot-pass {
+    text-decoration: underline;
+    font-weight: lighter;
+}
+
+#forgot-pass:hover {
+    color: var(--text-color-hover);
+}
+
+#forgot-pass:focus {
+    color: var(--text-color-focus);
+}
+
+.card-bottom {
+    width: 100%;
+    background-color: var(--light-grey);
+    text-align: center;
+    margin-top: 1rem;
+}
+
+#no_acc {
+    display: inline-block;
+}
+
+.link:active .link:link {
+    color: var(--light-blue-900);
+}
+
+.link:visited {
+    color: var(--brown-500);
+}
+
+.link:hover {
+    color: var(--light-blue-700);
+}
+
