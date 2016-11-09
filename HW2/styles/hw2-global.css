@@ -27,6 +27,11 @@
     --light-blue-700: #0288D1;
     --light-blue-600: #039BE5;
     --brown-500: #795548;
+    --gold: #FFD600;
+    --silver: #BDBDBD;
+    --bronze: #BF360C;
+    --green: #8BC34A;
+    --grey: #E0E0E0;
 
     --font-size: 18px;
     --space-size: 5px;
@@ -126,6 +131,10 @@ body {
     color: rgba(255, 255, 255, 0.3);
 }
 
+.material-icons.orange {
+    color: #FB8C00;
+}
+
 /* Shabnam Font */
 
 @font-face {
@@ -203,11 +212,25 @@ nav .text {
     box-shadow: 0 0 5px 3px var(--dark-shadow-color);
 }
 
-.card-item {
+.card-item-horizontal {
     display: flex;
     align-items: center;
     flex-direction: row;
     justify-content: center;
+}
+
+.card-item-horizontal.container {
+    width: 100%;
+}
+
+.card-item-vertical {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-item-vertical.container {
     width: 100%;
 }
 
