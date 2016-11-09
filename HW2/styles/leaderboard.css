@@ -4,6 +4,87 @@
 	version: 0.1;
 */
 
-body {
-	background-color: silver;
+img {
+    border-radius: 50%;
+}
+
+.card-item-horizontal.horizontal-margin {
+    margin: auto 2.5rem;
+}
+
+#second-place {
+    margin-top: 2.5rem;
+}
+
+#third-place {
+    margin-top: 2.5rem;
+}
+
+#first-place-img {
+    border: 2px solid var(--gold);
+    width: 70px;
+    height: 70px;
+}
+
+#second-place-img {
+    border: 2px solid var(--silver);
+    width: 60px;
+    height: 60px;
+}
+
+#third-place-img {
+    border: 2px solid var(--bronze);
+    width: 60px;
+    height: 60px;
+}
+
+.stars {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stars i {
+    /* weirdly taking space */
+    width: 12%;
+}
+
+#user-first-place {
+    align-self: flex-start;
+}
+
+.card {
+    width: 35%;
+}
+
+.score {
+    color: var(--green);
+}
+
+#line-breaker {
+    width: 80%;
+    height: 2px;
+    border: none;
+    background-color: var(--grey);
+    margin-top: 1.5rem;
+}
+
+.low-rank-users img {
+    width: 40px;
+    height: 40px;
+    margin: auto 1.3rem;
+}
+
+.card-item-horizontal.start {
+    justify-content: flex-start;
+    width: 80%;
+}
+
+.card-item-horizontal.row {
+    margin: 0 -15px;
+}
+
+.card-item-horizontal.col {
+    margin-top: 1px;
 }
