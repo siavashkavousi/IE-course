@@ -26,18 +26,19 @@
             <div class="card">
                 <p>ثبت‌ نام</p>
                 <div class="card-item-horizontal container">
-                    <i class="material-icons">person</i>
-                    <input type="text" placeholder="نام کاربری من">
+                    <input type="text" placeholder="نام کاربری من" required>
+                    <i class="material-icons reorder">person</i>
                 </div>
                 <div class="card-item-horizontal container">
-                    <i class="material-icons">email</i>
-                    <input type="text" placeholder="ایمیل">
+                    <input type="email" placeholder="ایمیل" required>
+                    <i class="material-icons reorder">email</i>
                 </div>
                 <div class="card-item-horizontal container">
-                    <i class="material-icons">lock</i>
-                    <input type="text" placeholder="رمزعبور">
+                    <input type="password" placeholder="رمزعبور" required>
+                    <i class="material-icons reorder">lock</i>
                 </div>
-                <div class="card-item-horizontal container">
+                <div class="card-item-horizontal container" id="checkbox-container">
+                    <input type="checkbox" required>
                     <a class="link" id="terms" href="#">قوانین</a>
                     <p>را می‌پذیرم</p>
                 </div>

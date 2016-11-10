@@ -21,3 +21,53 @@
     background-color: var(--light-blue-600);
     outline: none;
 }
+
+#checkbox-container {
+    justify-content: flex-start;
+    width: 75%;
+}
+
+input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+}
+
+input[type="checkbox"]:hover {
+    background: var(--grey);
+}
+
+input[type="checkbox"]:before {
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    content: "";
+    z-index: 1;
+    width: 1rem;
+    height: 1rem;
+    border: 0.15rem solid var(--dark-grey);
+    position: absolute;
+}
+
+input[type="checkbox"]:checked:before {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    height: 0.5rem;
+    border-color: var(--teal);
+    border-top-style: none;
+    border-right-style: none;
+}
+
+input[type="checkbox"]:after {
+    content: "";
+    background: var(--card-color);
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    position: absolute;
+}
