@@ -18,13 +18,17 @@
 }
 
 #register-button:focus {
-    background-color: var(--light-blue-600);
+    background-color: var(--light-blue-700);
     outline: none;
 }
 
 #checkbox-container {
     justify-content: flex-start;
     width: 75%;
+}
+
+#checkbox-container:hover > * {
+    cursor: pointer;
 }
 
 input[type="checkbox"] {
@@ -58,7 +62,7 @@ input[type="checkbox"]:checked:before {
     -o-transform: rotate(-45deg);
     transform: rotate(-45deg);
     height: 0.5rem;
-    border-color: var(--teal);
+    border-color: var(--light-blue-900);
     border-top-style: none;
     border-right-style: none;
 }

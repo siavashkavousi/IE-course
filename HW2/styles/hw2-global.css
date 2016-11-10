@@ -12,7 +12,7 @@
     --card-color: #fafafa;
 
     --text-color: #616161;
-    --text-color-hover: #757575;
+    --text-color-hf: #757575;
     --text-color-focus: #9E9E9E;
 
     --init-border-color: #dcdcdc;
@@ -306,6 +306,10 @@ button {
     color: white;
     margin-top: 1rem;
     box-shadow: 1px 2px 2px var(--dark-shadow-color);
+}
+
+button:hover {
+    cursor: pointer;
 }
 
 .link:hover {

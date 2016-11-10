@@ -13,7 +13,7 @@
 }
 
 #login-button:focus {
-    background-color: var(--lighter-pink);
+    background-color: var(--light-pink);
     outline: none;
 }
 
@@ -23,11 +23,11 @@
 }
 
 #forgot-pass:hover {
-    color: var(--text-color-hover);
+    color: var(--text-color-hf);
 }
 
 #forgot-pass:focus {
-    color: var(--text-color-focus);
+    color: var(--text-color-hf);
 }
 
 .card-bottom {
