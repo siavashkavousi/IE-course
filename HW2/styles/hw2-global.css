@@ -97,6 +97,10 @@ body {
 }
 
 /* Rules for sizing the icon. */
+.material-icons.md-11 {
+    font-size: 11px;
+}
+
 .material-icons.md-18 {
     font-size: 18px;
 }
@@ -167,13 +171,16 @@ body {
 /* Globals */
 
 nav {
-    margin: 0;
     padding-left: 15%;
     padding-right: 15%;
     background-color: var(--navbar-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+nav > * {
+    margin: 0;
 }
 
 nav .text {
@@ -203,19 +210,19 @@ nav .text {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: white;
+    background-color: #fafafa;
     width: 30%;
     min-width: 380px;
     font-weight: bold;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 4px;
     box-shadow: 0 0 5px 3px var(--dark-shadow-color);
 }
 
 .card-item-horizontal {
     display: flex;
-    align-items: center;
     flex-direction: row;
+    align-items: center;
     justify-content: center;
 }
 
@@ -225,8 +232,8 @@ nav .text {
 
 .card-item-vertical {
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
 }
 

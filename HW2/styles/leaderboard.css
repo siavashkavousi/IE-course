@@ -4,12 +4,30 @@
 	version: 0.1;
 */
 
+.card {
+    font-size: 12px;
+    margin-top: 1rem;
+    border-radius: 0;
+}
+
+.card > * {
+    margin: 0.2rem auto;
+}
+
+.title {
+    font-size: 16px;
+}
+
 img {
     border-radius: 50%;
 }
 
 .card-item-horizontal.margin {
-    margin: auto 2.5rem;
+    margin: auto 2rem;
+}
+
+.card-item-horizontal.nomargin > * {
+    margin: 0;
 }
 
 .card-item-vertical.nomargin > * {
@@ -17,11 +35,11 @@ img {
 }
 
 #second-place {
-    margin-top: 2.5rem;
+    margin-top: 1.5rem;
 }
 
 #third-place {
-    margin-top: 2.5rem;
+    margin-top: 1.5rem;
 }
 
 #first-place-img {
@@ -51,15 +69,11 @@ img {
 
 .stars i {
     /* weirdly taking space */
-    width: 12%;
+    width: 8.8%;
 }
 
 #first-place {
     align-self: flex-start;
-}
-
-.card {
-    width: 35%;
 }
 
 .score {
@@ -67,11 +81,11 @@ img {
 }
 
 #line-breaker {
-    width: 80%;
+    width: 85%;
     height: 2px;
     border: none;
     background-color: var(--grey);
-    margin-top: 1.5rem;
+    margin-top: 0.5rem;
 }
 
 .card-item-bottom {
@@ -92,8 +106,4 @@ img {
 
 .card-item-horizontal.start {
     justify-content: flex-start;
-}
-
-.nomargin {
-    margin: 0;
 }
