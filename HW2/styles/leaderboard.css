@@ -8,8 +8,12 @@ img {
     border-radius: 50%;
 }
 
-.card-item-horizontal.horizontal-margin {
+.card-item-horizontal.margin {
     margin: auto 2.5rem;
+}
+
+.card-item-vertical.nomargin > * {
+    margin: 0;
 }
 
 #second-place {
@@ -50,7 +54,7 @@ img {
     width: 12%;
 }
 
-#user-first-place {
+#first-place {
     align-self: flex-start;
 }
 
@@ -70,21 +74,26 @@ img {
     margin-top: 1.5rem;
 }
 
+.card-item-bottom {
+    width: 93%;
+    justify-content: space-around;
+}
+
 .low-rank-users img {
     width: 40px;
     height: 40px;
     margin: auto 1.3rem;
 }
 
+.low-rank-users.stars {
+    justify-content: flex-end;
+    width: 30%;
+}
+
 .card-item-horizontal.start {
     justify-content: flex-start;
-    width: 80%;
 }
 
-.card-item-horizontal.row {
-    margin: 0 -15px;
-}
-
-.card-item-horizontal.col {
-    margin-top: 1px;
+.nomargin {
+    margin: 0;
 }
