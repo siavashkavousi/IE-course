@@ -277,16 +277,20 @@ input:focus {
 }
 
 input:focus::-webkit-input-placeholder, input:valid::-webkit-input-placeholder {
-    -webkit-transform: translateY(-1.5rem);
-    -moz-transform: translateY(-1.5rem);
-    -ms-transform: translateY(-1.5rem);
-    -o-transform: translateY(-1.5rem);
-    transform: translateY(-1.5rem);
+    -webkit-transform: translateY(-1.5rem) translateX(0.4rem);
+    -moz-transform: translateY(-1.5rem) translateX(0.4rem);
+    -ms-transform: translateY(-1.5rem) translateX(0.4rem);
+    -o-transform: translateY(-1.5rem) translateX(0.4rem);
+    transform: translateY(-1.5rem) translateX(0.4rem);
     -webkit-transition: all 0.4s ease-in-out;
     -moz-transition: all 0.4s ease-in-out;
     -ms-transition: all 0.4s ease-in-out;
     -o-transition: all 0.4s ease-in-out;
     transition: all 0.4s ease-in-out;
+}
+
+input:focus::-webkit-input-placeholder {
+    font-size: 12px;
 }
 
 .reorder {

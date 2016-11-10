@@ -34,6 +34,10 @@ img {
     margin: 0;
 }
 
+.card-item-vertical.negative-margin {
+    margin-right: -2rem;
+}
+
 .card-item-vertical.container:hover {
     cursor: pointer;
     background-color: var(--light-grey);
@@ -68,6 +72,7 @@ img {
 }
 
 #third-place-img {
+    position: relative;
     border: 2px solid var(--bronze);
     width: 60px;
     height: 60px;
@@ -100,12 +105,19 @@ img {
 .low-rank-users img {
     width: 40px;
     height: 40px;
-    margin: auto 1.3rem;
+}
+
+.low-rank-users {
+    width: 40px;
+    height: 40px;
+    margin-right: 1rem;
 }
 
 .low-rank-users.stars {
     justify-content: flex-end;
+    align-items: center;
     width: 30%;
+    margin-left: 0;
 }
 
 .card-item-horizontal.start {
@@ -132,4 +144,62 @@ img {
 
 .more:hover {
     color: var(--grey);
+}
+
+.hexagon {
+    position: relative;
+    top: -1rem;
+    right: -1rem;
+    color: white;
+    text-align: center;
+}
+
+.square {
+    width: 0.75rem;
+    height: 1rem;
+    background-color: #4d4d4d;
+    left: 4px;
+    z-index: 1;
+}
+
+.triangle1 {
+    border-top: 0.5rem solid transparent;
+    border-bottom: 0.5rem solid transparent;
+    border-right: 0.3rem solid #4d4d4d;
+}
+
+.triangle2 {
+    border-top: 0.5rem solid transparent;
+    border-bottom: 0.5rem solid transparent;
+    border-left: 0.3rem solid #4d4d4d;
+}
+
+.low-rank-users.hexagon {
+    position: relative;
+    right: -4rem;
+    top: 0.8rem;
+    color: white;
+    font-size: 7px;
+    font-weight: normal;
+    text-align: center;
+}
+
+.low-rank-users > .square {
+    width: 0.4rem;
+    height: 0.8rem;
+    background-color: #4d4d4d;
+    left: 4px;
+    z-index: 1;
+}
+
+.low-rank-users > .triangle1 {
+    border-top: 0.4rem solid transparent;
+    border-bottom: 0.35rem solid transparent;
+    border-right: 0.3rem solid #4d4d4d;
+}
+
+.low-rank-users > .triangle2 {
+    border-top: 0.35rem solid transparent;
+    border-bottom: 0.35rem solid transparent;
+    border-left: 0.3rem solid #4d4d4d;
 }
