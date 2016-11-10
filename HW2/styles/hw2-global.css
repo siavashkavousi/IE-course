@@ -9,12 +9,14 @@
 
     --navbar-color: #37474F;
 
+    --card-color: #fafafa;
+
     --text-color: #616161;
     --text-color-hover: #757575;
     --text-color-focus: #9E9E9E;
 
     --init-border-color: #dcdcdc;
-    --final-border-color: #707070;
+    --final-border-color: #E91E63;
 
     --shadow-color: #969696;
     --dark-shadow-color: #757575;
@@ -210,7 +212,7 @@ nav .text {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #fafafa;
+    background-color: var(--card-color);
     width: 30%;
     min-width: 380px;
     font-weight: bold;
@@ -241,21 +243,22 @@ nav .text {
     width: 100%;
 }
 
-input[type="text"] {
+input {
     display: block;
     width: 60%;
     box-shadow: none;
     border-radius: 0;
     border: none;
     padding: 5px;
-    border-bottom: solid 1px var(--init-border-color);
+    border-bottom: solid 2px var(--init-border-color);
     transition: box-shadow 0.3s, border 0.3s;
     margin: 1rem 0.5rem;
+    background-color: var(--card-color);
 }
 
-input[type="text"]:focus {
-    border-bottom: solid 1px var(--final-border-color);
-    box-shadow: 0 0 5px 1px var(--shadow-color);
+input:focus {
+    outline: none;
+    border-bottom: solid 2px var(--final-border-color);
 }
 
 button {
@@ -266,6 +269,7 @@ button {
     height: 2rem;
     color: white;
     margin-top: 1rem;
+    box-shadow: 1px 2px 2px var(--dark-shadow-color);
 }
 
 .link:hover {
