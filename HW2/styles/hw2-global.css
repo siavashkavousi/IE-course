@@ -34,7 +34,7 @@
     --bronze: #BF360C;
     --green: #8BC34A;
     --grey: #E0E0E0;
-    --dark-grey: #37474F;
+    --dark-grey: #8898a0;
     --teal: #009688;
 
     --font-size: 18px;
@@ -101,6 +101,10 @@ body {
 }
 
 /* Rules for sizing the icon. */
+.material-icons.md-6 {
+    font-size: 6px;
+}
+
 .material-icons.md-11 {
     font-size: 11px;
 }
@@ -141,6 +145,14 @@ body {
 
 .material-icons.orange {
     color: #FB8C00;
+}
+
+.material-icons.grey {
+    color: var(--grey);
+}
+
+.material-icons.dark-grey {
+    color: var(--dark-grey)
 }
 
 /* Shabnam Font */
@@ -185,6 +197,7 @@ nav {
 
 nav > * {
     margin: 0;
+    cursor: pointer;
 }
 
 nav .text {

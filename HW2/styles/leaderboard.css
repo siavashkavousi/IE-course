@@ -34,12 +34,25 @@ img {
     margin: 0;
 }
 
+.card-item-vertical.container:hover {
+    cursor: pointer;
+    background-color: var(--light-grey);
+}
+
+.card-item-vertical.container:hover > .stars > .grey {
+    color: white;
+}
+
+#first-place {
+    padding-bottom: 0.9rem;
+}
+
 #second-place {
-    margin-top: 1.5rem;
+    padding-top: 1.5rem;
 }
 
 #third-place {
-    margin-top: 1.5rem;
+    padding-top: 1.5rem;
 }
 
 #first-place-img {
@@ -72,25 +85,16 @@ img {
     width: 8.8%;
 }
 
-#first-place {
-    align-self: flex-start;
-}
-
 .score {
     color: var(--green);
 }
 
 #line-breaker {
-    width: 85%;
+    width: 92%;
     height: 2px;
     border: none;
     background-color: var(--grey);
     margin-top: 0.5rem;
-}
-
-.card-item-bottom {
-    width: 93%;
-    justify-content: space-around;
 }
 
 .low-rank-users img {
@@ -106,4 +110,26 @@ img {
 
 .card-item-horizontal.start {
     justify-content: flex-start;
+}
+
+.card-item-horizontal.container:hover {
+    cursor: pointer;
+    background-color: var(--light-grey);
+}
+
+.card-item-horizontal.container:hover > .stars > .grey {
+    color: white;
+}
+
+.card-item-bottom {
+    justify-content: space-around;
+}
+
+.more {
+    cursor: pointer;
+    margin: 0.5rem auto;
+}
+
+.more:hover {
+    color: var(--grey);
 }
