@@ -9,11 +9,13 @@
 }
 
 #login-button:hover {
-    background-color: var(--light-pink);
+    background-color: var(--lighter-pink);
+    box-shadow: 1px 2px 6px var(--dark-shadow-color);
 }
 
 #login-button:focus {
-    background-color: var(--light-pink);
+    background-color: var(--lighter-pink);
+    box-shadow: 1px 2px 6px var(--dark-shadow-color);
     outline: none;
 }
 
