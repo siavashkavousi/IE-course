@@ -18,6 +18,10 @@
     font-size: 16px;
 }
 
+p {
+    font-weight: bold;
+}
+
 img {
     border-radius: 50%;
 }

@@ -186,6 +186,10 @@ body {
 
 /* Globals */
 
+.font-bold {
+    font-weight: bold;
+}
+
 nav {
     padding-left: 15%;
     padding-right: 15%;
@@ -230,7 +234,6 @@ nav .text {
     background-color: var(--card-color);
     width: 30%;
     min-width: 380px;
-    font-weight: bold;
     overflow: hidden;
     border-radius: 4px;
     box-shadow: 0 0 5px 3px var(--dark-shadow-color);
@@ -314,6 +317,11 @@ button {
 
 button:hover {
     cursor: pointer;
+}
+
+.link {
+    text-decoration: none;
+    border-bottom: 1px solid;
 }
 
 .link:hover {
