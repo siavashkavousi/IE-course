@@ -3,8 +3,6 @@
 (function () {
     "use strict";
 
-    getGameXML();
-
     getNewGame(`
     <request>
     <rows>3</rows>
@@ -111,5 +109,38 @@
         return gameWindow;
     };
 
+    var parseXmlString = function (xml_str) {
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(xml_str, "text/xml");
+        var game = xmlDoc.getElementsByTagName("game")[0];
+        var game_id = game.id;
+        var game_title = game.title;
+        var game_levels = [];
+        var levels = game.getElementsByTagName("levels")[0];
+        var level_list = levels.getElementsByTagName("level");
+        for (let l = 0; l < level_list.length; l++) {
+            var level = level_list[l];
+            var rows = level.getElementsByTagName("rows")[0];
+            var cols = level.getElementsByTagName("cols")[0];
+            var mines = level.getElementsByTagName("mines")[0];
+            var time = level.getElementsByTagName("time")[0];
+
+            var game_level = {
+                "row": rows.childNodes[0].nodeValue,
+                "col": cols.childNodes[0].nodeValue,
+                "mines": mines.childNodes[0].nodeValue,
+                "time": time.childNodes[0].nodeValue
+            };
+            game_levels.push(game_level);
+        }
+
+        return {
+            "game_title": game_title,
+            "game_id": game_id,
+            "levels": game_levels
+        }
+    };
+
+    getGameXML(parseXmlString);
     renderElements();
 }());
