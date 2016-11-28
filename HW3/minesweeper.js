@@ -3,13 +3,9 @@
 (function () {
     "use strict";
 
-    // getNewGame(`
-    // <request>
-    // <rows>3</rows>
-    // <cols>3</cols>
-    // <mines>3</mines>
-    // </request>
-    // `);
+    let game_id;
+    let game_title;
+    let levels;
 
     function renderElements() {
         let body = document.getElementsByTagName("body")[0];
@@ -114,19 +110,25 @@
         let parser = new DOMParser();
         let xmlDoc = parser.parseFromString(xml_str, "text/xml");
         let game = xmlDoc.getElementsByTagName("game")[0];
-        let game_id = game.getAttribute('id');
-        let game_title = game.getAttribute('title');
+        let id = game.getAttribute('id');
+        let title = game.getAttribute('title');
         let game_levels = [];
         let levels = game.getElementsByTagName("levels")[0];
         let level_list = levels.getElementsByTagName("level");
         for (let l = 0; l < level_list.length; l++) {
             let level = level_list[l];
+            let level_id = level.getAttribute("id");
+            let level_title = level.getAttribute("title");
+            let timer = level.getAttribute("timer");
             let rows = level.getElementsByTagName("rows")[0];
             let cols = level.getElementsByTagName("cols")[0];
             let mines = level.getElementsByTagName("mines")[0];
             let time = level.getElementsByTagName("time")[0];
 
             let game_level = {
+                "id": level_id,
+                "title": level_title,
+                "timer": timer,
                 "row": rows.childNodes[0].nodeValue,
                 "col": cols.childNodes[0].nodeValue,
                 "mines": mines.childNodes[0].nodeValue,
@@ -135,11 +137,10 @@
             game_levels.push(game_level);
         }
 
-        return {
-            "game_id": game_id,
-            "game_title": game_title,
-            "levels": game_levels
-        }
+        // assign necessary vars to global vars
+        game_id = id;
+        game_title = title;
+        levels = game_levels;
     }
 
     function newGame() {
@@ -189,6 +190,11 @@
             </xsl:stylesheet>`;
     }
 
+    function setGameTitle(){
+        document.getElementById("game-title").innerHTML = game_title;
+    }
+
     getGameXML(parseXmlString);
     renderElements();
+    setGameTitle();
 }());
