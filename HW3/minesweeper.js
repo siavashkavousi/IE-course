@@ -113,8 +113,6 @@
         var parser = new DOMParser();
         var xmlDoc = parser.parseFromString(xml_str, "text/xml");
         var game = xmlDoc.getElementsByTagName("game")[0];
-        var game_id = game.id;
-        var game_title = game.title;
         var game_levels = [];
         var levels = game.getElementsByTagName("levels")[0];
         var level_list = levels.getElementsByTagName("level");
@@ -135,10 +133,14 @@
         }
 
         return {
-            "game_title": game_title,
-            "game_id": game_id,
+            "game_title": game.title,
+            "game_id": game.id,
             "levels": game_levels
         }
+    };
+
+    var newGame = function () {
+
     };
 
     getGameXML(parseXmlString);
