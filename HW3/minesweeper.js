@@ -157,8 +157,6 @@
             let templateDoc = domParser.parseFromString(makeXSL(), "text/xml").childNodes[0];
             xsltProcessor.importStylesheet(templateDoc);
             let resultDocument = xsltProcessor.transformToFragment(xmlStrDoc, document);
-            console.log('result doc');
-            console.log(resultDocument);
             document.getElementsByClassName('grid')[0].appendChild(resultDocument);
         });
     }
