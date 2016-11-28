@@ -83,6 +83,7 @@
             let smile = document.createElement("span");
             smile.className = "smile";
             smile.setAttribute("data", "value: 'normal'");
+            smile.addEventListener("click", newGame);
 
             let counter2 = document.createElement("span");
             counter2.className = "counter";
