@@ -12,6 +12,9 @@
     let game_default_level;
     let game_levels;
 
+    let click_counter = 0;
+    let timer;
+
     function renderElements() {
         let body = document.getElementsByTagName("body")[0];
 
@@ -83,7 +86,7 @@
 
             let smile = document.createElement("span");
             smile.className = "smile";
-            smile.setAttribute("data", "value: 'normal'");
+            smile.setAttribute("data-value", "normal");
             smile.addEventListener("click", newGame);
 
             let counter2 = document.createElement("span");
@@ -232,9 +235,43 @@
         document.getElementById("game-title").innerHTML = game_title;
     }
 
+    function isTimerEnabled() {
+        return game_levels[game_default_level - 1]["timer"];
+    }
+
+    function setTimer() {
+        if (isTimerEnabled()) {
+            var time = game_levels[game_default_level - 1]["time"];
+        } else {
+            time = click_counter;
+        }
+        document.getElementsByClassName("counter")[1].innerHTML = time;
+    }
+
+    function updateTimer() {
+        if (isTimerEnabled()){
+        timer = setInterval(function () {
+            document.getElementsByClassName("counter")[1].innerHTML--;
+        }, 1000);
+        }
+    }
+
+    function isGameOver() {
+        if (isTimerEnabled()){
+            setTimeout(function () {
+                alert("Game over!");
+                clearInterval(timer);
+                document.getElementsByClassName("smile")[0].removeAttribute("data-value")
+            }, document.getElementsByClassName("counter")[1].innerHTML * 1000)
+        }
+    }
+
     getGameXML(parseXmlString);
     renderElements();
     checkGameId();
     setGameTitle();
+    setTimer();
+    updateTimer();
+    isGameOver();
     newGame();
 }());
