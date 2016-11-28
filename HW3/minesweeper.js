@@ -3,9 +3,14 @@
 (function () {
     "use strict";
 
+    let DEBUG = true;
+    let log = DEBUG ? console.log.bind(console) : function () {
+    };
+
     let game_id;
     let game_title;
-    let levels;
+    let game_default_level;
+    let game_levels;
 
     function renderElements() {
         let body = document.getElementsByTagName("body")[0];
@@ -95,7 +100,6 @@
         let grid = (function () {
             let grid = document.createElement("div");
             grid.className = "grid";
-            window.onload = newGame;
             return grid;
         }());
 
@@ -112,8 +116,9 @@
         let game = xmlDoc.getElementsByTagName("game")[0];
         let id = game.getAttribute('id');
         let title = game.getAttribute('title');
-        let game_levels = [];
+        let levels_list = [];
         let levels = game.getElementsByTagName("levels")[0];
+        let default_level = levels.getAttribute("default");
         let level_list = levels.getElementsByTagName("level");
         for (let l = 0; l < level_list.length; l++) {
             let level = level_list[l];
@@ -129,38 +134,65 @@
                 "id": level_id,
                 "title": level_title,
                 "timer": timer,
-                "row": rows.childNodes[0].nodeValue,
-                "col": cols.childNodes[0].nodeValue,
+                "rows": rows.childNodes[0].nodeValue,
+                "cols": cols.childNodes[0].nodeValue,
                 "mines": mines.childNodes[0].nodeValue,
                 "time": time.childNodes[0].nodeValue
             };
-            game_levels.push(game_level);
+            levels_list.push(game_level);
         }
+
+        log('Processed xml results');
+        log('game id: ' + id);
+        log('game title: ' + title);
+        log('default level: ' + default_level);
+        log('game levels:');
+        log(levels_list);
+        log('--------------------');
 
         // assign necessary vars to global vars
         game_id = id;
         game_title = title;
-        levels = game_levels;
+        game_default_level = default_level;
+        game_levels = levels_list;
     }
 
     function newGame() {
+        var requestXML = generateLevelInfo();
+
+        getNewGame(requestXML, convertXml2Html);
+    }
+
+    function generateLevelInfo() {
+        if (!game_default_level)
+            game_default_level = 1;
+
+        let rows = game_levels[game_default_level - 1]["rows"];
+        let cols = game_levels[game_default_level - 1]["cols"];
+        let mines = game_levels[game_default_level - 1]["mines"];
         var requestXML = `
                 <request>
-                <rows>3</rows>
-                <cols>3</cols>
-                <mines>3</mines>
+                <rows>${rows}</rows>
+                <cols>${cols}</cols>
+                <mines>${mines}</mines>
                 </request>
                 `;
-        getNewGame(requestXML, function (xml_str) {
-            // Process and convert xmlStr to DOM using XSLTProcessor
-            let xsltProcessor = new XSLTProcessor();
-            let domParser = new DOMParser();
-            let xmlStrDoc = domParser.parseFromString(xml_str, "text/xml").childNodes[0];
-            let templateDoc = domParser.parseFromString(makeXSL(), "text/xml").childNodes[0];
-            xsltProcessor.importStylesheet(templateDoc);
-            let resultDocument = xsltProcessor.transformToFragment(xmlStrDoc, document);
-            document.getElementsByClassName('grid')[0].appendChild(resultDocument);
-        });
+
+        log('xml level information - request xml');
+        log(requestXML);
+        log('--------------------');
+
+        return requestXML;
+    }
+
+    function convertXml2Html(xml_str) {
+        let xsltProcessor = new XSLTProcessor();
+        let domParser = new DOMParser();
+        let xmlStrDoc = domParser.parseFromString(xml_str, "text/xml").childNodes[0];
+        let templateDoc = domParser.parseFromString(makeXSL(), "text/xml").childNodes[0];
+        xsltProcessor.importStylesheet(templateDoc);
+        let resultDocument = xsltProcessor.transformToFragment(xmlStrDoc, document);
+        document.getElementsByClassName('grid')[0].appendChild(resultDocument);
     }
 
     function makeXSL() {
@@ -190,11 +222,19 @@
             </xsl:stylesheet>`;
     }
 
-    function setGameTitle(){
+    function checkGameId() {
+        if (game_id != "minesweeper") {
+            alert("This is not minesweeper game BTW!")
+        }
+    }
+
+    function setGameTitle() {
         document.getElementById("game-title").innerHTML = game_title;
     }
 
     getGameXML(parseXmlString);
     renderElements();
+    checkGameId();
     setGameTitle();
+    newGame();
 }());
