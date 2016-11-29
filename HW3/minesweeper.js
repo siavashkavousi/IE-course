@@ -17,6 +17,93 @@
     let timer;
 
     function renderElements() {
+        function renderModal() {
+            let modal = document.createElement("div");
+            modal.className = "modal";
+
+            let modalContent = document.createElement("div");
+            modalContent.className = "modal-content";
+            modal.appendChild(modalContent);
+
+            let inputField = document.createElement("input");
+            inputField.className = "field";
+            inputField.id = "name";
+            inputField.placeHolder = "Enter your name";
+
+            let okButton = document.createElement("button");
+            okButton.innerHTML = "OK";
+
+            modalContent.appendChild(inputField);
+            modalContent.appendChild(okButton);
+
+            return modal;
+        }
+
+        function renderGameWindow() {
+            let gameWindow = document.createElement("div");
+            gameWindow.className = "window";
+
+            let titleBar = (function () {
+                let titleBar = document.createElement("div");
+                titleBar.className = "title-bar";
+
+                let gameTitle = document.createElement("span");
+                gameTitle.id = "game-title";
+                gameTitle.innerHTML = "Minesweeper Online - Beginner!";
+
+                let btnContainer = document.createElement("div");
+
+                let btns = [];
+                for (let i = 0; i < 2; i++) {
+                    btns[i] = document.createElement("span");
+                    btns[i].className = "btn";
+                    btnContainer.appendChild(btns[i])
+                }
+                btns[0].id = "btn-minimize";
+                btns[1].id = "btn-close";
+
+                titleBar.appendChild(gameTitle);
+                titleBar.appendChild(btnContainer);
+
+                return titleBar;
+            }());
+
+            let topPart = (function () {
+                let topPart = document.createElement("div");
+                topPart.className = "top";
+
+                let counter1 = document.createElement("span");
+                counter1.className = "counter";
+                counter1.innerHTML = 123;
+
+                let smile = document.createElement("span");
+                smile.className = "smile";
+                smile.setAttribute("data-value", "normal");
+
+                let counter2 = document.createElement("span");
+                counter2.className = "counter";
+                counter2.innerHTML = 321;
+
+                topPart.appendChild(counter1);
+                topPart.appendChild(smile);
+                topPart.appendChild(counter2);
+
+                return topPart;
+            }());
+
+            let grid = (function () {
+                let grid = document.createElement("div");
+                grid.className = "grid";
+                return grid;
+            }());
+
+            gameWindow.appendChild(titleBar);
+            gameWindow.appendChild(topPart);
+            gameWindow.appendChild(grid);
+
+            return gameWindow;
+        }
+
         let body = document.getElementsByTagName("body")[0];
 
         let modal = renderModal();
@@ -24,94 +111,6 @@
 
         body.appendChild(modal);
         body.appendChild(gameWindow);
-    }
-
-    function renderModal() {
-        let modal = document.createElement("div");
-        modal.className = "modal";
-
-        let modalContent = document.createElement("div");
-        modalContent.className = "modal-content";
-        modal.appendChild(modalContent);
-
-        let inputField = document.createElement("input");
-        inputField.className = "field";
-        inputField.id = "name";
-        inputField.placeHolder = "Enter your name";
-
-        let okButton = document.createElement("button");
-        okButton.innerHTML = "OK";
-
-        modalContent.appendChild(inputField);
-        modalContent.appendChild(okButton);
-
-        return modal;
-    }
-
-    function renderGameWindow() {
-        let gameWindow = document.createElement("div");
-        gameWindow.className = "window";
-
-        let titleBar = (function () {
-            let titleBar = document.createElement("div");
-            titleBar.className = "title-bar";
-
-            let gameTitle = document.createElement("span");
-            gameTitle.id = "game-title";
-            gameTitle.innerHTML = "Minesweeper Online - Beginner!";
-
-            let btnContainer = document.createElement("div");
-
-            let btns = [];
-            for (let i = 0; i < 2; i++) {
-                btns[i] = document.createElement("span");
-                btns[i].className = "btn";
-                btnContainer.appendChild(btns[i])
-            }
-            btns[0].id = "btn-minimize";
-            btns[1].id = "btn-close";
-
-            titleBar.appendChild(gameTitle);
-            titleBar.appendChild(btnContainer);
-
-            return titleBar;
-        }());
-
-        let topPart = (function () {
-            let topPart = document.createElement("div");
-            topPart.className = "top";
-
-            let counter1 = document.createElement("span");
-            counter1.className = "counter";
-            counter1.innerHTML = 123;
-
-            let smile = document.createElement("span");
-            smile.className = "smile";
-            smile.setAttribute("data-value", "normal");
-            smile.addEventListener("click", newGame);
-
-            let counter2 = document.createElement("span");
-            counter2.className = "counter";
-            counter2.innerHTML = 321;
-
-            topPart.appendChild(counter1);
-            topPart.appendChild(smile);
-            topPart.appendChild(counter2);
-
-            return topPart;
-        }());
-
-        let grid = (function () {
-            let grid = document.createElement("div");
-            grid.className = "grid";
-            return grid;
-        }());
-
-        gameWindow.appendChild(titleBar);
-        gameWindow.appendChild(topPart);
-        gameWindow.appendChild(grid);
-
-        return gameWindow;
     }
 
     function parseXmlString(xml_str) {
@@ -239,46 +238,74 @@
 
     function addGridCellsEvents() {
         attachGridCellsEvents(function (cell) {
-            cell.addEventListener("mousedown", mouseDownCellEvent);
-            cell.addEventListener("mouseup", mouseUpCellEvent);
-            cell.addEventListener("contextmenu", mouseRightEvent);
+            cell.addEventListener("mousedown", function (event) {
+                if (event.button == 0)
+                    this.className = "active";
+            });
+            cell.addEventListener("mouseup", doMouseLeftActions);
+            cell.addEventListener("mouseup", doMouseRightActions);
         });
     }
 
-    function mouseDownCellEvent() {
-        this.className = "active";
-    }
+    function doMouseLeftActions(event) {
+        function revealNeighbors(row, col) {
+            try {
+                let rows = game_levels[game_default_level - 1]["rows"];
+                let cols = game_levels[game_default_level - 1]["cols"];
+                if (row < 1 || col < 1 || row > rows || col > cols)
+                    return;
+                let cell = document.getElementById(`c${row}${col}`);
+                if (cell.getAttribute("class") == "revealed")
+                    return;
+                if (cell.getAttribute("data-value") != "mine") {
+                    if (cell.getAttribute("class") != "flagged")
+                        cell.className = "revealed";
 
-    function mouseUpCellEvent() {
-        let row = parseInt(this.id.charAt(1)), col = parseInt(this.id.charAt(2));
-        revealNeighbors(row, col);
-    }
+                    if (cell_neighbor_mines[`c${row}${col}`] != 0) {
+                        cell.setAttribute("data-value", cell_neighbor_mines[`c${row}${col}`]);
+                        return;
+                    }
 
-    function mouseRightEvent() {
-        if (this.getAttribute("class") != "flagged") {
-            mouseRightSetEvent(this);
-        } else {
-            mouseRightUnsetEvent(this);
+                    revealNeighbors(row - 1, col - 1);
+                    revealNeighbors(row - 1, col);
+                    revealNeighbors(row - 1, col + 1);
+                    revealNeighbors(row, col + 1);
+                    revealNeighbors(row + 1, col + 1);
+                    revealNeighbors(row + 1, col);
+                    revealNeighbors(row + 1, col - 1);
+                    revealNeighbors(row, col - 1);
+                }
+            } catch (err) {
+                log(`catched :D => ${err}`);
+            }
         }
-        return false;
+
+        if (event.button == 0) {
+            let row = parseInt(this.id.charAt(1)), col = parseInt(this.id.charAt(2));
+            revealNeighbors(row, col);
+        }
     }
 
-    function mouseRightSetEvent(cell) {
-        cell.className = "flagged";
-        //todo make it more event driven
-        flagged_cell++;
-        setCounter();
-        cell.removeEventListener("mousedown", mouseDownCellEvent);
-        cell.removeEventListener("mouseup", mouseUpCellEvent);
-    }
+    function doMouseRightActions(event) {
+        function mouseRightSetEvent(cell) {
+            cell.className = "flagged";
+            flagged_cell++;
+            setCounter();
+        }
 
-    function mouseRightUnsetEvent(cell) {
-        cell.removeAttribute("class");
-        flagged_cell--;
-        setCounter();
-        cell.addEventListener("mousedown", mouseDownCellEvent);
-        //todo do something about the following event - bug
-        cell.addEventListener("mouseup", mouseUpCellEvent);
+        function mouseRightUnsetEvent(cell) {
+            cell.removeAttribute("class");
+            flagged_cell--;
+            setCounter();
+        }
+
+        if (event.button == 2) {
+            if (this.getAttribute("class") != "flagged") {
+                mouseRightSetEvent(this);
+            } else {
+                mouseRightUnsetEvent(this);
+            }
+        }
     }
 
     function checkGameId() {
@@ -311,8 +338,9 @@
             }, 1000);
         } else {
             attachGridCellsEvents(function (cell) {
-                cell.addEventListener("mouseup", function () {
-                    document.getElementsByClassName("counter")[1].innerHTML++;
+                cell.addEventListener("mouseup", function (event) {
+                    if (event.button == 0)
+                        document.getElementsByClassName("counter")[1].innerHTML++;
                 })
             })
         }
@@ -327,9 +355,11 @@
             }, document.getElementsByClassName("counter")[1].innerHTML * 1000)
         }
         attachGridCellsEvents(function (cell) {
-            cell.addEventListener("mouseup", function () {
-                if (cell.getAttribute("data-value") == "mine")
+            cell.addEventListener("mouseup", function (event) {
+                if (event.button == 0 && this.getAttribute("data-value") == "mine") {
+                    this.className = "revealed";
                     alert("Game over!");
+                }
             })
         })
     }
@@ -394,36 +424,6 @@
         }
     }
 
-    function revealNeighbors(row, col) {
-        try {
-            let rows = game_levels[game_default_level - 1]["rows"];
-            let cols = game_levels[game_default_level - 1]["cols"];
-            if (row < 1 || col < 1 || row > rows || col > cols)
-                return;
-            let cell = document.getElementById(`c${row}${col}`);
-            if (cell.getAttribute("class") == "revealed")
-                return;
-            if (cell.getAttribute("data-value") != "mine") {
-                cell.className = "revealed";
-
-                if (cell_neighbor_mines[`c${row}${col}`] != 0) {
-                    cell.setAttribute("data-value", cell_neighbor_mines[`c${row}${col}`]);
-                    return;
-                }
-
-                revealNeighbors(row - 1, col - 1);
-                revealNeighbors(row - 1, col);
-                revealNeighbors(row - 1, col + 1);
-                revealNeighbors(row, col + 1);
-                revealNeighbors(row + 1, col + 1);
-                revealNeighbors(row + 1, col);
-                revealNeighbors(row + 1, col - 1);
-                revealNeighbors(row, col - 1);
-            }
-        } catch (err) {
-            log(`catched :D => ${err}`);
-        }
-    }
 
     getGameXML(parseXmlString);
     renderElements();
