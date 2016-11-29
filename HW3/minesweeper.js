@@ -160,22 +160,24 @@
         game_levels = levels_list;
     }
 
-    function newGame() {
-        var requestXML = generateLevelInfo();
+    function newGame(level_type) {
+        function generateLevelInfo(level_type) {
+            function findAppropriateLevel(level_type) {
+                for (let i = 0; i < game_levels.length; i++) {
+                    if (game_levels[i]["title"] == level_type)
+                        return i + 1;
+                }
+            }
 
-        getNewGame(requestXML, convertXml2Html);
+            if (!game_default_level)
+                game_default_level = 1;
+            if (level_type)
+                game_default_level = findAppropriateLevel(level_type);
 
-        addGridCellsEvents();
-    }
-
-    function generateLevelInfo() {
-        if (!game_default_level)
-            game_default_level = 1;
-
-        let rows = game_levels[game_default_level - 1]["rows"];
-        let cols = game_levels[game_default_level - 1]["cols"];
-        let mines = game_levels[game_default_level - 1]["mines"];
-        var requestXML = `
+            let rows = game_levels[game_default_level - 1]["rows"];
+            let cols = game_levels[game_default_level - 1]["cols"];
+            let mines = game_levels[game_default_level - 1]["mines"];
+            var requestXML = `
                 <request>
                 <rows>${rows}</rows>
                 <cols>${cols}</cols>
@@ -183,25 +185,25 @@
                 </request>
                 `;
 
-        log('** xml level information - request xml **');
-        log(requestXML);
-        log('--------------------');
+            log('** xml level information - request xml **');
+            log(requestXML);
+            log('--------------------');
 
-        return requestXML;
-    }
+            return requestXML;
+        }
 
-    function convertXml2Html(xml_str) {
-        let xsltProcessor = new XSLTProcessor();
-        let domParser = new DOMParser();
-        let xmlStrDoc = domParser.parseFromString(xml_str, "text/xml").childNodes[0];
-        let templateDoc = domParser.parseFromString(makeXSL(), "text/xml").childNodes[0];
-        xsltProcessor.importStylesheet(templateDoc);
-        let resultDocument = xsltProcessor.transformToFragment(xmlStrDoc, document);
-        document.getElementsByClassName('grid')[0].appendChild(resultDocument);
-    }
+        function convertXml2Html(xml_str) {
+            let xsltProcessor = new XSLTProcessor();
+            let domParser = new DOMParser();
+            let xmlStrDoc = domParser.parseFromString(xml_str, "text/xml").childNodes[0];
+            let templateDoc = domParser.parseFromString(makeXSL(), "text/xml").childNodes[0];
+            xsltProcessor.importStylesheet(templateDoc);
+            let resultDocument = xsltProcessor.transformToFragment(xmlStrDoc, document);
+            document.getElementsByClassName('grid')[0].appendChild(resultDocument);
+        }
 
-    function makeXSL() {
-        return `
+        function makeXSL() {
+            return `
             <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                 <xsl:template match="grid">
                     <xsl:for-each select="./row">
@@ -222,6 +224,16 @@
                     </xsl:for-each>
                 </xsl:template>
             </xsl:stylesheet>`;
+        }
+
+        var requestXML = generateLevelInfo(level_type);
+        getNewGame(requestXML, convertXml2Html);
+        addGridCellsEvents();
+        setTimer();
+        updateTimer();
+        setGameOver();
+        setCounter();
+        calculateNeighborMines();
     }
 
     function getCells() {
@@ -276,7 +288,7 @@
                     revealNeighbors(row, col - 1);
                 }
             } catch (err) {
-                log(`catched :D => ${err}`);
+                // pass
             }
         }
 
@@ -318,13 +330,18 @@
         document.getElementById("game-title").innerHTML = game_title;
     }
 
+    function parseBool(val) {
+        return val === true || val === "true"
+    }
+
     function isTimerEnabled() {
-        return game_levels[game_default_level - 1]["timer"];
+        return parseBool(game_levels[game_default_level - 1]["timer"]);
     }
 
     function setTimer() {
-        if (isTimerEnabled() == true) {
+        if (isTimerEnabled()) {
             var time = game_levels[game_default_level - 1]["time"];
+            log(time)
         } else {
             time = 0;
         }
@@ -332,7 +349,7 @@
     }
 
     function updateTimer() {
-        if (isTimerEnabled() == true) {
+        if (isTimerEnabled()) {
             timer = setInterval(function () {
                 document.getElementsByClassName("counter")[1].innerHTML--;
             }, 1000);
@@ -347,7 +364,7 @@
     }
 
     function setGameOver() {
-        if (isTimerEnabled() == true) {
+        if (isTimerEnabled()) {
             setTimeout(function () {
                 alert("Game over!");
                 clearInterval(timer);
@@ -377,14 +394,11 @@
 
     function calculateNeighborMines() {
         function calculateCellNeighborMines(cell) {
-            log('** calculateCellNeighborMines **');
-
             function hasCellMine(row, col) {
                 try {
                     let cell = document.getElementById(`c${row}${col}`);
                     return cell.getAttribute("data-value") == 'mine';
                 } catch (err) {
-                    log(`catched :D => ${err}`);
                     return false;
                 }
             }
@@ -393,26 +407,24 @@
                 let rows = game_levels[game_default_level - 1]["rows"];
                 let cols = game_levels[game_default_level - 1]["cols"];
                 let row = parseInt(cell.id.charAt(1)), col = parseInt(cell.id.charAt(2));
-                log(`cell row: ${row} and col: ${col}`);
 
                 let total_mines = 0;
-                if (hasCellMine(row - 1, col - 1) == true)
+                if (hasCellMine(row - 1, col - 1))
                     total_mines++;
-                if (hasCellMine(row - 1, col) == true)
+                if (hasCellMine(row - 1, col))
                     total_mines++;
-                if (hasCellMine(row - 1, col + 1) == true)
+                if (hasCellMine(row - 1, col + 1))
                     total_mines++;
-                if (hasCellMine(row, col + 1) == true)
+                if (hasCellMine(row, col + 1))
                     total_mines++;
-                if (hasCellMine(row + 1, col + 1) == true)
+                if (hasCellMine(row + 1, col + 1))
                     total_mines++;
-                if (hasCellMine(row + 1, col) == true)
+                if (hasCellMine(row + 1, col))
                     total_mines++;
-                if (hasCellMine(row + 1, col - 1) == true)
+                if (hasCellMine(row + 1, col - 1))
                     total_mines++;
-                if (hasCellMine(row, col - 1) == true)
+                if (hasCellMine(row, col - 1))
                     total_mines++;
-                log(`total mines: ${total_mines}`);
 
                 cell_neighbor_mines[`c${row}${col}`] = total_mines;
             }
@@ -424,21 +436,31 @@
         }
     }
 
+    function startNewLevel() {
+        let smile_el = document.getElementsByClassName("smile")[0];
+        smile_el.addEventListener("click", function (event) {
+            let level_type = prompt("please enter level type: (beginner, medium, hard");
+            recreateGrid();
+            newGame(level_type);
+        })
+    }
+
+    function recreateGrid() {
+        let current_grid = document.getElementsByClassName("grid")[0];
+        current_grid.parentNode.removeChild(current_grid);
+
+        let body = document.getElementsByClassName("window")[0];
+        let grid = document.createElement("div");
+        grid.className = "grid";
+        body.appendChild(grid)
+    }
+
+    removeRightClickContextMenu();
 
     getGameXML(parseXmlString);
     renderElements();
-
     checkGameId();
     setGameTitle();
-
     newGame();
-
-    setTimer();
-    updateTimer();
-    setGameOver();
-
-    setCounter();
-    removeRightClickContextMenu();
-
-    calculateNeighborMines();
+    startNewLevel();
 }());
