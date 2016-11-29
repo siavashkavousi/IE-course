@@ -456,16 +456,23 @@
     }
 
     function setUserName() {
-        let modal_content = document.getElementsByClassName("modal-content")[0];
-        let button = modal_content.getElementsByTagName("button")[0];
-        button.addEventListener("click", function () {
-            let input = document.getElementById("name");
+        function doTheMagic() {
             let username = document.createElement("p");
-            if(input.value) {
+            if (/^[A-Za-z]+$/.test(input.value)) {
                 username.innerHTML = input.value;
                 modal_content.replaceChild(username, input);
+                modal_content.removeChild(button);
             }
-        })
+        }
+
+        let modal_content = document.getElementsByClassName("modal-content")[0];
+        let button = modal_content.getElementsByTagName("button")[0];
+        let input = document.getElementById("name");
+        button.addEventListener("click", doTheMagic);
+        input.addEventListener("keydown", function (event) {
+            if (event.key == 'Enter')
+                doTheMagic()
+        });
     }
 
     removeRightClickContextMenu();
