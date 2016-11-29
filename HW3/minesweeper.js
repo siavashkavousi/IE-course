@@ -12,7 +12,7 @@
     let game_default_level;
     let game_levels;
 
-    let click_counter = 0;
+    let flagged_cell = 0;
     let timer;
 
     function renderElements() {
@@ -145,7 +145,7 @@
             levels_list.push(game_level);
         }
 
-        log('Processed xml results');
+        log('** processed xml results **');
         log('game id: ' + id);
         log('game title: ' + title);
         log('default level: ' + default_level);
@@ -164,6 +164,8 @@
         var requestXML = generateLevelInfo();
 
         getNewGame(requestXML, convertXml2Html);
+
+        addGridCellsEvents();
     }
 
     function generateLevelInfo() {
@@ -181,7 +183,7 @@
                 </request>
                 `;
 
-        log('xml level information - request xml');
+        log('** xml level information - request xml **');
         log(requestXML);
         log('--------------------');
 
@@ -202,27 +204,75 @@
         return `
             <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                 <xsl:template match="grid">
-                    <table>
-                        <xsl:for-each select="./row">
-                            <tr>
-                                <xsl:attribute name="row">
-                                    <xsl:value-of select="./@row"/>
+                    <xsl:for-each select="./row">
+                        <xsl:for-each select="./col">
+                            <span>
+                                <xsl:attribute name="id">
+                                    <xsl:text>c</xsl:text>
+                                    <xsl:value-of select="../@row"/>
+                                    <xsl:value-of select="./@col"/>
                                 </xsl:attribute>
-                                <xsl:for-each select="./col">
-                                    <td>
-                                        <xsl:attribute name="col">
-                                            <xsl:value-of select="./@col"/>
-                                        </xsl:attribute>
-                                        <xsl:attribute name="mine">
-                                            <xsl:value-of select="./@mine"/>
-                                        </xsl:attribute>
-                                    </td>
-                                </xsl:for-each>
-                            </tr>
+                            </span>
                         </xsl:for-each>
-                    </table>
+                    </xsl:for-each>
                 </xsl:template>
             </xsl:stylesheet>`;
+    }
+
+    function attachGridCellsEvents(events) {
+        function getCells() {
+            let grid_el = document.getElementsByClassName("grid")[0];
+            return grid_el.getElementsByTagName("span");
+        }
+
+        let spans = getCells();
+
+        for (let c = 0; c < spans.length; c++) {
+            events(spans[c]);
+        }
+    }
+
+    function addGridCellsEvents() {
+        attachGridCellsEvents(function (cell) {
+            cell.addEventListener("mousedown", mouseDownCellEvent);
+            cell.addEventListener("mouseup", mouseUpCellEvent);
+            cell.addEventListener("contextmenu", mouseRightEvent);
+        });
+    }
+
+    function mouseDownCellEvent() {
+        this.className = "active";
+    }
+
+    function mouseUpCellEvent() {
+        this.className = "revealed";
+    }
+
+    function mouseRightEvent() {
+        if (this.getAttribute("class") != "flagged") {
+            mouseRightSetEvent(this);
+        } else {
+            mouseRightUnsetEvent(this);
+        }
+        return false;
+    }
+
+    function mouseRightSetEvent(cell) {
+        cell.className = "flagged";
+        //todo make it more event driven
+        flagged_cell++;
+        setCounter();
+        cell.removeEventListener("mousedown", mouseDownCellEvent);
+        cell.removeEventListener("mouseup", mouseUpCellEvent);
+    }
+
+    function mouseRightUnsetEvent(cell) {
+        cell.removeAttribute("class");
+        flagged_cell--;
+        setCounter();
+        cell.addEventListener("mousedown", mouseDownCellEvent);
+        //todo do something about the following event - bug
+        cell.addEventListener("mouseup", mouseUpCellEvent);
     }
 
     function checkGameId() {
@@ -240,38 +290,68 @@
     }
 
     function setTimer() {
-        if (isTimerEnabled()) {
+        if (isTimerEnabled() == true) {
             var time = game_levels[game_default_level - 1]["time"];
         } else {
-            time = click_counter;
+            time = 0;
         }
         document.getElementsByClassName("counter")[1].innerHTML = time;
     }
 
     function updateTimer() {
-        if (isTimerEnabled()){
-        timer = setInterval(function () {
-            document.getElementsByClassName("counter")[1].innerHTML--;
-        }, 1000);
+        if (isTimerEnabled() == true) {
+            timer = setInterval(function () {
+                document.getElementsByClassName("counter")[1].innerHTML--;
+            }, 1000);
+        } else {
+            attachGridCellsEvents(function (cell) {
+                cell.addEventListener("mouseup", function () {
+                    document.getElementsByClassName("counter")[1].innerHTML++;
+                })
+            })
         }
     }
 
     function isGameOver() {
-        if (isTimerEnabled()){
+        if (isTimerEnabled() == true) {
             setTimeout(function () {
                 alert("Game over!");
                 clearInterval(timer);
-                document.getElementsByClassName("smile")[0].removeAttribute("data-value")
-            }, document.getElementsByClassName("counter")[1].innerHTML * 1000)
+                document.getElementsByClassName("smile")[0].removeAttribute("data-value");
+                //todo make 100000 -> 1000 when done
+            }, document.getElementsByClassName("counter")[1].innerHTML * 100000)
+        }
+        attachGridCellsEvents(function (cell) {
+            cell.addEventListener("mouseup", function () {
+                if (cell.getAttribute("data-value") == "mine")
+                    alert("Game over!");
+            })
+        })
+    }
+
+    function setCounter() {
+        let mines = game_levels[game_default_level - 1]["mines"];
+        document.getElementsByClassName("counter")[0].innerHTML = mines - flagged_cell;
+    }
+
+    function removeRightClickContextMenu() {
+        window.oncontextmenu = function () {
+            return false;
         }
     }
 
     getGameXML(parseXmlString);
     renderElements();
+
     checkGameId();
     setGameTitle();
+
+    newGame();
+
     setTimer();
     updateTimer();
     isGameOver();
-    newGame();
+
+    setCounter();
+    removeRightClickContextMenu();
 }());

@@ -1,23 +1,15 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:template match="grid">
-        <table>
-            <xsl:for-each select="./row">
-                <tr>
-                    <xsl:attribute name="row">
-                        <xsl:value-of select="./@row"/>
+        <xsl:for-each select="./row">
+            <xsl:for-each select="./col">
+                <span>
+                    <xsl:attribute name="id">
+                        <xsl:text>c</xsl:text>
+                        <xsl:value-of select="../@row"/>
+                        <xsl:value-of select="./@col"/>
                     </xsl:attribute>
-                    <xsl:for-each select="./col">
-                        <td>
-                            <xsl:attribute name="col">
-                                <xsl:value-of select="./@col"/>
-                            </xsl:attribute>
-                            <xsl:attribute name="mine">
-                                <xsl:value-of select="./@mine"/>
-                            </xsl:attribute>
-                        </td>
-                    </xsl:for-each>
-                </tr>
+                </span>
             </xsl:for-each>
-        </table>
+        </xsl:for-each>
     </xsl:template>
 </xsl:stylesheet>
