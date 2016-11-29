@@ -12,15 +12,33 @@
 function getGameXML(cb) {
     // Simple Static Game Levels
     let xml = `
-        <game id="minesweeper" title="Minesweeper Online" >
-            <levels default ="1">
-                <level id="1" title="Beginner!" timer="true">
-                    <rows>10</rows>
-                    <cols>10</cols>
+        <game id="minesweeper" title="Minesweeper Online">
+
+            <levels default="1">
+        
+                <level id="1" title="beginner" timer="false">
+                    <rows>9</rows>
+                    <cols>9</cols>
+                    <mines>3</mines>
+                    <time>0</time>
+                </level>
+        
+                <level id="2" title="medium" timer="true">
+                    <rows>9</rows>
+                    <cols>9</cols>
                     <mines>5</mines>
                     <time>120</time>
                 </level>
+                
+                <level id="3" title="hard" timer="true">
+                    <rows>9</rows>
+                    <cols>9</cols>
+                    <mines>10</mines>
+                    <time>60</time>
+                </level>
+        
             </levels>
+        
         </game>
     `;
 
