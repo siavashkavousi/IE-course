@@ -8,6 +8,11 @@
                         <xsl:value-of select="../@row"/>
                         <xsl:value-of select="./@col"/>
                     </xsl:attribute>
+                    <xsl:if test="./@mine">
+                        <xsl:attribute name="data-value">
+                            <xsl:text>mine</xsl:text>
+                        </xsl:attribute>
+                    </xsl:if>
                 </span>
             </xsl:for-each>
         </xsl:for-each>

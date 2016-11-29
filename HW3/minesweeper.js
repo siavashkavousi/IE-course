@@ -12,6 +12,7 @@
     let game_default_level;
     let game_levels;
 
+    let cell_neighbor_mines = [];
     let flagged_cell = 0;
     let timer;
 
@@ -212,6 +213,11 @@
                                     <xsl:value-of select="../@row"/>
                                     <xsl:value-of select="./@col"/>
                                 </xsl:attribute>
+                                <xsl:if test="./@mine">
+                                    <xsl:attribute name="data-value">
+                                        <xsl:text>mine</xsl:text>
+                                    </xsl:attribute>
+                                </xsl:if>
                             </span>
                         </xsl:for-each>
                     </xsl:for-each>
@@ -219,16 +225,15 @@
             </xsl:stylesheet>`;
     }
 
+    function getCells() {
+        let grid_el = document.getElementsByClassName("grid")[0];
+        return grid_el.getElementsByTagName("span");
+    }
+
     function attachGridCellsEvents(events) {
-        function getCells() {
-            let grid_el = document.getElementsByClassName("grid")[0];
-            return grid_el.getElementsByTagName("span");
-        }
-
-        let spans = getCells();
-
-        for (let c = 0; c < spans.length; c++) {
-            events(spans[c]);
+        let cells = getCells();
+        for (let c = 0; c < cells.length; c++) {
+            events(cells[c]);
         }
     }
 
@@ -245,7 +250,8 @@
     }
 
     function mouseUpCellEvent() {
-        this.className = "revealed";
+        let row = parseInt(this.id.charAt(1)), col = parseInt(this.id.charAt(2));
+        revealNeighbors(row, col);
     }
 
     function mouseRightEvent() {
@@ -312,14 +318,13 @@
         }
     }
 
-    function isGameOver() {
+    function setGameOver() {
         if (isTimerEnabled() == true) {
             setTimeout(function () {
                 alert("Game over!");
                 clearInterval(timer);
                 document.getElementsByClassName("smile")[0].removeAttribute("data-value");
-                //todo make 100000 -> 1000 when done
-            }, document.getElementsByClassName("counter")[1].innerHTML * 100000)
+            }, document.getElementsByClassName("counter")[1].innerHTML * 1000)
         }
         attachGridCellsEvents(function (cell) {
             cell.addEventListener("mouseup", function () {
@@ -340,6 +345,86 @@
         }
     }
 
+    function calculateNeighborMines() {
+        function calculateCellNeighborMines(cell) {
+            log('** calculateCellNeighborMines **');
+
+            function hasCellMine(row, col) {
+                try {
+                    let cell = document.getElementById(`c${row}${col}`);
+                    return cell.getAttribute("data-value") == 'mine';
+                } catch (err) {
+                    log(`catched :D => ${err}`);
+                    return false;
+                }
+            }
+
+            if (cell.getAttribute("data-value") != "mine") {
+                let rows = game_levels[game_default_level - 1]["rows"];
+                let cols = game_levels[game_default_level - 1]["cols"];
+                let row = parseInt(cell.id.charAt(1)), col = parseInt(cell.id.charAt(2));
+                log(`cell row: ${row} and col: ${col}`);
+
+                let total_mines = 0;
+                if (hasCellMine(row - 1, col - 1) == true)
+                    total_mines++;
+                if (hasCellMine(row - 1, col) == true)
+                    total_mines++;
+                if (hasCellMine(row - 1, col + 1) == true)
+                    total_mines++;
+                if (hasCellMine(row, col + 1) == true)
+                    total_mines++;
+                if (hasCellMine(row + 1, col + 1) == true)
+                    total_mines++;
+                if (hasCellMine(row + 1, col) == true)
+                    total_mines++;
+                if (hasCellMine(row + 1, col - 1) == true)
+                    total_mines++;
+                if (hasCellMine(row, col - 1) == true)
+                    total_mines++;
+                log(`total mines: ${total_mines}`);
+
+                cell_neighbor_mines[`c${row}${col}`] = total_mines;
+            }
+        }
+
+        let cells = getCells();
+        for (let c = 0; c < cells.length; c++) {
+            calculateCellNeighborMines(cells[c])
+        }
+    }
+
+    function revealNeighbors(row, col) {
+        try {
+            let rows = game_levels[game_default_level - 1]["rows"];
+            let cols = game_levels[game_default_level - 1]["cols"];
+            if (row < 1 || col < 1 || row > rows || col > cols)
+                return;
+            let cell = document.getElementById(`c${row}${col}`);
+            if (cell.getAttribute("class") == "revealed")
+                return;
+            if (cell.getAttribute("data-value") != "mine") {
+                cell.className = "revealed";
+
+                if (cell_neighbor_mines[`c${row}${col}`] != 0) {
+                    cell.setAttribute("data-value", cell_neighbor_mines[`c${row}${col}`]);
+                    return;
+                }
+
+                revealNeighbors(row - 1, col - 1);
+                revealNeighbors(row - 1, col);
+                revealNeighbors(row - 1, col + 1);
+                revealNeighbors(row, col + 1);
+                revealNeighbors(row + 1, col + 1);
+                revealNeighbors(row + 1, col);
+                revealNeighbors(row + 1, col - 1);
+                revealNeighbors(row, col - 1);
+            }
+        } catch (err) {
+            log(`catched :D => ${err}`);
+        }
+    }
+
     getGameXML(parseXmlString);
     renderElements();
 
@@ -350,8 +435,10 @@
 
     setTimer();
     updateTimer();
-    isGameOver();
+    setGameOver();
 
     setCounter();
     removeRightClickContextMenu();
+
+    calculateNeighborMines();
 }());
