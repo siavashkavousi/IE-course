@@ -438,8 +438,8 @@
 
     function startNewLevel() {
         let smile_el = document.getElementsByClassName("smile")[0];
-        smile_el.addEventListener("click", function (event) {
-            let level_type = prompt("please enter level type: (beginner, medium, hard");
+        smile_el.addEventListener("click", function () {
+            let level_type = prompt("please enter level type: (beginner, medium, hard)");
             recreateGrid();
             newGame(level_type);
         })
@@ -455,12 +455,27 @@
         body.appendChild(grid)
     }
 
+    function setUserName() {
+        let modal_content = document.getElementsByClassName("modal-content")[0];
+        let button = modal_content.getElementsByTagName("button")[0];
+        button.addEventListener("click", function () {
+            let input = document.getElementById("name");
+            let username = document.createElement("p");
+            if(input.value) {
+                username.innerHTML = input.value;
+                modal_content.replaceChild(username, input);
+            }
+        })
+    }
+
     removeRightClickContextMenu();
 
     getGameXML(parseXmlString);
     renderElements();
     checkGameId();
     setGameTitle();
+    setUserName()
+
     newGame();
     startNewLevel();
 }());
