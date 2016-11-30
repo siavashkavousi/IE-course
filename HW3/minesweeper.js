@@ -114,50 +114,70 @@
     }
 
     function parseXmlString(xml_str) {
-        let parser = new DOMParser();
-        let xmlDoc = parser.parseFromString(xml_str, "text/xml");
-        let game = xmlDoc.getElementsByTagName("game")[0];
-        let id = game.getAttribute('id');
-        let title = game.getAttribute('title');
-        let levels_list = [];
-        let levels = game.getElementsByTagName("levels")[0];
-        let default_level = levels.getAttribute("default");
-        let level_list = levels.getElementsByTagName("level");
-        for (let l = 0; l < level_list.length; l++) {
-            let level = level_list[l];
-            let level_id = level.getAttribute("id");
-            let level_title = level.getAttribute("title");
-            let timer = level.getAttribute("timer");
-            let rows = level.getElementsByTagName("rows")[0];
-            let cols = level.getElementsByTagName("cols")[0];
-            let mines = level.getElementsByTagName("mines")[0];
-            let time = level.getElementsByTagName("time")[0];
+        function parse() {
+            try {
+                let parser = new DOMParser();
+                let xmlDoc = parser.parseFromString(xml_str, "text/xml");
+                let game = xmlDoc.getElementsByTagName("game")[0];
+                let id = game.getAttribute('id');
+                let title = game.getAttribute('title');
+                let levels_list = [];
+                let levels = game.getElementsByTagName("levels")[0];
+                let default_level = levels.getAttribute("default");
+                let level_list = levels.getElementsByTagName("level");
+                for (let l = 0; l < level_list.length; l++) {
+                    let level = level_list[l];
+                    let level_id = level.getAttribute("id");
+                    let level_title = level.getAttribute("title");
+                    let timer = level.getAttribute("timer");
+                    let rows = level.getElementsByTagName("rows")[0];
+                    let cols = level.getElementsByTagName("cols")[0];
+                    let mines = level.getElementsByTagName("mines")[0];
+                    let time = level.getElementsByTagName("time")[0];
 
-            let game_level = {
-                "id": level_id,
-                "title": level_title,
-                "timer": timer,
-                "rows": rows.childNodes[0].nodeValue,
-                "cols": cols.childNodes[0].nodeValue,
-                "mines": mines.childNodes[0].nodeValue,
-                "time": time.childNodes[0].nodeValue
-            };
-            levels_list.push(game_level);
+                    let game_level = {
+                        "id": level_id,
+                        "title": level_title,
+                        "timer": timer,
+                        "rows": rows.childNodes[0].nodeValue,
+                        "cols": cols.childNodes[0].nodeValue,
+                        "mines": mines.childNodes[0].nodeValue,
+                        "time": time.childNodes[0].nodeValue
+                    };
+                    levels_list.push(game_level);
+                }
+
+                return {
+                    "id": id,
+                    "title": title,
+                    "default_level": default_level,
+                    "levels": levels_list
+                }
+            } catch (err) {
+                log("error parsing xml_str");
+                alert("error parsing xml_str");
+            }
         }
+
+        let dict = parse();
+        let id = dict['id'],
+            title = dict['title'],
+            default_level = dict['default_level'],
+            levels = dict['levels'];
 
         log('** processed xml results **');
         log('game id: ' + id);
         log('game title: ' + title);
         log('default level: ' + default_level);
         log('game levels:');
-        log(levels_list);
+        log(levels);
         log('--------------------');
 
         // assign necessary vars to global vars
         game_id = id;
         game_title = title;
         game_current_level = default_level;
-        game_levels = levels_list;
+        game_levels = levels;
     }
 
     function newGame(level_type) {
