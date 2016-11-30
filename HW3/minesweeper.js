@@ -365,39 +365,57 @@
     }
 
     function revealNeighborsAfterFlagging() {
-        function getNeighborsStatus(row, col) {
+        function getNeighborsStatus(row, col, cell_value) {
             let checker = [];
             checker[0] = !hasCellMineAndFlag(row - 1, col - 1);
             checker[1] = !hasCellMineAndFlag(row - 1, col);
             checker[2] = !hasCellMineAndFlag(row - 1, col + 1);
             checker[3] = !hasCellMineAndFlag(row, col + 1);
             checker[4] = !hasCellMineAndFlag(row + 1, col + 1);
-            checker[5] = !hasCellMineAndFlag(row + 1, col + 1);
+            checker[5] = !hasCellMineAndFlag(row + 1, col);
             checker[6] = !hasCellMineAndFlag(row + 1, col - 1);
             checker[7] = !hasCellMineAndFlag(row, col - 1);
 
-            log('checker');
-            log(checker);
+            let checker1 = [];
+            checker1[0] = hasCellFlag(row - 1, col - 1);
+            checker1[1] = hasCellFlag(row - 1, col);
+            checker1[2] = hasCellFlag(row - 1, col + 1);
+            checker1[3] = hasCellFlag(row, col + 1);
+            checker1[4] = hasCellFlag(row + 1, col + 1);
+            checker1[5] = hasCellFlag(row + 1, col);
+            checker1[6] = hasCellFlag(row + 1, col - 1);
+            checker1[7] = hasCellFlag(row, col - 1);
 
             let is_game_over = false;
+            let counter = 0;
             for (let i = 0; i < checker.length; i++) {
                 if (checker[i]) {
                     is_game_over = true;
                     break;
                 }
             }
-            if (!is_game_over) {
-                revealNeighbors(row - 1, col - 1);
-                revealNeighbors(row - 1, col);
-                revealNeighbors(row - 1, col + 1);
-                revealNeighbors(row, col + 1);
-                revealNeighbors(row + 1, col + 1);
-                revealNeighbors(row + 1, col);
-                revealNeighbors(row + 1, col - 1);
-                revealNeighbors(row, col - 1);
-                return false;
+            for (let i = 0; i < checker1.length; i++) {
+                if (checker1[i]) {
+                    counter++;
+                }
+            }
+
+            if (counter == cell_value) {
+                if (!is_game_over) {
+                    revealNeighbors(row - 1, col - 1);
+                    revealNeighbors(row - 1, col);
+                    revealNeighbors(row - 1, col + 1);
+                    revealNeighbors(row, col + 1);
+                    revealNeighbors(row + 1, col + 1);
+                    revealNeighbors(row + 1, col);
+                    revealNeighbors(row + 1, col - 1);
+                    revealNeighbors(row, col - 1);
+                    return false;
+                } else {
+                    return true;
+                }
             } else {
-                return true;
+                return false;
             }
         }
 
@@ -409,7 +427,8 @@
                     cell.getAttribute("data-value") &&
                     cell.getAttribute("data-value") != "mine") {
                     let row = parseInt(cell.id.charAt(1)), col = parseInt(cell.id.charAt(2));
-                    let is_game_over = getNeighborsStatus(row, col);
+                    let cell_value = cell.getAttribute("data-value");
+                    let is_game_over = getNeighborsStatus(row, col, cell_value);
                     if (is_game_over) {
                         document.getElementsByClassName("smile")[0].removeAttribute("data-value");
                         alert("Game over!");
