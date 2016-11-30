@@ -249,6 +249,7 @@
         var requestXML = generateLevelInfo(level_type);
         getNewGame(requestXML, convertXml2Html);
         addGridCellsEvents();
+        revealNeighborsAgain();
         setTimer();
         updateTimer();
         setGameOver();
@@ -330,15 +331,6 @@
             }
         }
 
-        function revealNeighborsAgain() {
-            attachGridCellsEvents(function (cell) {
-                if (cell.getAttribute("data-value") && cell.getAttribute("data-value") != "mine") {
-                    let row = parseInt(cell.id.charAt(1)), col = parseInt(cell.id.charAt(2));
-                    revealNeighbors(row, col, true)
-                }
-            });
-        }
-
         if (event.button == 0) {
             let row = parseInt(this.id.charAt(1)), col = parseInt(this.id.charAt(2));
             revealNeighbors(row, col);
@@ -367,6 +359,20 @@
                 mouseRightUnsetEvent(this);
             }
         }
+    }
+
+    function revealNeighborsAgain() {
+        attachGridCellsEvents(function (cell) {
+            cell.addEventListener("mousedown", function () {
+                if (cell.getAttribute("class") == "revealed" &&
+                    cell.getAttribute("data-value") &&
+                    cell.getAttribute("data-value") != "mine") {
+                    let row = parseInt(cell.id.charAt(1)), col = parseInt(cell.id.charAt(2));
+                    revealNeighbors(row, col, true)
+                }
+
+            });
+        });
     }
 
     function checkGameId() {
