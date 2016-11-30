@@ -482,6 +482,47 @@
         });
     }
 
+    function dragWindowGame() {
+        let x_pos_mouse = 0, y_pos_mouse = 0;
+        let elem_left = 0, elem_top = 0;
+        let to_be_dragged = null;
+
+        function dragInit(element) {
+            to_be_dragged = element;
+            elem_left = x_pos_mouse - to_be_dragged.offsetLeft;
+            elem_top = y_pos_mouse - to_be_dragged.offsetTop;
+        }
+
+        function moveElement(element) {
+            x_pos_mouse = document.all ? window.event.clientX : element.pageX;
+            y_pos_mouse = document.all ? window.event.clientY : element.pageY;
+            if (to_be_dragged !== null) {
+                let left = (x_pos_mouse - elem_left);
+                let top = (y_pos_mouse - elem_top);
+                // if (left > 0 || left < (window.innerWidth - element.width) ||
+                //     top > 0 || top < (window.innerHeight - element.height))
+                //     return;
+
+                to_be_dragged.style.left = left + 'px';
+                to_be_dragged.style.top = top + 'px';
+            }
+        }
+
+        function destroy() {
+            to_be_dragged = null;
+        }
+
+        let gameWindow = document.getElementsByClassName("window")[0];
+        let titleBar = document.getElementsByClassName("title-bar")[0];
+        titleBar.addEventListener("mousedown", function () {
+            this.style.cursor = "pointer";
+            dragInit(gameWindow);
+            return false;
+        });
+        document.addEventListener("mousemove", moveElement);
+        document.addEventListener("mouseup", destroy)
+    }
+
     removeRightClickContextMenu();
 
     getGameXML(parseXmlString);
@@ -489,6 +530,7 @@
     checkGameId();
     setGameTitle();
     setUserName();
+    dragWindowGame();
 
     newGame();
     startNewLevel();
