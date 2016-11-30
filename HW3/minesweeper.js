@@ -270,26 +270,38 @@
 
     function addGridCellsEvents() {
         attachGridCellsEvents(function (cell) {
-            cell.addEventListener("mousedown", function (event) {
-                if (event.button == 0)
-                    this.className = "active";
-            });
+            cell.addEventListener("mousedown", doMouseDownActions);
             cell.addEventListener("mouseup", doMouseLeftActions);
             cell.addEventListener("mouseup", doMouseRightActions);
         });
     }
 
+    function removeGridCellsEvent() {
+        attachGridCellsEvents(function (cell) {
+            cell.removeEventListener("mousedown", doMouseDownActions);
+            cell.removeEventListener("mouseup", doMouseLeftActions);
+            cell.removeEventListener("mouseup", doMouseRightActions)
+        })
+    }
+
+    function doMouseDownActions(event) {
+        if (event.button == 0)
+            this.className = "active";
+    }
+
     function doMouseLeftActions(event) {
-        function revealNeighbors(row, col) {
+        function revealNeighbors(row, col, second_time = false) {
             try {
                 let rows = game_levels[game_current_level - 1]["rows"];
                 let cols = game_levels[game_current_level - 1]["cols"];
                 if (row < 1 || col < 1 || row > rows || col > cols)
                     return;
                 let cell = document.getElementById(`c${row}${col}`);
-                if (cell.getAttribute("class") == "revealed")
-                    return;
                 if (cell.getAttribute("data-value") != "mine") {
+                    if (cell.getAttribute("class") == "revealed") {
+                        return;
+                    }
+
                     if (cell.getAttribute("class") != "flagged")
                         cell.className = "revealed";
 
@@ -306,10 +318,25 @@
                     revealNeighbors(row + 1, col);
                     revealNeighbors(row + 1, col - 1);
                     revealNeighbors(row, col - 1);
+                } else {
+                    if (second_time) {
+                        document.getElementsByClassName("smile")[0].removeAttribute("data-value");
+                        alert("Game over!");
+                        revealMines();
+                    }
                 }
             } catch (err) {
                 // pass
             }
+        }
+
+        function revealNeighborsAgain() {
+            attachGridCellsEvents(function (cell) {
+                if (cell.getAttribute("data-value") && cell.getAttribute("data-value") != "mine") {
+                    let row = parseInt(cell.id.charAt(1)), col = parseInt(cell.id.charAt(2));
+                    revealNeighbors(row, col, true)
+                }
+            });
         }
 
         if (event.button == 0) {
@@ -363,7 +390,6 @@
     function setTimer() {
         if (isTimerEnabled()) {
             var time = game_levels[game_current_level - 1]["time"];
-            log(time)
         } else {
             time = 0;
         }
@@ -391,21 +417,35 @@
                 clearInterval(timer);
                 document.getElementsByClassName("smile")[0].removeAttribute("data-value");
                 alert("Game over!");
-                recreateGrid();
-                newGame();
+                revealMines();
             }, document.getElementsByClassName("counter")[1].innerHTML * 1000)
+        } else {
+            clearInterval(timer);
         }
+
         attachGridCellsEvents(function (cell) {
             cell.addEventListener("mouseup", function (event) {
                 if (event.button == 0 && this.getAttribute("data-value") == "mine") {
+                    clearInterval(timer);
                     this.className = "revealed";
                     document.getElementsByClassName("smile")[0].removeAttribute("data-value");
                     alert("Game over!");
-                    recreateGrid();
-                    newGame()
+                    revealMines();
+                    removeGridCellsEvent();
                 }
             })
         })
+    }
+
+    function revealMines() {
+        let cells = getCells();
+        for (let c = 0; c < cells.length; c++) {
+            if (cells[c].getAttribute("data-value") == "mine") {
+                if (cells[c].getAttribute("class") == "revealed")
+                    cells[c].style.backgroundColor = "red";
+                cells[c].className = "revealed  ";
+            }
+        }
     }
 
     function setCounter() {
@@ -467,6 +507,7 @@
         let smile_el = document.getElementsByClassName("smile")[0];
         smile_el.addEventListener("click", function () {
             let level_type = prompt("please enter level type: (beginner, medium, hard)");
+            smile_el.setAttribute("data-value", "ok");
             recreateGrid();
             newGame(level_type);
         })
@@ -543,7 +584,7 @@
         document.addEventListener("mouseup", destroy)
     }
 
-    function checkWin() {
+    function haveUserWon() {
         let cells = getCells();
         for (let c = 0; c < cells.length; c++) {
             if (cells[c].getAttribute('data-value') != 'mine' && cells[c].getAttribute('class') != 'revealed')
@@ -552,15 +593,22 @@
         return true;
     }
 
-    function showWonMessage() {
-        if (checkWin()) {
-            alert("Win!");
-            recreateGrid();
-            newGame();
-        }
+    function showWinMessage() {
+        let win_interval_id = setInterval(function () {
+            if (haveUserWon()) {
+                let cells = getCells();
+                for (let c = 0; c < cells.length; c++) {
+                    if (cells[c].getAttribute('data-value') == 'mine')
+                        cells[c].className = 'flagged';
+                }
+                document.getElementsByClassName("smile")[0].setAttribute("data-value", "win");
+                alert("You have won!");
+                clearInterval(win_interval_id);
+            }
+        }, 1000)
     }
 
-    removeRightClickContextMenu();
+    // removeRightClickContextMenu();
 
     getGameXML(parseXmlString);
     renderElements();
@@ -571,5 +619,5 @@
 
     newGame();
     startNewLevel();
-    setInterval(showWonMessage, 1000);
+    showWinMessage();
 }());
