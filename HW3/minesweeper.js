@@ -543,6 +543,23 @@
         document.addEventListener("mouseup", destroy)
     }
 
+    function checkWin() {
+        let cells = getCells();
+        for (let c = 0; c < cells.length; c++) {
+            if (cells[c].getAttribute('data-value') != 'mine' && cells[c].getAttribute('class') != 'revealed')
+                return false;
+        }
+        return true;
+    }
+
+    function showWonMessage() {
+        if (checkWin()) {
+            alert("Win!");
+            recreateGrid();
+            newGame();
+        }
+    }
+
     removeRightClickContextMenu();
 
     getGameXML(parseXmlString);
@@ -554,4 +571,5 @@
 
     newGame();
     startNewLevel();
+    setInterval(showWonMessage, 1000);
 }());
