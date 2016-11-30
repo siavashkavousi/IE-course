@@ -9,7 +9,7 @@
 
     let game_id;
     let game_title;
-    let game_default_level;
+    let game_current_level;
     let game_levels;
 
     let cell_neighbor_mines = [];
@@ -156,7 +156,7 @@
         // assign necessary vars to global vars
         game_id = id;
         game_title = title;
-        game_default_level = default_level;
+        game_current_level = default_level;
         game_levels = levels_list;
     }
 
@@ -169,14 +169,14 @@
                 }
             }
 
-            if (!game_default_level)
-                game_default_level = 1;
+            if (!game_current_level)
+                game_current_level = 1;
             if (level_type)
-                game_default_level = findAppropriateLevel(level_type);
+                game_current_level = findAppropriateLevel(level_type);
 
-            let rows = game_levels[game_default_level - 1]["rows"];
-            let cols = game_levels[game_default_level - 1]["cols"];
-            let mines = game_levels[game_default_level - 1]["mines"];
+            let rows = game_levels[game_current_level - 1]["rows"];
+            let cols = game_levels[game_current_level - 1]["cols"];
+            let mines = game_levels[game_current_level - 1]["mines"];
             var requestXML = `
                 <request>
                 <rows>${rows}</rows>
@@ -262,8 +262,8 @@
     function doMouseLeftActions(event) {
         function revealNeighbors(row, col) {
             try {
-                let rows = game_levels[game_default_level - 1]["rows"];
-                let cols = game_levels[game_default_level - 1]["cols"];
+                let rows = game_levels[game_current_level - 1]["rows"];
+                let cols = game_levels[game_current_level - 1]["cols"];
                 if (row < 1 || col < 1 || row > rows || col > cols)
                     return;
                 let cell = document.getElementById(`c${row}${col}`);
@@ -300,9 +300,11 @@
 
     function doMouseRightActions(event) {
         function mouseRightSetEvent(cell) {
-            cell.className = "flagged";
-            flagged_cell++;
-            setCounter();
+            if (flagged_cell < game_levels[game_current_level - 1]["mines"]) {
+                cell.className = "flagged";
+                flagged_cell++;
+                setCounter();
+            }
         }
 
         function mouseRightUnsetEvent(cell) {
@@ -335,12 +337,12 @@
     }
 
     function isTimerEnabled() {
-        return parseBool(game_levels[game_default_level - 1]["timer"]);
+        return parseBool(game_levels[game_current_level - 1]["timer"]);
     }
 
     function setTimer() {
         if (isTimerEnabled()) {
-            var time = game_levels[game_default_level - 1]["time"];
+            var time = game_levels[game_current_level - 1]["time"];
             log(time)
         } else {
             time = 0;
@@ -366,23 +368,28 @@
     function setGameOver() {
         if (isTimerEnabled()) {
             setTimeout(function () {
-                alert("Game over!");
                 clearInterval(timer);
                 document.getElementsByClassName("smile")[0].removeAttribute("data-value");
+                alert("Game over!");
+                recreateGrid();
+                newGame();
             }, document.getElementsByClassName("counter")[1].innerHTML * 1000)
         }
         attachGridCellsEvents(function (cell) {
             cell.addEventListener("mouseup", function (event) {
                 if (event.button == 0 && this.getAttribute("data-value") == "mine") {
                     this.className = "revealed";
+                    document.getElementsByClassName("smile")[0].removeAttribute("data-value");
                     alert("Game over!");
+                    recreateGrid();
+                    newGame()
                 }
             })
         })
     }
 
     function setCounter() {
-        let mines = game_levels[game_default_level - 1]["mines"];
+        let mines = game_levels[game_current_level - 1]["mines"];
         document.getElementsByClassName("counter")[0].innerHTML = mines - flagged_cell;
     }
 
@@ -404,8 +411,8 @@
             }
 
             if (cell.getAttribute("data-value") != "mine") {
-                let rows = game_levels[game_default_level - 1]["rows"];
-                let cols = game_levels[game_default_level - 1]["cols"];
+                let rows = game_levels[game_current_level - 1]["rows"];
+                let cols = game_levels[game_current_level - 1]["cols"];
                 let row = parseInt(cell.id.charAt(1)), col = parseInt(cell.id.charAt(2));
 
                 let total_mines = 0;
@@ -481,7 +488,7 @@
     renderElements();
     checkGameId();
     setGameTitle();
-    setUserName()
+    setUserName();
 
     newGame();
     startNewLevel();
