@@ -249,7 +249,7 @@
         var requestXML = generateLevelInfo(level_type);
         getNewGame(requestXML, convertXml2Html);
         addGridCellsEvents();
-        revealNeighborsAgain();
+        revealNeighborsAfterFlagging();
         setTimer();
         updateTimer();
         setGameOver();
@@ -285,52 +285,47 @@
         })
     }
 
+    function revealNeighbors(row, col) {
+        try {
+            let rows = game_levels[game_current_level - 1]["rows"];
+            let cols = game_levels[game_current_level - 1]["cols"];
+            if (row < 1 || col < 1 || row > rows || col > cols)
+                return;
+            let cell = document.getElementById(`c${row}${col}`);
+            if (cell.getAttribute("data-value") != "mine") {
+                if (cell.getAttribute("class") == "revealed") {
+                    return;
+                }
+
+                if (cell.getAttribute("class") != "flag") {
+                    cell.className = "revealed";
+                }
+
+                if (cell_neighbor_mines[`c${row}${col}`] != 0) {
+                    cell.setAttribute("data-value", cell_neighbor_mines[`c${row}${col}`]);
+                    return;
+                }
+
+                revealNeighbors(row - 1, col - 1);
+                revealNeighbors(row - 1, col);
+                revealNeighbors(row - 1, col + 1);
+                revealNeighbors(row, col + 1);
+                revealNeighbors(row + 1, col + 1);
+                revealNeighbors(row + 1, col);
+                revealNeighbors(row + 1, col - 1);
+                revealNeighbors(row, col - 1);
+            }
+        } catch (err) {
+            // pass
+        }
+    }
+
     function doMouseDownActions(event) {
         if (event.button == 0)
             this.className = "active";
     }
 
     function doMouseLeftActions(event) {
-        function revealNeighbors(row, col, second_time = false) {
-            try {
-                let rows = game_levels[game_current_level - 1]["rows"];
-                let cols = game_levels[game_current_level - 1]["cols"];
-                if (row < 1 || col < 1 || row > rows || col > cols)
-                    return;
-                let cell = document.getElementById(`c${row}${col}`);
-                if (cell.getAttribute("data-value") != "mine") {
-                    if (cell.getAttribute("class") == "revealed") {
-                        return;
-                    }
-
-                    if (cell.getAttribute("class") != "flagged")
-                        cell.className = "revealed";
-
-                    if (cell_neighbor_mines[`c${row}${col}`] != 0) {
-                        cell.setAttribute("data-value", cell_neighbor_mines[`c${row}${col}`]);
-                        return;
-                    }
-
-                    revealNeighbors(row - 1, col - 1);
-                    revealNeighbors(row - 1, col);
-                    revealNeighbors(row - 1, col + 1);
-                    revealNeighbors(row, col + 1);
-                    revealNeighbors(row + 1, col + 1);
-                    revealNeighbors(row + 1, col);
-                    revealNeighbors(row + 1, col - 1);
-                    revealNeighbors(row, col - 1);
-                } else {
-                    if (second_time) {
-                        document.getElementsByClassName("smile")[0].removeAttribute("data-value");
-                        alert("Game over!");
-                        revealMines();
-                    }
-                }
-            } catch (err) {
-                // pass
-            }
-        }
-
         if (event.button == 0) {
             let row = parseInt(this.id.charAt(1)), col = parseInt(this.id.charAt(2));
             revealNeighbors(row, col);
@@ -340,10 +335,14 @@
     function doMouseRightActions(event) {
         function mouseRightSetEvent(cell) {
             if (flagged_cell < game_levels[game_current_level - 1]["mines"]) {
-                cell.className = "flagged";
+                cell.className = "flag";
                 flagged_cell++;
                 setCounter();
             }
+        }
+
+        function mouseSetQuestionMark(cell) {
+            cell.className = "question";
         }
 
         function mouseRightUnsetEvent(cell) {
@@ -353,25 +352,72 @@
         }
 
         if (event.button == 2) {
-            if (this.getAttribute("class") != "flagged") {
-                mouseRightSetEvent(this);
+            if (this.getAttribute("class")) {
+                if (this.getAttribute("class") == "question") {
+                    mouseRightUnsetEvent(this);
+                } else if (this.getAttribute("class") == "flag") {
+                    mouseSetQuestionMark(this);
+                }
             } else {
-                mouseRightUnsetEvent(this);
+                mouseRightSetEvent(this);
             }
         }
     }
 
-    function revealNeighborsAgain() {
+    function revealNeighborsAfterFlagging() {
+        function getNeighborsStatus(row, col) {
+            let checker = [];
+            checker[0] = !hasCellMineAndFlag(row - 1, col - 1);
+            checker[1] = !hasCellMineAndFlag(row - 1, col);
+            checker[2] = !hasCellMineAndFlag(row - 1, col + 1);
+            checker[3] = !hasCellMineAndFlag(row, col + 1);
+            checker[4] = !hasCellMineAndFlag(row + 1, col + 1);
+            checker[5] = !hasCellMineAndFlag(row + 1, col + 1);
+            checker[6] = !hasCellMineAndFlag(row + 1, col - 1);
+            checker[7] = !hasCellMineAndFlag(row, col - 1);
+
+            log('checker');
+            log(checker);
+
+            let is_game_over = false;
+            for (let i = 0; i < checker.length; i++) {
+                if (checker[i]) {
+                    is_game_over = true;
+                    break;
+                }
+            }
+            if (!is_game_over) {
+                revealNeighbors(row - 1, col - 1);
+                revealNeighbors(row - 1, col);
+                revealNeighbors(row - 1, col + 1);
+                revealNeighbors(row, col + 1);
+                revealNeighbors(row + 1, col + 1);
+                revealNeighbors(row + 1, col);
+                revealNeighbors(row + 1, col - 1);
+                revealNeighbors(row, col - 1);
+                return false;
+            } else {
+                return true;
+            }
+        }
+
         attachGridCellsEvents(function (cell) {
+            cell.removeEventListener("mousedown", doMouseDownActions);
             cell.addEventListener("mousedown", function () {
+
                 if (cell.getAttribute("class") == "revealed" &&
                     cell.getAttribute("data-value") &&
                     cell.getAttribute("data-value") != "mine") {
                     let row = parseInt(cell.id.charAt(1)), col = parseInt(cell.id.charAt(2));
-                    revealNeighbors(row, col, true)
+                    let is_game_over = getNeighborsStatus(row, col);
+                    if (is_game_over) {
+                        document.getElementsByClassName("smile")[0].removeAttribute("data-value");
+                        alert("Game over!");
+                        revealMines();
+                    }
                 }
-
             });
+            cell.addEventListener("mousedown", doMouseDownActions);
         });
     }
 
@@ -448,7 +494,7 @@
         for (let c = 0; c < cells.length; c++) {
             if (cells[c].getAttribute("data-value") == "mine") {
                 if (cells[c].getAttribute("class") == "revealed")
-                    cells[c].style.backgroundColor = "red";
+                    cells[c].style.backgroundColor = '#aa3120';
                 cells[c].className = "revealed  ";
             }
         }
@@ -465,17 +511,40 @@
         }
     }
 
+    function hasCellMine(row, col) {
+        try {
+            let cell = document.getElementById(`c${row}${col}`);
+            return cell.getAttribute("data-value") == 'mine';
+        } catch (err) {
+            return false;
+        }
+    }
+
+    function hasCellFlag(row, col) {
+        try {
+            let cell = document.getElementById(`c${row}${col}`);
+            return cell.getAttribute("class") == 'flag';
+        } catch (err) {
+            return false;
+        }
+    }
+
+    function hasCellMineAndFlag(row, col) {
+        let cell = document.getElementById(`c${row}${col}`);
+        if (cell) {
+            if (hasCellFlag(row, col))
+                return true;
+            if (!hasCellFlag(row, col) && hasCellMine(row, col))
+                return false;
+            else
+                return true;
+        } else {
+            return true;
+        }
+    }
+
     function calculateNeighborMines() {
         function calculateCellNeighborMines(cell) {
-            function hasCellMine(row, col) {
-                try {
-                    let cell = document.getElementById(`c${row}${col}`);
-                    return cell.getAttribute("data-value") == 'mine';
-                } catch (err) {
-                    return false;
-                }
-            }
-
             if (cell.getAttribute("data-value") != "mine") {
                 let rows = game_levels[game_current_level - 1]["rows"];
                 let cols = game_levels[game_current_level - 1]["cols"];
@@ -605,7 +674,7 @@
                 let cells = getCells();
                 for (let c = 0; c < cells.length; c++) {
                     if (cells[c].getAttribute('data-value') == 'mine')
-                        cells[c].className = 'flagged';
+                        cells[c].className = 'flag';
                 }
                 document.getElementsByClassName("smile")[0].setAttribute("data-value", "win");
                 alert("You have won!");
@@ -614,7 +683,7 @@
         }, 1000)
     }
 
-    // removeRightClickContextMenu();
+    removeRightClickContextMenu();
 
     getGameXML(parseXmlString);
     renderElements();
