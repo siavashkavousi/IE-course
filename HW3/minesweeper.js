@@ -185,7 +185,7 @@
             function findAppropriateLevel(level_type) {
                 for (let i = 0; i < game_levels.length; i++) {
                     if (game_levels[i]["title"] == level_type)
-                        return i + 1;
+                        return game_levels[i]["id"]
                 }
             }
 
@@ -624,6 +624,8 @@
                 username.innerHTML = input.value;
                 modal_content.replaceChild(username, input);
                 modal_content.removeChild(button);
+            } else {
+                alert("username has just letters");
             }
         }
 
