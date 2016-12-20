@@ -1,0 +1,147 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<dom-module id="app-main">
+    <template>
+        <style include="iron-flex iron-flex-alignment">
+            :host {
+                --app-primary-color: #2E83E5;
+                --app-secondary-color: black;
+                --paper-font-common-base: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                };
+                --paper-font-common-code: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                    -webkit-font-smoothing: antialiased;
+                };
+
+                display: block;
+                color: white;
+            }
+
+            app-header-layout {
+                background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,1)), url('/images/app-main-bg.jpg') center;
+            }
+
+            app-toolbar {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            paper-button.light-blue {
+                background-color: var(--paper-blue-500);
+            }
+
+            app-toolbar div[main-title] span.light-blue {
+                color: var(--paper-blue-500);
+            }
+
+            app-toolbar paper-button {
+                font-size: var(--paper-font-button);
+                padding: 5px 20px;
+            }
+
+            .main-content {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            .main-content .paper-font-display2 {
+                font-size: var(--paper-font-display2);
+            }
+        </style>
+
+        <app-header-layout>
+
+            <app-header condenses reveals class="fullbleed">
+                <app-toolbar>
+                    <paper-icon-button icon="hardware:videogame-asset"></paper-icon-button>
+                    <div main-title>امیرکبیر <span class="light-blue">استودیو</span></div>
+
+                    <paper-button>ورود</paper-button>
+                    <paper-button raised class="light-blue">ثبت نام</paper-button>
+                </app-toolbar>
+            </app-header>
+            <div class="main-content layout vertical">
+                <div style="padding-bottom: 128px"></div>
+                <div class="paper-font-display2">مرکز بازی سازی امیرکبیر</div>
+                <div style="padding-bottom: 12px"></div>
+                <div>متن آزمایشی</div>
+                <div>متن آزمایشی</div>
+                <div style="padding-bottom: 32px"></div>
+                <div class="layout horizontal">
+                    <paper-button raised class="light-blue">ورود به صفحه بازی</paper-button>
+                    <paper-button>
+                        <iron-icon icon="av:play-circle-filled"></iron-icon>تریلر این بازی
+                    </paper-button>
+                </div>
+                <div style="padding-bottom: 256px"></div>
+            </div>
+
+        </app-header-layout>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'app-main',
+
+            properties: {
+                page: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_pageChanged',
+                },
+            },
+
+            observers: [
+                '_routePageChanged(routeData.page)',
+            ],
+
+            _routePageChanged: function (page) {
+                this.page = page || 'view1';
+
+                if (!this.$.drawer.persistent) {
+                    this.$.drawer.close();
+                }
+            },
+
+            _pageChanged: function (page) {
+                // Load page import on demand. Show 404 page if fails
+                var resolvedPageUrl = this.resolveUrl(page + '.html');
+                this.importHref(resolvedPageUrl, null, this._showPage404, true);
+            },
+
+            _showPage404: function () {
+                this.page = 'view404';
+            },
+        });
+    </script>
+</dom-module>
