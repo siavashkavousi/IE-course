@@ -22,10 +22,19 @@
     "iron-icons": "PolymerElements/iron-icons#^1.2.0",
     "paper-button": "PolymerElements/paper-button#^1.0.14",
     "paper-header-panel": "PolymerElements/paper-header-panel#^1.1.7",
-    "shabnam-font": "^0.9.3"
+    "shabnam-font": "^0.9.3",
+    "paper-carousel": "^1.3.1",
+    "owl.carousel": "OwlCarousel2/OwlCarousel2#^2.2.0",
+    "jquery": "^3.1.1",
+    "wincinderith-elements": "^1.0.0",
+    "slick-carousel": "kenwheeler/slick#^1.6.0",
+    "times-slick-carousel": "aendrew/times-slick-carousel#^1.0.3"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
   },
-  "private": true
+  "private": true,
+  "resolutions": {
+    "jquery": ">=1.7"
+  }
 }

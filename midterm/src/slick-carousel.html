@@ -1,0 +1,106 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../bower_components/slick-carousel/slick/slick.js"></script>
+
+<dom-module id="slick-carousel">
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick.css"/>
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick-theme.css"/>
+    <template>
+        <style>
+            :host {
+                display: block;
+                box-sizing: border-box;
+            }
+
+            .item {
+                height: 120px;
+            }
+        </style>
+
+        <div id="carousel">
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+            <img src="../images/app-main-bg.jpg" class="item"/>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'slick-carousel',
+
+            properties: {
+                /**
+                 * Options to pass to Slick Carousel.
+                 * @see http://kenwheeler.github.io/slick/
+                 * @type {Object}
+                 */
+                slickOptions: {
+                    type: Object,
+                    value: function () {
+                        return {};
+                    }
+                }
+            },
+
+            // Element Lifecycle
+
+            ready: function () {
+                this.scopeSubtree(this.$.carousel, true); // This is needed to propagate Slick's styles down.
+
+                // `ready` is called after all elements have been configured, but
+                // propagates bottom-up. This element's children are ready, but parents
+                // are not.
+                //
+                // This is the point where you should make modifications to the DOM (when
+                // necessary), or kick off any processes the element wants to perform.
+                var slickDefaults = {
+                    dots: false,
+                    infinite: true,
+                    rtl: true,
+                    arrows: false,
+                    speed: 300,
+                    slidesToShow: 6,
+                    autoplay: true,
+                    autoplaySpeed: 1000,
+                    centerMode: true,
+                    centerPadding: '5px',
+                    cssEase: 'linear',
+                    lazyLoad: 'ondemand',
+                };
+
+                this.options = Object.assign(slickDefaults, this.slickOptions); // @TODO figure out why this doesn't work.
+
+                var el = this.$.carousel;
+                jQuery(el).slick(slickDefaults);
+            },
+
+            attached: function () {
+                // `attached` fires once the element and its parents have been inserted
+                // into a document.
+                //
+                // This is a good place to perform any work related to your element's
+                // visual state or active behavior (measuring sizes, beginning animations,
+                // loading resources, etc).
+            },
+
+            detached: function () {
+                // The analog to `attached`, `detached` fires when the element has been
+                // removed from a document.
+                //
+                // Use this to clean up anything you did in `attached`.
+            },
+
+            initSlick: function () {
+                var el = this.$.carousel;
+                jQuery(el).slick(this.options);
+            }
+        });
+    </script>
+</dom-module>
