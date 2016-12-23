@@ -57,6 +57,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 height: 5vh;
             }
 
+            @media screen and (max-width: 640px){
+                app-header-layout [spacer] {
+                    height: 2.5vh;
+                }
+            }
+
             app-toolbar {
                 padding-left: 15%;
                 padding-right: 15%;
@@ -219,6 +225,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     cssEase: 'linear',
                     lazyLoad: 'ondemand',
                     pauseOnHover: true,
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 5,
+                            }
+                        },
+                        {
+                            breakpoint: 640,
+                            settings: {
+                                slidesToShow: 3,
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                            }
+                        }
+                    ]
                 };
 
                 $(this.$.carousel).slick(slickDefaults);
