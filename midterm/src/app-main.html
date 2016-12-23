@@ -179,6 +179,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this._addSlides()
                 this._initSlick()
                 this._changeCurrentSlide()
+                this._changeSlideOnMouseHover();
             },
 
             _initSlick: function () {
@@ -201,19 +202,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 };
 
                 var el = this.$.carousel;
-                jQuery(el).slick(slickDefaults);
+                $(el).slick(slickDefaults);
             },
 
             _changeCurrentSlide: function () {
                 $(this.$.carousel).on('beforeChange', function (event, slick, currentSlideIndex, nextSlideIndex) {
                     nextSlideIndex = slick.slideCount - nextSlideIndex - 1;
                     var currentSlide = $(slick.$slides.get(nextSlideIndex))[0].firstChild;
-                    currentSlide.changeCard('../images/app-main-bg.jpg');
+                    currentSlide.changeCard();
 
                     currentSlideIndex = slick.slideCount - currentSlideIndex - 1;
                     currentSlide = $(slick.$slides.get(currentSlideIndex))[0].firstChild;
                     currentSlide.revertCard();
                 })
+            },
+
+            _changeSlideOnMouseHover: function () {
+                $(this.$$('.slick-track')).on('mouseenter', 'game-card', function () {
+                    this.changeCard('#2196f3');
+                });
+                $(this.$$('.slick-track')).on('mouseleave', 'game-card', function () {
+                    var slick = $(this).parents('#carousel').slick('getSlick')
+                    var centerSlideIndex = slick.slideCount - slick.currentSlide - 1
+                    var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index')
+                    if (centerSlideIndex != currentSlide)
+                        this.revertCard();
+                    else
+                        this.revertCard(true);
+                });
             },
 
             _addSlides: function () {

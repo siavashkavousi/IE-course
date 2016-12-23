@@ -48,7 +48,6 @@
                 display: none;
                 flex-direction: column;
                 align-items: flex-start;
-                background-color: #01937A;
             }
 
             #alternative-card > .comment {
@@ -110,14 +109,26 @@
                 this.backgroundImage = "url('" + backgroundImageUrl + "')";
             },
 
-            changeCard: function () {
+            changeCard: function (color) {
                 this.$['main-card'].style.display = 'none';
                 this.$['alternative-card'].style.display = 'flex';
+                this._changeCardColor(color);
             },
 
-            revertCard: function () {
-                this.$['main-card'].style.display = 'flex';
-                this.$['alternative-card'].style.display = 'none';
+            _changeCardColor: function (color) {
+                if(color)
+                    this.$['alternative-card'].style.backgroundColor = color;
+                else
+                    this.$['alternative-card'].style.backgroundColor = '#01937A';
+            },
+
+            revertCard: function (isInCenter) {
+                if(!isInCenter) {
+                    this.$['main-card'].style.display = 'flex';
+                    this.$['alternative-card'].style.display = 'none';
+                } else {
+                    this._changeCardColor()
+                }
             }
         });
     </script>
