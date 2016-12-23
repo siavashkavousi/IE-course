@@ -205,13 +205,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             _changeCurrentSlide: function () {
-                $(this.$.carousel).on('beforeChange', function (event, slick, index, nextIndex) {
-                    nextIndex = 8 - nextIndex;
-                    var currentSlide = $(slick.$slides.get(nextIndex))[0].firstChild;
+                $(this.$.carousel).on('beforeChange', function (event, slick, currentSlideIndex, nextSlideIndex) {
+                    nextSlideIndex = slick.slideCount - nextSlideIndex - 1;
+                    var currentSlide = $(slick.$slides.get(nextSlideIndex))[0].firstChild;
                     currentSlide.changeCard('../images/app-main-bg.jpg');
 
-                    index = 8 - index;
-                    currentSlide = $(slick.$slides.get(index))[0].firstChild;
+                    currentSlideIndex = slick.slideCount - currentSlideIndex - 1;
+                    currentSlide = $(slick.$slides.get(currentSlideIndex))[0].firstChild;
                     currentSlide.revertCard();
                 })
             },
