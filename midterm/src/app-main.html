@@ -48,7 +48,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             #homepage-top {
-                background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1)), url('/images/app-main-bg.jpg') center;
+                background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1)), url('/images/app-main-bg.jpg');
+                background-position: center;
+                background-size: cover;
             }
 
             app-toolbar {
@@ -69,12 +71,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 padding: 5px 20px;
             }
 
-            .main-content {
+            #main-content {
                 padding-left: 15%;
                 padding-right: 15%;
             }
 
-            .main-content .paper-font-display2 {
+            #main-content .paper-font-display2 {
                 font-size: var(--paper-font-display2);
             }
 
@@ -94,12 +96,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-button raised class="light-blue">ثبت نام</paper-button>
                     </app-toolbar>
                 </app-header>
-                <div class="main-content">
+                <div id="main-content">
                     <div style="margin-bottom: 128px"></div>
-                    <div class="paper-font-display2">مرکز بازی سازی امیرکبیر</div>
+                    <div id="game-title" class="paper-font-display2">[[currentGameTitle]]</div>
                     <div style="margin-bottom: 12px"></div>
-                    <div>متن آزمایشی</div>
-                    <div>متن آزمایشی</div>
+                    <div>[[currentGameAbstract]]</div>
                     <div style="margin-bottom: 32px"></div>
                     <div class="layout horizontal">
                         <paper-button raised class="light-blue">ورود به صفحه بازی</paper-button>
@@ -129,15 +130,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is: 'app-main',
 
             properties: {
-                page: {
-                    type: String,
-                    reflectToAttribute: true,
-                    observer: '_pageChanged',
-                },
                 sliderItems: {
                     type: Array,
                     value: [],
                 },
+                currentId: {
+                    type: String,
+                    notify: true,
+                },
+                currentGameTitle: {
+                    type: String,
+                    notify: true,
+                },
+                currentGameAbstract: {
+                    type: String,
+                    notify: true,
+                }
             },
 
             observers: [
@@ -164,22 +172,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _handleResponse: function (request) {
                 response = request.detail.response.response;
+                console.log('ajax request (home) response')
                 console.log(response);
                 if (response.ok) {
                     homepage = response.result['homepage'];
                     sliderItems = homepage['slider'];
+                    // TODO should delete following lines after ui tests complete...
                     this.sliderItems.push(sliderItems[0])
                     this.sliderItems.push(sliderItems[0])
                     this.sliderItems.push(sliderItems[1])
+                    this.sliderItems.push(sliderItems[0])
+                    this.sliderItems.push(sliderItems[0])
+                    this.sliderItems.push(sliderItems[1])
+                    this.sliderItems.push(sliderItems[0])
+                    this.sliderItems.push(sliderItems[1])
+                    this.sliderItems.push(sliderItems[0])
                 }
 
-                this.counter = 0;
-                this._addSlides()
-                this._addSlides()
                 this._addSlides()
                 this._initSlick()
                 this._changeCurrentSlide()
                 this._changeSlideOnMouseHover();
+                this._listenToCurrentIdChanges();
+                this._listenToCurrentGameTitleChanges();
             },
 
             _initSlick: function () {
@@ -190,7 +205,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     infinite: true,
                     rtl: true,
                     arrows: false,
-                    speed: 300,
+                    speed: 1000,
                     slidesToShow: 5,
                     autoplay: true,
                     autoplaySpeed: 1000,
@@ -201,20 +216,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     pauseOnHover: true,
                 };
 
-                var el = this.$.carousel;
-                $(el).slick(slickDefaults);
+                $(this.$.carousel).slick(slickDefaults);
             },
 
             _changeCurrentSlide: function () {
+                var that = this;
                 $(this.$.carousel).on('beforeChange', function (event, slick, currentSlideIndex, nextSlideIndex) {
                     nextSlideIndex = slick.slideCount - nextSlideIndex - 1;
                     var currentSlide = $(slick.$slides.get(nextSlideIndex))[0].firstChild;
                     currentSlide.changeCard();
 
+                    that.currentId = currentSlide.getId();
+
                     currentSlideIndex = slick.slideCount - currentSlideIndex - 1;
                     currentSlide = $(slick.$slides.get(currentSlideIndex))[0].firstChild;
                     currentSlide.revertCard();
-                })
+                });
             },
 
             _changeSlideOnMouseHover: function () {
@@ -222,9 +239,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.changeCard('#2196f3');
                 });
                 $(this.$$('.slick-track')).on('mouseleave', 'game-card', function () {
-                    var slick = $(this).parents('#carousel').slick('getSlick')
-                    var centerSlideIndex = slick.slideCount - slick.currentSlide - 1
-                    var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index')
+                    var slick = $(this).parents('#carousel').slick('getSlick');
+                    var centerSlideIndex = slick.slideCount - slick.currentSlide - 1;
+                    var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index');
                     if (centerSlideIndex != currentSlide)
                         this.revertCard();
                     else
@@ -232,12 +249,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 });
             },
 
+            _listenToCurrentIdChanges: function () {
+                var that = this;
+                $(this).on('current-id-changed', function () {
+                    this.currentGameTitle = this.sliderItems[this.currentId]['title'];
+                    that._changeHomePageBackgroundImage();
+                    that._changeCurrentGameData();
+                });
+            },
+
+            _listenToCurrentGameTitleChanges: function () {
+                var that = this;
+                $(this).on('current-game-title-changed', function () {
+                    var gameTitle = that.$['game-title'];
+                    $(gameTitle).fadeToggle();
+                });
+            },
+
+            _changeCurrentGameData: function () {
+                this.currentGameAbstract = this.sliderItems[this.currentId]['abstract'];
+            },
+
+            _changeHomePageBackgroundImage: function () {
+                var homepage = this.$['homepage-top'];
+                homepage.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1)), url('" +
+                        this.sliderItems[this.currentId]['large_image'] + "')";
+            },
+
             _addSlides: function () {
                 for (s = 0; s < this.sliderItems.length; s++) {
                     var div = document.createElement('div');
                     var element = document.createElement('game-card');
-                    element.setBackground(this.sliderItems[s]['small_image'])
-                    element.setTitle(this.sliderItems[s]['title'])
+                    element.setId(s);
+                    element.setBackground(this.sliderItems[s]['small_image']);
+                    element.setTitle(this.sliderItems[s]['title']);
                     div.appendChild(element);
                     Polymer.dom(this.$.carousel).appendChild(div);
                 }

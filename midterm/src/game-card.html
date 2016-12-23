@@ -89,9 +89,8 @@
             is: 'game-card',
 
             properties: {
-                backgroundImage: {
-                    type: String,
-                    value: "url('../images/app-main-bg.jpg')",
+                id: {
+                    type: Number,
                     reflectToAttribute: true,
                 },
                 gameTitle: {
@@ -99,14 +98,35 @@
                     value: 'Call of Duty',
                     reflectToAttribute: true,
                 },
+                backgroundImage: {
+                    type: String,
+                    value: "url('../images/app-main-bg.jpg')",
+                    reflectToAttribute: true,
+                },
+            },
+
+            setId: function (id) {
+                this.id = id;
+            },
+
+            getId: function () {
+                return this.id;
             },
 
             setTitle: function (title) {
                 this.gameTitle = title;
             },
 
+            getTitle: function () {
+                return this.gameTitle;
+            },
+
             setBackground: function (backgroundImageUrl) {
                 this.backgroundImage = "url('" + backgroundImageUrl + "')";
+            },
+
+            getBackground: function () {
+                return this.backgroundImage;
             },
 
             changeCard: function (color) {
@@ -116,14 +136,14 @@
             },
 
             _changeCardColor: function (color) {
-                if(color)
+                if (color)
                     this.$['alternative-card'].style.backgroundColor = color;
                 else
                     this.$['alternative-card'].style.backgroundColor = '#01937A';
             },
 
             revertCard: function (isInCenter) {
-                if(!isInCenter) {
+                if (!isInCenter) {
                     this.$['main-card'].style.display = 'flex';
                     this.$['alternative-card'].style.display = 'none';
                 } else {
