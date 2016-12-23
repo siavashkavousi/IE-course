@@ -9,17 +9,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -28,9 +22,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <!-- external components -->
-<link rel="import" href="slick-carousel.html">
+<link rel="import" href="jquery.html">
+<script src="../bower_components/slick-carousel/slick/slick.js"></script>
+<link rel="import" href="game-card.html">
 
 <dom-module id="app-main">
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick.css"/>
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick-theme.css"/>
     <template>
         <style include="iron-flex iron-flex-alignment">
             :host {
@@ -49,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 color: white;
             }
 
-            app-header-layout {
+            #homepage-top {
                 background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1)), url('/images/app-main-bg.jpg') center;
             }
 
@@ -79,19 +77,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             .main-content .paper-font-display2 {
                 font-size: var(--paper-font-display2);
             }
+
+            .item {
+                height: 120px;
+            }
         </style>
 
         <app-header-layout>
-            <app-header condenses reveals class="fullbleed">
-                <app-toolbar>
-                    <paper-icon-button icon="hardware:videogame-asset"></paper-icon-button>
-                    <div main-title>امیرکبیر <span class="light-blue">استودیو</span></div>
+            <div id="homepage-top" class="layout vertical">
+                <app-header condenses reveals class="fullbleed">
+                    <app-toolbar>
+                        <paper-icon-button icon="hardware:videogame-asset"></paper-icon-button>
+                        <div main-title>امیرکبیر <span class="light-blue">استودیو</span></div>
 
-                    <paper-button>ورود</paper-button>
-                    <paper-button raised class="light-blue">ثبت نام</paper-button>
-                </app-toolbar>
-            </app-header>
-            <div class="layout vertical">
+                        <paper-button>ورود</paper-button>
+                        <paper-button raised class="light-blue">ثبت نام</paper-button>
+                    </app-toolbar>
+                </app-header>
                 <div class="main-content">
                     <div style="margin-bottom: 128px"></div>
                     <div class="paper-font-display2">مرکز بازی سازی امیرکبیر</div>
@@ -108,8 +110,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </div>
                     <div style="margin-bottom: 180px"></div>
                 </div>
+
+
+                <div id="carousel"></div>
             </div>
-            <slick-carousel></slick-carousel>
+
+            <iron-ajax
+                    auto
+                    url="http://api.ie.ce-it.ir/F95/home"
+                    handle-as="json"
+                    on-response="_handleResponse"
+                    debounce-duration="300"></iron-ajax>
         </app-header-layout>
     </template>
 
@@ -122,6 +133,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     type: String,
                     reflectToAttribute: true,
                     observer: '_pageChanged',
+                },
+                sliderItems: {
+                    type: Array,
+                    value: [],
                 },
             },
 
@@ -146,6 +161,71 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _showPage404: function () {
                 this.page = 'view404';
             },
+
+            _handleResponse: function (request) {
+                response = request.detail.response.response;
+                console.log(response);
+                if (response.ok) {
+                    homepage = response.result['homepage'];
+                    sliderItems = homepage['slider'];
+                    this.sliderItems.push(sliderItems[0])
+                    this.sliderItems.push(sliderItems[0])
+                    this.sliderItems.push(sliderItems[1])
+                }
+
+                this.counter = 0;
+                this._addSlides()
+                this._addSlides()
+                this._addSlides()
+                this._initSlick()
+                this._changeCurrentSlide()
+            },
+
+            _initSlick: function () {
+                this.scopeSubtree(this.$.carousel, true);
+
+                slickDefaults = {
+                    dots: false,
+                    infinite: true,
+                    rtl: true,
+                    arrows: false,
+                    speed: 300,
+                    slidesToShow: 5,
+                    autoplay: true,
+                    autoplaySpeed: 1000,
+                    centerMode: true,
+                    centerPadding: '5px',
+                    cssEase: 'linear',
+                    lazyLoad: 'ondemand',
+                    pauseOnHover: true,
+                };
+
+                var el = this.$.carousel;
+                jQuery(el).slick(slickDefaults);
+            },
+
+            _changeCurrentSlide: function () {
+                $(this.$.carousel).on('beforeChange', function (event, slick, index, nextIndex) {
+                    nextIndex = 8 - nextIndex;
+                    var currentSlide = $(slick.$slides.get(nextIndex))[0].firstChild;
+                    currentSlide.changeCard('../images/app-main-bg.jpg');
+
+                    index = 8 - index;
+                    currentSlide = $(slick.$slides.get(index))[0].firstChild;
+                    currentSlide.revertCard();
+                })
+            },
+
+            _addSlides: function () {
+                for (s = 0; s < this.sliderItems.length; s++) {
+                    var div = document.createElement('div');
+                    var element = document.createElement('game-card');
+                    element.setBackground(this.sliderItems[s]['small_image'])
+                    element.setTitle(this.sliderItems[s]['title'])
+                    div.appendChild(element);
+                    Polymer.dom(this.$.carousel).appendChild(div);
+                }
+            }
         });
     </script>
 </dom-module>

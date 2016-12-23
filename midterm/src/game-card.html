@@ -1,0 +1,123 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+
+<dom-module id="game-card">
+    <template>
+        <style>
+            :host {
+                box-sizing: border-box;
+                color: white;
+                height: 120px;
+                width: 230px;
+
+                --paper-font-common-base: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                };
+                --paper-font-common-code: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                    -webkit-font-smoothing: antialiased;
+                };
+            }
+
+            :host > * {
+                width: inherit;
+                height: inherit;
+                box-sizing: border-box;
+            }
+
+            span {
+                margin-left: 5px;
+            }
+
+            #main-card {
+                position: relative;
+                padding-right: 0.5rem;
+                display: flex;
+                align-items: flex-end;
+                background-image: [[backgroundImage]];
+                background-position: center;
+                background-size: cover;
+            }
+
+            #alternative-card {
+                padding: 0.5rem 1.5rem;
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                background-color: #01937A;
+            }
+
+            #alternative-card > .comment {
+                font-size: 12px;
+            }
+
+            #alternative-card > [spacer] {
+                margin-top: 5px;
+            }
+
+            #alternative-card > paper-button {
+                color: black;
+                background-color: white;
+                font-size: 12px;
+                padding: 5px 20px;
+                box-shadow: none;
+                border-radius: 0;
+            }
+        </style>
+
+        <div id="main-card">
+            <span>بررسی</span>
+            <span>[[gameTitle]]</span>
+            <paper-ripple></paper-ripple>
+        </div>
+        <div id="alternative-card">
+            <div spacer></div>
+            <div spacer></div>
+            <div>[[gameTitle]]</div>
+            <div class="comment">comments</div>
+            <div spacer></div>
+            <div spacer></div>
+            <paper-button raised>صفحه بازی</paper-button>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'game-card',
+
+            properties: {
+                backgroundImage: {
+                    type: String,
+                    value: "url('../images/app-main-bg.jpg')",
+                    reflectToAttribute: true,
+                },
+                gameTitle: {
+                    type: String,
+                    value: 'Call of Duty',
+                    reflectToAttribute: true,
+                },
+            },
+
+            setTitle: function (title) {
+                this.gameTitle = title;
+            },
+
+            setBackground: function (backgroundImageUrl) {
+                this.backgroundImage = "url('" + backgroundImageUrl + "')";
+            },
+
+            changeCard: function () {
+                this.$['main-card'].style.display = 'none';
+                this.$['alternative-card'].style.display = 'flex';
+            },
+
+            revertCard: function () {
+                this.$['main-card'].style.display = 'flex';
+                this.$['alternative-card'].style.display = 'none';
+            }
+        });
+    </script>
+</dom-module>
