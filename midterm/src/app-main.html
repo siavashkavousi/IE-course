@@ -13,16 +13,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <!-- external components -->
 <link rel="import" href="jquery.html">
 <script src="../bower_components/slick-carousel/slick/slick.js"></script>
+<!-- custom elements -->
 <link rel="import" href="logo-view.html">
 <link rel="import" href="game-card.html">
 <link rel="import" href="new-game-card.html">
@@ -130,7 +132,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             #users-comments {
 
             }
+
+            a {
+                text-decoration: none;
+                color: white;
+            }
         </style>
+
+        <app-location route="{{route}}"></app-location>
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"
+                tail="{{subroute}}">
+        </app-route>
 
         <app-header-layout>
             <div id="homepage-top" class="layout vertical">
@@ -139,8 +154,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <app-toolbar class="layout horizontal justified">
                             <logo-view url="/"></logo-view>
                             <div>
-                                <paper-button>ورود</paper-button>
-                                <paper-button raised class="light-blue">ثبت نام</paper-button>
+                                <a href="/signin">
+                                    <paper-button>ورود</paper-button>
+                                </a>
+                                <a href="/signup">
+                                    <paper-button raised class="light-blue">ثبت نام</paper-button>
+                                </a>
                             </div>
                         </app-toolbar>
                     </app-header>
@@ -178,14 +197,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div>نظرات کاربران</div>
                 </div>
             </div>
-
-            <iron-ajax
-                    auto
-                    url="http://api.ie.ce-it.ir/F95/home"
-                    handle-as="json"
-                    on-response="_handleResponse"
-                    debounce-duration="300"></iron-ajax>
         </app-header-layout>
+
+        <iron-ajax
+                auto
+                url="http://api.ie.ce-it.ir/F95/home"
+                handle-as="json"
+                on-response="_handleResponse"
+                debounce-duration="300"></iron-ajax>
     </template>
 
     <script>
@@ -193,6 +212,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is: 'app-main',
 
             properties: {
+                page: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_pageChanged',
+                },
                 sliderItems: {
                     type: Array,
                     value: [],
@@ -220,15 +244,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             ],
 
             _routePageChanged: function (page) {
-                this.page = page || 'view1';
-
-                if (!this.$.drawer.persistent) {
-                    this.$.drawer.close();
+                if (page == 'signin') {
+                    this.page = 'signin-view';
                 }
+                else if (page == 'signup')
+                    this.page = 'signup-view';
+
+                this.page = page || 'app-main';
             },
 
             _pageChanged: function (page) {
-                // Load page import on demand. Show 404 page if fails
                 var resolvedPageUrl = this.resolveUrl(page + '.html');
                 this.importHref(resolvedPageUrl, null, this._showPage404, true);
             },
@@ -276,6 +301,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this._initSlick();
                 this._changeCurrentSlide();
                 this._changeSlideOnMouseHover();
+                this._changeCenterSlideOnMouseClick();
                 this._listenToCurrentIdChanges();
                 this._listenToCurrentGameTitleChanges();
             },
@@ -303,12 +329,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     speed: 1000,
                     slidesToShow: 5,
                     autoplay: true,
-                    autoplaySpeed: 1000,
+                    autoplaySpeed: 5000,
                     centerMode: true,
                     centerPadding: '5px',
                     cssEase: 'linear',
                     lazyLoad: 'ondemand',
                     pauseOnHover: true,
+                    waitForAnimate: false,
                     responsive: [
                         {
                             breakpoint: 1024,
@@ -361,6 +388,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         this.revertCard();
                     else
                         this.revertCard(true);
+                });
+            },
+
+            _changeCenterSlideOnMouseClick: function () {
+                $(this.$$('.slick-track')).on('click', 'game-card', function () {
+                    var $carousel = $(this).parents('#carousel');
+                    var slick = $carousel.slick('getSlick');
+                    var centerSlideIndex = slick.slideCount - slick.currentSlide - 1;
+                    var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index');
+                    var diff = centerSlideIndex - currentSlide;
+                    if (diff > 0) {
+                        for (var i = 0; i < diff; i++)
+                            $carousel.slick('slickNext');
+                    } else {
+                        for (i = diff; i < 0; i++)
+                            $carousel.slick('slickPrev');
+                    }
                 });
             },
 
