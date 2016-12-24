@@ -23,8 +23,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- external components -->
 <link rel="import" href="jquery.html">
 <script src="../bower_components/slick-carousel/slick/slick.js"></script>
-<link rel="import" href="game-card.html">
 <link rel="import" href="logo-view.html">
+<link rel="import" href="game-card.html">
+<link rel="import" href="new-game-card.html">
 
 <dom-module id="app-main">
     <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick.css"/>
@@ -45,6 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 display: block;
                 color: white;
+                background-color: white;
             }
 
             #homepage-top {
@@ -93,6 +95,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             .item {
                 height: 120px;
             }
+
+            #homepage-bottom {
+                color: black;
+                margin-left: 18%;
+                margin-right: 18%;
+            }
+
+            #homepage-bottom .new-games-carousel {
+                height: 40vh;
+            }
+
+            .slick-dots {
+                top: -30px;
+                left: -145px;
+                width: 50%;
+            }
+
+            .slick-dots li {
+                height: 10px;
+                width: 10px;
+                margin: 0 2px;
+                background: var(--paper-grey-300);
+                border-radius: 50px;
+                display: inline-block;
+                box-shadow: 0px 0px 4px var(--paper-grey-300) inset;
+            }
+
+            .slick-dots li.slick-active {
+                background-color: var(--paper-blue-500);
+                box-shadow: inset 0px 0px 4px var(--paper-grey-300);
+            }
+
+            #users-comments {
+
+            }
         </style>
 
         <app-header-layout>
@@ -127,6 +164,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div id="carousel" style="height: 20vh"></div>
             </div>
 
+            <div spacer></div>
+
+            <div id="homepage-bottom">
+                <div class="new-games-carousel">
+                    <div style="padding-bottom: 5px">جدیدترین بازی ها</div>
+                    <div id="new-games-carousel"></div>
+                </div>
+
+                <div id="users-comments">
+                    <div>نظرات کاربران و راهنمای بازی ها</div>
+                    <div>نظرات کاربران</div>
+                    <div>نظرات کاربران</div>
+                </div>
+            </div>
+
             <iron-ajax
                     auto
                     url="http://api.ie.ce-it.ir/F95/home"
@@ -156,6 +208,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 currentGameAbstract: {
                     type: String,
                     notify: true,
+                },
+                newGamesItems: {
+                    type: Array,
+                    value: [],
                 }
             },
 
@@ -198,18 +254,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.sliderItems.push(sliderItems[0])
                     this.sliderItems.push(sliderItems[1])
                     this.sliderItems.push(sliderItems[0])
+
+                    newGamesItems = homepage['new_games'];
+                    // TODO should delete following lines after ui tests complete...
+                    this.newGamesItems.push(newGamesItems[0])
+                    this.newGamesItems.push(newGamesItems[1])
+                    this.newGamesItems.push(newGamesItems[0])
+                    this.newGamesItems.push(newGamesItems[1])
+                    this.newGamesItems.push(newGamesItems[0])
+                    this.newGamesItems.push(newGamesItems[1])
+                    this.newGamesItems.push(newGamesItems[0])
+                    this.newGamesItems.push(newGamesItems[1])
                 }
 
-                this._addSlides()
-                this._initSlick()
-                this._changeCurrentSlide()
+                this._initGamesCarousel();
+                this._initNewGamesCarousel();
+            },
+
+            _initGamesCarousel: function () {
+                this._addSlides();
+                this._initSlick();
+                this._changeCurrentSlide();
                 this._changeSlideOnMouseHover();
                 this._listenToCurrentIdChanges();
                 this._listenToCurrentGameTitleChanges();
             },
 
+            _addSlides: function () {
+                for (var s = 0; s < this.sliderItems.length; s++) {
+                    var div = document.createElement('div');
+                    var element = document.createElement('game-card');
+                    element.setId(s);
+                    element.setBackground(this.sliderItems[s]['small_image']);
+                    element.setTitle(this.sliderItems[s]['title']);
+                    div.appendChild(element);
+                    Polymer.dom(this.$['carousel']).appendChild(div);
+                }
+            },
+
             _initSlick: function () {
-                this.scopeSubtree(this.$.carousel, true);
+                this.scopeSubtree(this.$['carousel'], true);
 
                 slickDefaults = {
                     dots: false,
@@ -247,12 +331,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     ]
                 };
 
-                $(this.$.carousel).slick(slickDefaults);
+                $(this.$['carousel']).slick(slickDefaults);
             },
 
             _changeCurrentSlide: function () {
                 var that = this;
-                $(this.$.carousel).on('beforeChange', function (event, slick, currentSlideIndex, nextSlideIndex) {
+                $(this.$['carousel']).on('beforeChange', function (event, slick, currentSlideIndex, nextSlideIndex) {
                     nextSlideIndex = slick.slideCount - nextSlideIndex - 1;
                     var currentSlide = $(slick.$slides.get(nextSlideIndex))[0].firstChild;
                     currentSlide.changeCard();
@@ -308,16 +392,55 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         this.sliderItems[this.currentId]['large_image'] + "')";
             },
 
-            _addSlides: function () {
-                for (s = 0; s < this.sliderItems.length; s++) {
-                    var div = document.createElement('div');
-                    var element = document.createElement('game-card');
-                    element.setId(s);
-                    element.setBackground(this.sliderItems[s]['small_image']);
-                    element.setTitle(this.sliderItems[s]['title']);
-                    div.appendChild(element);
-                    Polymer.dom(this.$.carousel).appendChild(div);
+            _initNewGamesCarousel: function () {
+                this._addNewGamesSlides();
+                this._initNewGamesSlick();
+            },
+
+            _addNewGamesSlides: function () {
+                for (var s = 0; s < this.newGamesItems.length; s++) {
+                    var $element = $('<new-game-card>', {
+                        'image-url': this.newGamesItems[s]['small_image'],
+                        'title': this.newGamesItems[s]['title'],
+                        'categories': JSON.stringify(this.newGamesItems[s]['categories']),
+                        'rate': this.newGamesItems[s]['rate'],
+                    });
+                    Polymer.dom(this.$['new-games-carousel']).appendChild($element.get(0));
                 }
+            },
+
+            _initNewGamesSlick: function () {
+                slickDefaults = {
+                    dots: true,
+                    rtl: true,
+                    arrows: false,
+                    speed: 1000,
+                    slidesToShow: 4,
+                    cssEase: 'linear',
+                    lazyLoad: 'ondemand',
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 4,
+                            }
+                        },
+                        {
+                            breakpoint: 640,
+                            settings: {
+                                slidesToShow: 2,
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                            }
+                        }
+                    ]
+                };
+
+                $(this.$['new-games-carousel']).slick(slickDefaults);
             }
         });
     </script>
