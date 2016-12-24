@@ -11,10 +11,11 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <!-- custom elements -->
 <link rel="import" href="logo-view.html">
 
-<dom-module id="signin-view">
+<dom-module id="signup-view">
     <template>
         <style is="custom-style" include="iron-flex iron-positioning iron-flex-alignment">
             :host {
@@ -32,7 +33,7 @@
                     -webkit-font-smoothing: antialiased;
                 };
 
-                --paper-input-container-focus-color: var(--paper-pink-500);
+                --paper-input-container-focus-color: var(--paper-blue-700);
                 --paper-input-container-underline: {
                     border: solid var(--paper-grey-300) thin;
                 };
@@ -96,17 +97,27 @@
             paper-card paper-button {
                 width: 70%;
                 color: white;
-                background-color: var(--paper-pink-500);
+                background-color: var(--paper-blue-700);
                 font-weight: bold;
                 padding: 7px 5px;
             }
 
-            paper-card .card-actions {
-                background-color: var(--paper-grey-300);
+            paper-card #terms-container {
+                margin-top: 15px;
             }
 
-            paper-card #no_acc {
-                margin-left: 4px;
+            paper-card #terms-container paper-checkbox {
+                direction: ltr;
+                margin-left: 5px;
+
+                --paper-checkbox-checked-color: var(--paper-blue-700);
+                --paper-checkbox-checked-ink-color: var(--paper-blue-700);
+                --paper-checkbox-unchecked-color: var(--paper-blue-900);
+                --paper-checkbox-unchecked-ink-color: var(--paper-blue-900);
+            }
+
+            paper-card #terms-container a {
+                margin-left: 3px;
             }
         </style>
 
@@ -121,25 +132,29 @@
             <div class="horizontal layout center center-justified card-container">
                 <paper-card>
                     <div class="card-content layout vertical center">
-                        <p id="title">ورود</p>
+                        <p id="title">ثبت نام</p>
+                        <div class="layout horizontal center center-justified">
+                            <iron-icon icon="social:person" class="card-icon"></iron-icon>
+                            <paper-input id="username" label="نام کاربری من"></paper-input>
+                        </div>
                         <div class="layout horizontal center center-justified">
                             <iron-icon icon="mail" class="card-icon"></iron-icon>
-                            <paper-input id="email" label="ایمیل یا شماره تلفن"></paper-input>
+                            <paper-input id="email" label="ایمیل" type="email"></paper-input>
                         </div>
                         <div class="layout horizontal center center-justified">
                             <iron-icon icon="lock" class="card-icon"></iron-icon>
                             <paper-input id="password" label="رمزعبور" type="password"></paper-input>
                         </div>
 
+                        <div id="terms-container" class="layout horizontal center end-justified">
+                            <paper-checkbox></paper-checkbox>
+                            <!--TODO link problem -->
+                            <a class="link" id="terms" href="#">قوانین</a>را می‌پذیرم
+                        </div>
+
                         <div spacer></div>
                         <!--TODO link problem -->
-                        <paper-button raised>ورود</paper-button>
-                        <a href="#">رمزمو یادم رفته</a>
-                    </div>
-                    <div class="card-actions layout horizontal center center-justified">
-                        <p id="no_acc">حساب کاربری ندارید؟</p>
-                        <!--TODO link should be added -->
-                        <a href="#">ثبت‌نام کنید</a>
+                        <paper-button raised>ثبت نام</paper-button>
                     </div>
                 </paper-card>
             </div>
@@ -148,7 +163,7 @@
 
     <script>
         Polymer({
-            is: 'signin-view',
+            is: 'signup-view',
 
             properties: {},
         });
