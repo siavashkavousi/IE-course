@@ -9,8 +9,6 @@
         <style>
             :host {
                 box-sizing: border-box;
-                color: white;
-
                 font-size: 20px;
                 min-width: 180px;
             }
@@ -28,11 +26,11 @@
                 align-items: center;
                 justify-content: center;
                 text-decoration: none;
-                color: white;
+                color: var(--logo-view-text-color, white);
             }
 
             a paper-icon-button {
-                color: white !important;
+                color: var(--logo-view-text-color, white) !important;
             }
 
             a span {
