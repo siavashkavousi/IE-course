@@ -11,6 +11,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <!-- external components -->
 <link rel="import" href="jquery.html">
 <script src="../bower_components/slick-carousel/slick/slick.js"></script>
@@ -19,6 +20,7 @@
 <link rel="import" href="game-card.html">
 <link rel="import" href="new-game-card.html">
 <link rel="import" href="footer-view.html">
+<link rel="import" href="game-avatar.html">
 
 <dom-module id="home-page">
     <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick.css"/>
@@ -124,6 +126,22 @@
 
             }
 
+            #users-comments .title {
+                font-size: 18px;
+                color: var(--paper-grey-700);
+                margin-top: 4vh;
+                margin-bottom: 2vh;
+            }
+
+            #users-comments paper-listbox {
+                width: 25vw;
+            }
+
+            #users-comments paper-listbox hr {
+                border-color: var(--paper-grey-100);
+                margin: 5px 0;
+            }
+
             a {
                 text-decoration: none;
                 color: white;
@@ -174,10 +192,36 @@
                     <div id="new-games-carousel"></div>
                 </div>
 
-                <div id="users-comments">
+                <div id="users-comments" class="vertical layout">
                     <div>نظرات کاربران و راهنمای بازی ها</div>
                     <div>نظرات کاربران</div>
                     <div>نظرات کاربران</div>
+
+                    <div class="horizontal layout justified">
+                        <div class="vertical layout">
+                            <div class="title">نظرات و گفت‌وگوها</div>
+                            <paper-listbox>
+                                <template is="dom-repeat" items="[[comments]]">
+                                    <game-avatar avatar="[[item.player.avatar]]"
+                                                 text="[[item.text]]"
+                                                 date="[[item.date]]"
+                                                 circle-avatar></game-avatar>
+                                    <hr hidden$="[[_computeHrHidden(comments, index)]]">
+                                </template>
+                            </paper-listbox>
+                        </div>
+                        <div class="vertical layout">
+                            <div class="title">آخرین راهنماهای بازی‌ها</div>
+                            <paper-listbox>
+                                <template is="dom-repeat" items="[[tutorials]]">
+                                    <game-avatar avatar="[[item.game.small_image]]"
+                                                 text="[[item.title]]"
+                                                 date="[[item.date]]"></game-avatar>
+                                    <hr hidden$="[[_computeHrHidden(tutorials, index)]]">
+                                </template>
+                            </paper-listbox>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -220,12 +264,12 @@
             },
 
             _handleResponse: function (request) {
-                response = request.detail.response.response;
+                var response = request.detail.response.response;
                 console.log('ajax request (home) response');
                 console.log(response);
                 if (response.ok) {
-                    homepage = response.result['homepage'];
-                    sliderItems = homepage['slider'];
+                    var homepage = response.result['homepage'];
+                    var sliderItems = homepage['slider'];
                     // TODO should delete following lines after ui tests complete...
                     this.sliderItems.push(sliderItems[0]);
                     this.sliderItems.push(sliderItems[0]);
@@ -237,7 +281,7 @@
                     this.sliderItems.push(sliderItems[1]);
                     this.sliderItems.push(sliderItems[0]);
 
-                    newGamesItems = homepage['new_games'];
+                    var newGamesItems = homepage['new_games'];
                     // TODO should delete following lines after ui tests complete...
                     this.newGamesItems.push(newGamesItems[0]);
                     this.newGamesItems.push(newGamesItems[1]);
@@ -247,6 +291,9 @@
                     this.newGamesItems.push(newGamesItems[1]);
                     this.newGamesItems.push(newGamesItems[0]);
                     this.newGamesItems.push(newGamesItems[1]);
+
+                    this.comments = homepage['comments'];
+                    this.tutorials = homepage['tutorials'];
                 }
 
                 this._initGamesCarousel();
@@ -442,7 +489,11 @@
                 };
 
                 $(this.$['new-games-carousel']).slick(slickDefaults);
-            }
+            },
+
+            _computeHrHidden: function (list, index) {
+                return list.length - 1 === index;
+            },
         });
     </script>
 </dom-module>

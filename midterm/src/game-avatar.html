@@ -1,0 +1,77 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+
+<dom-module id="game-avatar">
+    <template>
+        <style include="iron-flex iron-flex-alignment">
+            :host {
+                box-sizing: border-box;
+                font-size: 20px;
+                min-width: 180px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            :host > * {
+                width: inherit;
+                height: inherit;
+                box-sizing: border-box;
+            }
+
+            img {
+                margin-left: 8px;
+                width: 50px;
+                height: 50px;
+            }
+
+            #text {
+                font-size: 16px;
+                color: var(--paper-blue-500);
+            }
+
+            #date {
+                font-size: 12px;
+                color: var(--paper-grey-500);
+            }
+        </style>
+
+        <img id="avatar" src="[[avatar]]" alt="comment"/>
+        <div class="vertical layout center-justified">
+            <div id="text">[[text]]</div>
+            <div id="date">[[date]]</div>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'game-avatar',
+
+            properties: {
+                avatar: {
+                    type: String,
+                    value: '../images/app-main-bg.jpg',
+                },
+                text: {
+                    type: String,
+                    value: 'خوبه',
+                },
+                date: {
+                    type: String,
+                    value: 'دوشنبه ۱۱ آبان ۹۵',
+                },
+                circleAvatar: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_setAvatarShape',
+                },
+            },
+
+            _setAvatarShape: function (circleAvatar) {
+                if (circleAvatar)
+                    this.$['avatar'].style.borderRadius = '25px';
+            },
+        });
+    </script>
+</dom-module>
