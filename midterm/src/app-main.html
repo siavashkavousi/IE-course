@@ -12,7 +12,7 @@
             }
         </style>
 
-        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-location route="{{route}}"></app-location>
         <app-route
                 route="{{route}}"
                 pattern="/:page"
@@ -49,11 +49,11 @@
 
             _routePageChanged: function (page) {
                 if (page == 'signin')
-                    this.page = 'signin-page';
+                    page = 'signin-page';
                 else if (page == 'signup')
-                    this.page = 'signup-page';
+                    page = 'signup-page';
 
-                this.page = page || 'heome-page';
+                this.page = page || 'home-page';
             },
 
             _pageChanged: function (page) {
