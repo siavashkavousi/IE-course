@@ -1,0 +1,448 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<!-- external components -->
+<link rel="import" href="jquery.html">
+<script src="../bower_components/slick-carousel/slick/slick.js"></script>
+<!-- custom elements -->
+<link rel="import" href="logo-view.html">
+<link rel="import" href="game-card.html">
+<link rel="import" href="new-game-card.html">
+<link rel="import" href="footer-view.html">
+
+<dom-module id="home-page">
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick.css"/>
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick-theme.css"/>
+    <template>
+        <style include="iron-flex iron-flex-alignment">
+            :host {
+                --app-primary-color: #2E83E5;
+                --app-secondary-color: black;
+                --paper-font-common-base: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                };
+                --paper-font-common-code: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                    -webkit-font-smoothing: antialiased;
+                };
+
+                display: block;
+                color: white;
+                background-color: white;
+            }
+
+            #homepage-top {
+                background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1)), url('../images/app-main-bg.jpg');
+                background-position: center;
+                background-size: cover;
+            }
+
+            app-header-layout [spacer] {
+                height: 5vh;
+            }
+
+            @media screen and (max-width: 640px) {
+                app-header-layout [spacer] {
+                    height: 3vh;
+                }
+            }
+
+            app-toolbar {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            paper-button.light-blue {
+                background-color: var(--paper-blue-500);
+            }
+
+            app-toolbar div[main-title] span.light-blue {
+                color: var(--paper-blue-500);
+            }
+
+            app-toolbar paper-button {
+                font-size: var(--paper-font-button);
+                padding: 5px 20px;
+            }
+
+            #main-content {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            #main-content .paper-font-display2 {
+                font-size: var(--paper-font-display2);
+            }
+
+            .item {
+                height: 120px;
+            }
+
+            #homepage-bottom {
+                color: black;
+                margin-left: 18%;
+                margin-right: 18%;
+            }
+
+            #homepage-bottom .new-games-carousel {
+                height: 40vh;
+            }
+
+            .slick-dots {
+                top: -30px;
+                left: -145px;
+                width: 50%;
+            }
+
+            .slick-dots li {
+                height: 10px;
+                width: 10px;
+                margin: 0 2px;
+                background: var(--paper-grey-300);
+                border-radius: 50px;
+                display: inline-block;
+                box-shadow: 0px 0px 4px var(--paper-grey-300) inset;
+            }
+
+            .slick-dots li.slick-active {
+                background-color: var(--paper-blue-500);
+                box-shadow: inset 0px 0px 4px var(--paper-grey-300);
+            }
+
+            #users-comments {
+
+            }
+
+            a {
+                text-decoration: none;
+                color: white;
+            }
+        </style>
+
+        <app-header-layout>
+            <div id="homepage-top" class="layout vertical">
+                <div style="height: 80vh">
+                    <app-header condenses reveals class="fullbleed">
+                        <app-toolbar class="layout horizontal justified">
+                            <logo-view url="/"></logo-view>
+                            <div>
+                                <a href="/signin">
+                                    <paper-button>ورود</paper-button>
+                                </a>
+                                <a href="/signup">
+                                    <paper-button raised class="light-blue">ثبت نام</paper-button>
+                                </a>
+                            </div>
+                        </app-toolbar>
+                    </app-header>
+                    <div id="main-content">
+                        <div spacer></div>
+                        <div spacer></div>
+                        <div id="game-title" class="paper-font-display2">[[currentGameTitle]]</div>
+                        <div spacer></div>
+                        <div>[[currentGameAbstract]]</div>
+                        <div spacer></div>
+                        <div class="layout horizontal">
+                            <paper-button raised class="light-blue">ورود به صفحه بازی</paper-button>
+                            <paper-button>
+                                <iron-icon icon="av:play-circle-filled"></iron-icon>
+                                تریلر این بازی
+                            </paper-button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="carousel" style="height: 20vh"></div>
+            </div>
+
+            <div spacer></div>
+
+            <div id="homepage-bottom">
+                <div class="new-games-carousel">
+                    <div style="padding-bottom: 5px">جدیدترین بازی ها</div>
+                    <div id="new-games-carousel"></div>
+                </div>
+
+                <div id="users-comments">
+                    <div>نظرات کاربران و راهنمای بازی ها</div>
+                    <div>نظرات کاربران</div>
+                    <div>نظرات کاربران</div>
+                </div>
+            </div>
+
+            <footer-view></footer-view>
+        </app-header-layout>
+
+        <iron-ajax
+                auto
+                url="http://api.ie.ce-it.ir/F95/home"
+                handle-as="json"
+                on-response="_handleResponse"
+                debounce-duration="300"></iron-ajax>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'home-page',
+
+            properties: {
+                sliderItems: {
+                    type: Array,
+                    value: [],
+                },
+                currentId: {
+                    type: String,
+                    notify: true,
+                },
+                currentGameTitle: {
+                    type: String,
+                    notify: true,
+                },
+                currentGameAbstract: {
+                    type: String,
+                    notify: true,
+                },
+                newGamesItems: {
+                    type: Array,
+                    value: [],
+                }
+            },
+
+            _handleResponse: function (request) {
+                response = request.detail.response.response;
+                console.log('ajax request (home) response');
+                console.log(response);
+                if (response.ok) {
+                    homepage = response.result['homepage'];
+                    sliderItems = homepage['slider'];
+                    // TODO should delete following lines after ui tests complete...
+                    this.sliderItems.push(sliderItems[0]);
+                    this.sliderItems.push(sliderItems[0]);
+                    this.sliderItems.push(sliderItems[1]);
+                    this.sliderItems.push(sliderItems[0]);
+                    this.sliderItems.push(sliderItems[0]);
+                    this.sliderItems.push(sliderItems[1]);
+                    this.sliderItems.push(sliderItems[0]);
+                    this.sliderItems.push(sliderItems[1]);
+                    this.sliderItems.push(sliderItems[0]);
+
+                    newGamesItems = homepage['new_games'];
+                    // TODO should delete following lines after ui tests complete...
+                    this.newGamesItems.push(newGamesItems[0]);
+                    this.newGamesItems.push(newGamesItems[1]);
+                    this.newGamesItems.push(newGamesItems[0]);
+                    this.newGamesItems.push(newGamesItems[1]);
+                    this.newGamesItems.push(newGamesItems[0]);
+                    this.newGamesItems.push(newGamesItems[1]);
+                    this.newGamesItems.push(newGamesItems[0]);
+                    this.newGamesItems.push(newGamesItems[1]);
+                }
+
+                this._initGamesCarousel();
+                this._initNewGamesCarousel();
+            },
+
+            _initGamesCarousel: function () {
+                this._addSlides();
+                this._initSlick();
+                this._changeCurrentSlide();
+                this._changeSlideOnMouseHover();
+                this._changeCenterSlideOnMouseClick();
+                this._listenToCurrentIdChanges();
+                this._listenToCurrentGameTitleChanges();
+            },
+
+            _addSlides: function () {
+                for (var s = 0; s < this.sliderItems.length; s++) {
+                    var div = document.createElement('div');
+                    var element = document.createElement('game-card');
+                    element.setId(s);
+                    element.setBackground(this.sliderItems[s]['small_image']);
+                    element.setTitle(this.sliderItems[s]['title']);
+                    div.appendChild(element);
+                    Polymer.dom(this.$['carousel']).appendChild(div);
+                }
+            },
+
+            _initSlick: function () {
+                this.scopeSubtree(this.$['carousel'], true);
+
+                var slickDefaults = {
+                    dots: false,
+                    infinite: true,
+                    rtl: true,
+                    arrows: false,
+                    speed: 1000,
+                    slidesToShow: 5,
+                    autoplay: true,
+                    autoplaySpeed: 5000,
+                    centerMode: true,
+                    centerPadding: '5px',
+                    cssEase: 'linear',
+                    lazyLoad: 'ondemand',
+                    pauseOnHover: true,
+                    waitForAnimate: false,
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 5,
+                            }
+                        },
+                        {
+                            breakpoint: 640,
+                            settings: {
+                                slidesToShow: 3,
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                            }
+                        }
+                    ]
+                };
+
+                $(this.$['carousel']).slick(slickDefaults);
+            },
+
+            _changeCurrentSlide: function () {
+                var that = this;
+                $(this.$['carousel']).on('beforeChange', function (event, slick, currentSlideIndex, nextSlideIndex) {
+                    nextSlideIndex = slick.slideCount - nextSlideIndex - 1;
+                    var currentSlide = $(slick.$slides.get(nextSlideIndex))[0].firstChild;
+                    currentSlide.changeCard();
+
+                    that.currentId = currentSlide.getId();
+
+                    currentSlideIndex = slick.slideCount - currentSlideIndex - 1;
+                    currentSlide = $(slick.$slides.get(currentSlideIndex))[0].firstChild;
+                    currentSlide.revertCard();
+                });
+            },
+
+            _changeSlideOnMouseHover: function () {
+                $(this.$$('.slick-track')).on('mouseenter', 'game-card', function () {
+                    this.changeCard('#2196f3');
+                });
+                $(this.$$('.slick-track')).on('mouseleave', 'game-card', function () {
+                    var slick = $(this).parents('#carousel').slick('getSlick');
+                    var centerSlideIndex = slick.slideCount - slick.currentSlide - 1;
+                    var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index');
+                    if (centerSlideIndex != currentSlide)
+                        this.revertCard();
+                    else
+                        this.revertCard(true);
+                });
+            },
+
+            _changeCenterSlideOnMouseClick: function () {
+                $(this.$$('.slick-track')).on('click', 'game-card', function () {
+                    var $carousel = $(this).parents('#carousel');
+                    var slick = $carousel.slick('getSlick');
+                    var centerSlideIndex = slick.slideCount - slick.currentSlide - 1;
+                    var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index');
+                    var diff = centerSlideIndex - currentSlide;
+                    if (diff > 0) {
+                        for (var i = 0; i < diff; i++)
+                            $carousel.slick('slickNext');
+                    } else {
+                        for (i = diff; i < 0; i++)
+                            $carousel.slick('slickPrev');
+                    }
+                });
+            },
+
+            _listenToCurrentIdChanges: function () {
+                var that = this;
+                $(this).on('current-id-changed', function () {
+                    this.currentGameTitle = this.sliderItems[this.currentId]['title'];
+                    that._changeHomePageBackgroundImage();
+                    that._changeCurrentGameData();
+                });
+            },
+
+            _listenToCurrentGameTitleChanges: function () {
+                var that = this;
+                $(this).on('current-game-title-changed', function () {
+                    var gameTitle = that.$['game-title'];
+                    $(gameTitle).fadeToggle();
+                });
+            },
+
+            _changeCurrentGameData: function () {
+                this.currentGameAbstract = this.sliderItems[this.currentId]['abstract'];
+
+            },
+
+            _changeHomePageBackgroundImage: function () {
+                var homepage = this.$['homepage-top'];
+                homepage.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1)), url('" +
+                        this.sliderItems[this.currentId]['large_image'] + "')";
+            },
+
+            _initNewGamesCarousel: function () {
+                this._addNewGamesSlides();
+                this._initNewGamesSlick();
+            },
+
+            _addNewGamesSlides: function () {
+                for (var s = 0; s < this.newGamesItems.length; s++) {
+                    var $element = $('<new-game-card>', {
+                        'image-url': this.newGamesItems[s]['small_image'],
+                        'title': this.newGamesItems[s]['title'],
+                        'categories': JSON.stringify(this.newGamesItems[s]['categories']),
+                        'rate': this.newGamesItems[s]['rate'],
+                    });
+                    Polymer.dom(this.$['new-games-carousel']).appendChild($element.get(0));
+                }
+            },
+
+            _initNewGamesSlick: function () {
+                var slickDefaults = {
+                    dots: true,
+                    rtl: true,
+                    arrows: false,
+                    speed: 1000,
+                    slidesToShow: 4,
+                    cssEase: 'linear',
+                    lazyLoad: 'ondemand',
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 4,
+                            }
+                        },
+                        {
+                            breakpoint: 640,
+                            settings: {
+                                slidesToShow: 2,
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                            }
+                        }
+                    ]
+                };
+
+                $(this.$['new-games-carousel']).slick(slickDefaults);
+            }
+        });
+    </script>
+</dom-module>
