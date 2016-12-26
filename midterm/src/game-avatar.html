@@ -24,6 +24,8 @@
                 margin-left: 8px;
                 width: 50px;
                 height: 50px;
+
+                @apply(--game-avatar-img);
             }
 
             #text {
@@ -59,7 +61,7 @@
                 },
                 date: {
                     type: String,
-                    value: 'دوشنبه ۱۱ آبان ۹۵',
+                    observer: '_shouldDateHidden',
                 },
                 circleAvatar: {
                     type: Boolean,
@@ -70,7 +72,7 @@
                     type: Boolean,
                     value: false,
                     observer: '_reorderElements',
-                }
+                },
             },
 
             _setAvatarShape: function (circleAvatar) {
@@ -81,7 +83,12 @@
             _reorderElements: function (reorder) {
                 if (reorder)
                     this.$['container'].style.flexDirection = 'column-reverse'
-            }
+            },
+
+            _shouldDateHidden: function (date) {
+                if (!date)
+                    this.$['date'].display = 'none';
+            },
         });
     </script>
 </dom-module>
