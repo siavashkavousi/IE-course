@@ -12,7 +12,7 @@
             }
         </style>
 
-        <app-location route="{{route}}"></app-location>
+        <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
         <app-route
                 route="{{route}}"
                 pattern="/:page"
@@ -27,6 +27,8 @@
             <home-page name="home-page"></home-page>
             <signin-page name="signin-page"></signin-page>
             <signup-page name="signup-page"></signup-page>
+            <games-page name="games-page"></games-page>
+            <game-page name="game-page" route="{{subroute}}" title="{{queryParams.game}}"></game-page>
             <view-404 name="view-404"></view-404>
         </iron-pages>
     </template>
@@ -44,14 +46,18 @@
             },
 
             observers: [
-                '_routePageChanged(routeData.page)',
+                '_routePageChanged(routeData.page, queryParams)',
             ],
 
-            _routePageChanged: function (page) {
+            _routePageChanged: function (page, queryParams) {
                 if (page == 'signin')
                     page = 'signin-page';
                 else if (page == 'signup')
                     page = 'signup-page';
+                else if (page == 'games' && queryParams['game'])
+                    page = 'game-page';
+                else if (page == 'games')
+                    page = 'games-page';
 
                 this.page = page || 'home-page';
             },
