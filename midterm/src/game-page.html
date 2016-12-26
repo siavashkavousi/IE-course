@@ -1,0 +1,412 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<!-- external components -->
+<link rel="import" href="jquery.html">
+<!-- custom elements -->
+<link rel="import" href="logo-view.html">
+<link rel="import" href="footer-view.html">
+
+<dom-module id="game-page">
+    <template>
+        <style>
+            :host {
+                box-sizing: border-box;
+                color: var(--paper-grey-600);
+
+                --paper-font-common-base: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                };
+                --paper-font-common-code: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                    -webkit-font-smoothing: antialiased;
+                };
+
+                --logo-view-text-color: var(--paper-grey-600);
+                background-color: white;
+            }
+
+            :host > * {
+                width: inherit;
+                height: inherit;
+            }
+
+            :host * {
+                box-sizing: border-box;
+                background-color: inherit;
+            }
+
+            app-toolbar {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            paper-button {
+                font-size: var(--paper-font-button);
+                padding: 5px 5px;
+            }
+
+            #search {
+                background-color: white;
+                border: solid var(--paper-grey-300) thin;
+                display: flex;
+                border-radius: 2px;
+                padding: 0 5px;
+                margin-left: 20px;
+            }
+
+            #search input {
+                outline: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: none;
+                height: 80%;
+                font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                line-height: 1.5;
+            }
+
+            #search iron-icon {
+                height: 100%;
+                color: var(--paper-grey-400);
+            }
+
+            #header {
+                height: 35vh;
+                background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 1)), url('../images/header.jpg') center;
+                padding-left: 17%;
+                padding-right: 17%;
+            }
+
+            #header * {
+                color: white;
+            }
+
+            #header img {
+                width: 20vh;
+                height: 20vh;
+                border-radius: 10px;
+                color: white;
+                margin-left: 2vw;
+            }
+
+            #header .title {
+                font-size: 30px;
+            }
+
+            #header span {
+                margin: 0;
+            }
+
+            #header span.item {
+                border-bottom: dotted white thin;
+                margin: 0;
+            }
+
+            #header > paper-button {
+                background-color: var(--paper-blue-500);
+                font-size: 18px;
+                padding: 6px 16px;
+                align-self: flex-start;
+                margin-top: 10vh;
+            }
+
+            #header .rate-container {
+                margin-top: 3vh;
+            }
+
+            #header .rate {
+                margin-left: 0.3vw;
+                margin-right: 1vw;
+            }
+
+            #header iron-icon {
+                margin-left: 5px;
+            }
+
+            #header iron-icon.star-blue {
+                --iron-icon-fill-color: var(--paper-blue-500);
+                --iron-icon-width: 16px;
+                --iron-icon-height: 16px;
+            }
+
+            #header iron-icon.star-grey {
+                --iron-icon-fill-color: var(--paper-grey-300);
+                --iron-icon-width: 16px;
+                --iron-icon-height: 16px;
+            }
+
+            #header iron-icon[icon=star-half] {
+                -webkit-transform: scaleX(-1);
+                -moz-transform: scaleX(-1);
+                -ms-transform: scaleX(-1);
+                -o-transform: scaleX(-1);
+                transform: scaleX(-1);
+            }
+
+            #container {
+                height: 400px;
+            }
+
+            #container > * {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            /*TODO remove if not needed*/
+            /*#container [vspacer] {*/
+            /*margin-bottom: 10vh;*/
+            /*}*/
+
+            #container paper-tabs {
+                background-color: var(--paper-grey-300);
+                --paper-tabs-selection-bar-color: var(--paper-blue-500);
+            }
+
+            #container paper-tabs paper-tab {
+                --paper-tab-ink: var(--paper-blue-300)
+            }
+
+            #container iron-pages {
+                margin-top: 2vh;
+            }
+
+            #container iron-pages .title {
+                font-size: 26px;
+            }
+
+            #container iron-pages hr {
+                border-color: var(--paper-grey-100);
+            }
+        </style>
+
+        <app-header-layout>
+            <app-header fixed class="fullbleed">
+                <app-toolbar class="layout horizontal justified">
+                    <logo-view url="/"></logo-view>
+                    <div class="layout horizontal center">
+                        <div id="search" class="layout horizontal center center-justified">
+                            <input type="text" placeholder="جست و جو ..." required>
+                            <iron-icon icon="search"></iron-icon>
+                        </div>
+                        <iron-icon icon="social:person"></iron-icon>
+                        <paper-button>ورود</paper-button>
+                    </div>
+                </app-toolbar>
+            </app-header>
+
+            <div id="header" class="horizontal layout center justified">
+                <div class="horizontal layout center">
+                    <img src="[[imageUrl]]">
+                    <div class="vertical layout justified">
+                        <div class="title">[[title]]</div>
+                        <div>
+                            <template is="dom-repeat" items="[[categories]]">
+                                <span class="item">[[item]]</span>
+                                <span hidden$="[[_computeSpanHidden(categories, index)]]">،</span>
+                            </template>
+                        </div>
+                        <div class="horizontal layout center rate-container">
+                            <div id="stars"></div>
+                            <span class="rate">[[rate]]</span>
+                            <span>([[number_of_comments]] رای)</span>
+                        </div>
+                    </div>
+                </div>
+                <paper-button raised>شروع بازی</paper-button>
+
+                <iron-ajax
+                        auto
+                        url="http://api.ie.ce-it.ir/F95/games/[[title]]/header.json"
+                        handle-as="json"
+                        on-response="_handleHeaderResponse"
+                        debounce-duration="300"></iron-ajax>
+            </div>
+
+            <div id="container">
+                <paper-tabs selected="{{selectedTab}}">
+                    <paper-tab>اطلاعات بازی</paper-tab>
+                    <paper-tab>رتبه بندی و امتیازات</paper-tab>
+                    <paper-tab>نظرات کاربران</paper-tab>
+                    <paper-tab>بازی های مشابه</paper-tab>
+                    <paper-tab>عکس ها و ویدئوها</paper-tab>
+                </paper-tabs>
+                <iron-pages selected="[[selectedTab]]">
+                    <div class="game-infos">
+                        <div class="title">اطلاعات بازی</div>
+                        <hr>
+                        <div inner-h-t-m-l="[[info]]"></div>
+                    </div>
+                    <div>
+                        <div class="title">رتبه بندی و امتیازات</div>
+                        <hr>
+                    </div>
+                    <div>
+                        <div class="title">نظرات کاربران</div>
+                        <hr>
+                    </div>
+                    <div>
+                        <div class="title">بازی های مشابه</div>
+                        <hr>
+                    </div>
+                    <div>
+                        <div class="title">عکس ها و ویدئوها</div>
+                        <hr>
+                    </div>
+                </iron-pages>
+            </div>
+
+            <footer-view></footer-view>
+        </app-header-layout>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'game-page',
+
+            properties: {
+                selectedTab: {
+                    type: Number,
+                    value: 0,
+                    observer: '_updateSelectedTabName',
+                },
+                route: {
+                    type: String,
+                    observer: '_pageRouteChanged',
+                },
+                imageUrl: {
+                    type: String,
+                    value: '../images/thumb.jpg',
+                },
+                title: String,
+                categories: {
+                    type: Object,
+                    value: ["اکشن", "اول شخص"],
+                },
+                rate: {
+                    type: Number,
+                    value: 0.5,
+                    observer: '_correctNumericValue',
+                },
+            },
+
+            cache: {},
+
+            _pageRouteChanged: function (route) {
+            },
+
+            _handleHeaderResponse: function (request) {
+                var response = request.detail.response.response;
+                console.log('ajax request (game header) response');
+                console.log(response);
+                if (response.ok) {
+                    var game = response.result['game'];
+                    this.imageUrl = game['small_image'];
+                    this.title = game['title'];
+                    this.categories = game['categories'];
+                    this.rate = game['rate'];
+                    this.number_of_comments = game['number_of_comments'];
+
+                    this._renderRateStars();
+                }
+            },
+
+            _computeSpanHidden: function (list, index) {
+                return list.length - 1 === index;
+            },
+
+            _renderRateStars: function () {
+                //TODO needs refactoring
+                if ($(this.$['stars']).children().length == 5)
+                    return;
+                var $starsContainer = $(this.$['stars']);
+                for (var i = 1; i <= this.rate; i++) {
+                    var $star = $("<iron-icon>", {"class": "star-blue", "icon": "star"});
+                    $starsContainer.append($star);
+                }
+                var remStars = 5 - this.rate;
+                if (this.rate <= 5 && this.rate % 1 >= 0.5) {
+                    $star = $("<iron-icon>", {"class": "star-blue", "icon": "star-half"});
+                    $starsContainer.append($star);
+                    remStars -= 1;
+                }
+                for (i = 0; i < remStars; i++) {
+                    $star = $("<iron-icon>", {"class": "star-grey", "icon": "star"});
+                    $starsContainer.append($star);
+                }
+            },
+
+            _correctNumericValue: function (rate) {
+                this.rate = +rate;
+            },
+
+            _sendTabAjaxRequest: function () {
+                if (!this.cache[`${this.selectedTabName}`])
+                    this.cache[`${this.selectedTabName}`] = $.get({
+                        url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}`,
+                        dataType: 'json'
+                    }).promise();
+
+                this.cache[`${this.selectedTabName}`].done(this._handleTabResponse);
+            },
+
+            _handleTabResponse: function (data) {
+                var response = data.response;
+                console.log('ajax request (game tab) response');
+                console.log(response);
+                if (response.ok) {
+                    switch (this.selectedTabName) {
+                        case 'info':
+                            this._handleInfoResponse(response);
+                            break;
+                        case 'leaderboard':
+                            //
+                            break;
+                        case 'comments":':
+                            this._handleCommentsResponse(response);
+                            break;
+                    }
+                }
+            },
+
+            _handleInfoResponse: function (response) {
+                var game = response.result['game'];
+                this.info = game['info'];
+            },
+
+            _handleCommentsResponse: function (response) {
+
+            },
+
+            _updateSelectedTabName: function (selectedTab) {
+                switch (selectedTab) {
+                    case 0:
+                        this.selectedTabName = 'info';
+                        break;
+                    case 1:
+                        this.selectedTabName = 'leaderboard';
+                        break;
+                    case 2:
+                        this.selectedTabName = 'comments';
+                        break;
+                }
+
+                this._sendTabAjaxRequest();
+            },
+        });
+    </script>
+</dom-module>
