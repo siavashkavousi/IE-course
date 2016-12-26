@@ -21,10 +21,11 @@
 <link rel="import" href="logo-view.html">
 <link rel="import" href="footer-view.html">
 <link rel="import" href="game-avatar.html">
+<link rel="import" href="top-player.html">
 
 <dom-module id="game-page">
     <template>
-        <style>
+        <style include="iron-flex iron-flex-alignment">
             :host {
                 box-sizing: border-box;
                 color: var(--paper-grey-600);
@@ -203,6 +204,31 @@
                 border-color: var(--paper-grey-50);
             }
 
+            #container #leaderboard__top {
+                padding: 0 12vw;
+            }
+
+            #container #leaderboard__bottom {
+            }
+
+            #container #leaderboard__bottom table {
+                width: 100%;
+            }
+
+            #container #leaderboard__bottom game-avatar {
+                --game-avatar-img: {
+                    margin-left: 3vw;
+                }
+            }
+
+            #container #leaderboard__bottom .leaderboard--teal {
+                color: var(--paper-teal-400);
+            }
+
+            #container iron-pages .leaderboard--margin-top {
+                margin-top: 8vh;
+            }
+
             #container #comments game-avatar {
                 background-color: white;
                 padding: 4vh 10%;
@@ -265,7 +291,7 @@
                     <paper-tab>عکس ها و ویدئوها</paper-tab>
                 </paper-tabs>
                 <iron-pages selected="[[selectedTab]]">
-                    <div class="game-infos">
+                    <div>
                         <div class="title">اطلاعات بازی</div>
                         <hr>
                         <div inner-h-t-m-l="[[info]]"></div>
@@ -273,6 +299,43 @@
                     <div>
                         <div class="title">رتبه بندی و امتیازات</div>
                         <hr>
+                        <div id="leaderboard">
+                            <div id="leaderboard__top" class="horizontal layout center around-justified"></div>
+                            <div id="leaderboard__bottom">
+                                <table>
+                                    <tr style="text-align: right">
+                                        <th width="8%">رتبه</th>
+                                        <th width="7%"></th>
+                                        <th width="55%">بازیکن</th>
+                                        <th>سطح</th>
+                                        <th>تغییر رتبه</th>
+                                        <th>امتیاز</th>
+                                    </tr>
+                                    <template is="dom-repeat" items="[[players]]">
+                                        <tr>
+                                            <td>[[_increaseIndex(index)]].</td>
+                                            <td inner-h-t-m-l="[[_showTopPlayerMedal(index)]]"></td>
+                                            <td>
+                                                <game-avatar avatar="[[item.player.avatar]]"
+                                                             text="[[item.player.name]]"
+                                                             circle-avatar></game-avatar>
+                                            </td>
+                                            <td class="leaderboard--teal">[[item.level]]</td>
+                                            <td>
+                                                <iron-icon icon="icons:arrow-drop-up"
+                                                           hidden$="[[!_isDisplacementPositive(item.displacement)]]"
+                                                           class="leaderboard--teal"></iron-icon>
+                                                <iron-icon icon="icons:arrow-drop-down"
+                                                           hidden$="[[_isDisplacementPositive(item.displacement)]]"
+                                                           class="leaderboard--teal"></iron-icon>
+                                                ([[item.displacement]])
+                                            </td>
+                                            <td class="leaderboard--teal">[[item.score]]</td>
+                                        </tr>
+                                    </template>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <div class="horizontal layout justified">
@@ -292,7 +355,6 @@
                                                  circle-avatar
                                                  reorder
                                                  class="grey"></game-avatar>
-
                                 </template>
                                 <template is="dom-if" if="[[!_isCommentsItemGrey(index)]]">
                                     <game-avatar avatar="[[item.player.avatar]]"
@@ -326,7 +388,7 @@
             properties: {
                 selectedTab: {
                     type: Number,
-                    value: 0,
+                    value: 1,
                 },
                 route: {
                     type: String,
@@ -437,7 +499,8 @@
             },
 
             _handleLeaderBoardResponse: function (response) {
-
+                this.players = response.result['leaderboard'];
+                this._createLeaderBoardTopElements();
             },
 
             _handleCommentsResponse: function (response) {
@@ -465,6 +528,73 @@
 
             _isCommentsItemGrey(index) {
                 return index % 2 == 0;
+            },
+
+            _createLeaderBoardTopElements() {
+                var players = this.players;
+
+                if (!this.$$('#third-player')) {
+                    var $element = $('<top-player>', {
+                        'id': 'third-player',
+                        'image-url': players[2]['player']['avatar'],
+                        'name': players[2]['player']['name'],
+                        'level': players[2]['level'],
+                        'score': players[2]['score'],
+                        'border-color': 'brown',
+                        'image-size': 80,
+                        'class': 'leaderboard--margin-top',
+                    });
+                    Polymer.dom(this.$['leaderboard__top']).appendChild($element.get(0));
+                }
+
+                if (!this.$$('#first-player')) {
+                    $element = $('<top-player>', {
+                        'id': 'first-player',
+                        'image-url': players[0]['player']['avatar'],
+                        'name': players[0]['player']['name'],
+                        'level': players[0]['level'],
+                        'score': players[0]['score'],
+                    });
+                    Polymer.dom(this.$['leaderboard__top']).appendChild($element.get(0));
+                }
+
+                if (!this.$$('#second-player')) {
+                    $element = $('<top-player>', {
+                        'id': 'second-player',
+                        'image-url': players[1]['player']['avatar'],
+                        'name': players[1]['player']['name'],
+                        'level': players[1]['level'],
+                        'score': players[1]['score'],
+                        'border-color': 'silver',
+                        'image-size': 90,
+                        'class': 'leaderboard--margin-top',
+                    });
+                    Polymer.dom(this.$['leaderboard__top']).appendChild($element.get(0));
+                }
+            },
+
+            _increaseIndex: function (index) {
+                return index + 1;
+            },
+
+            _showTopPlayerMedal: function (index) {
+                if (index == 0)
+                    color = 'gold';
+                else if (index == 1)
+                    color = 'silver';
+                else if (index == 2)
+                    color = 'brown';
+                else
+                    return "";
+
+                return `<iron-icon icon="icons:stars" style="color: ${color}"></iron-icon>`;
+            },
+
+            _isDisplacementPositive: function (displacement) {
+                if (displacement > 0)
+                    return true;
+                else
+                    return false;
             },
         });
     </script>
