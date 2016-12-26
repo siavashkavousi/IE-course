@@ -53,6 +53,10 @@
                 background-color: inherit;
             }
 
+            :host [vspacer] {
+                margin-bottom: 10vh;
+            }
+
             app-toolbar {
                 padding-left: 15%;
                 padding-right: 15%;
@@ -161,19 +165,10 @@
                 transform: scaleX(-1);
             }
 
-            #container {
-                height: 800px;
-            }
-
             #container > * {
                 padding-left: 15%;
                 padding-right: 15%;
             }
-
-            /*TODO remove if not needed*/
-            /*#container [vspacer] {*/
-            /*margin-bottom: 10vh;*/
-            /*}*/
 
             #container paper-tabs {
                 background-color: var(--paper-grey-300);
@@ -301,7 +296,7 @@
                         <hr>
                         <div id="leaderboard">
                             <div id="leaderboard__top" class="horizontal layout center around-justified"></div>
-                            <div id="leaderboard__bottom">
+                            <div id="leaderboard__bottom" class="vertical layout">
                                 <table>
                                     <tr style="text-align: right">
                                         <th width="8%">رتبه</th>
@@ -377,7 +372,9 @@
                 </iron-pages>
             </div>
 
-            <footer-view></footer-view>
+            <div vspacer></div>
+
+            <footer-view style="display: block"></footer-view>
         </app-header-layout>
     </template>
 
