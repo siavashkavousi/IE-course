@@ -15,6 +15,7 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <!-- external components -->
 <link rel="import" href="jquery.html">
 <!-- custom elements -->
@@ -199,15 +200,30 @@
                 border-color: var(--paper-grey-50);
             }
 
+            #container #leaderboard {
+                width: 100%;
+                background-color: var(--paper-grey-50);
+            }
+
             #container #leaderboard__top {
                 padding: 0 12vw;
             }
 
-            #container #leaderboard__bottom {
-            }
-
             #container #leaderboard__bottom table {
                 width: 100%;
+            }
+
+            #container #leaderboard__bottom table #table__header {
+                background-color: var(--paper-grey-300);
+                text-align: right;
+            }
+
+            #container #leaderboard__bottom table th, td {
+                padding: 2vh 1vw;
+            }
+
+            table tr.white{
+                background-color: white;
             }
 
             #container #leaderboard__bottom game-avatar {
@@ -294,11 +310,11 @@
                     <div>
                         <div class="title">رتبه بندی و امتیازات</div>
                         <hr>
-                        <div id="leaderboard">
+                        <paper-card id="leaderboard">
                             <div id="leaderboard__top" class="horizontal layout center around-justified"></div>
                             <div id="leaderboard__bottom" class="vertical layout">
-                                <table>
-                                    <tr style="text-align: right">
+                                <table cellpadding="0" cellspacing="0">
+                                    <tr id="table__header">
                                         <th width="8%">رتبه</th>
                                         <th width="7%"></th>
                                         <th width="55%">بازیکن</th>
@@ -307,7 +323,7 @@
                                         <th>امتیاز</th>
                                     </tr>
                                     <template is="dom-repeat" items="[[players]]">
-                                        <tr>
+                                        <tr class="table__content">
                                             <td>[[_increaseIndex(index)]].</td>
                                             <td inner-h-t-m-l="[[_showTopPlayerMedal(index)]]"></td>
                                             <td>
@@ -330,7 +346,7 @@
                                     </template>
                                 </table>
                             </div>
-                        </div>
+                        </paper-card>
                     </div>
                     <div>
                         <div class="horizontal layout justified">
@@ -498,6 +514,7 @@
             _handleLeaderBoardResponse: function (response) {
                 this.players = response.result['leaderboard'];
                 this._createLeaderBoardTopElements();
+                this._observeTableContentChanges();
             },
 
             _handleCommentsResponse: function (response) {
@@ -592,6 +609,21 @@
                     return true;
                 else
                     return false;
+            },
+
+            _observeTableContentChanges: function () {
+                var that = this;
+                var observer = Polymer.dom(this.$['leaderboard']).observeNodes(function (info) {
+                    that._changeTableRowColor(info.addedNodes);
+                });
+            },
+
+            _changeTableRowColor: function (info) {
+                var tableContents = Polymer.dom(this.root).querySelectorAll('.table__content');
+                for (var i = 0; i < tableContents.length; i++) {
+                    if (i % 2 != 0)
+                        tableContents[i].className += ' white';
+                }
             },
         });
     </script>
