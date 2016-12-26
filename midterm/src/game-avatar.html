@@ -38,7 +38,7 @@
         </style>
 
         <img id="avatar" src="[[avatar]]" alt="comment"/>
-        <div class="vertical layout center-justified">
+        <div id="container" class="vertical layout center-justified">
             <div id="text">[[text]]</div>
             <div id="date">[[date]]</div>
         </div>
@@ -66,12 +66,22 @@
                     value: false,
                     observer: '_setAvatarShape',
                 },
+                reorder: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_reorderElements',
+                }
             },
 
             _setAvatarShape: function (circleAvatar) {
                 if (circleAvatar)
                     this.$['avatar'].style.borderRadius = '25px';
             },
+
+            _reorderElements: function (reorder) {
+                if (reorder)
+                    this.$['container'].style.flexDirection = 'column-reverse'
+            }
         });
     </script>
 </dom-module>
