@@ -14,11 +14,13 @@
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <!-- external components -->
 <link rel="import" href="jquery.html">
 <!-- custom elements -->
 <link rel="import" href="logo-view.html">
 <link rel="import" href="footer-view.html">
+<link rel="import" href="game-avatar.html">
 
 <dom-module id="game-page">
     <template>
@@ -159,7 +161,7 @@
             }
 
             #container {
-                height: 400px;
+                height: 800px;
             }
 
             #container > * {
@@ -186,11 +188,28 @@
             }
 
             #container iron-pages .title {
+                padding: 2.5vh 0 2.5vh 0.5vw;
                 font-size: 26px;
             }
 
+            #container iron-pages paper-button {
+                color: white;
+                background-color: var(--paper-blue-500);
+                padding: 1vh 2vw;
+                align-self: center;
+            }
+
             #container iron-pages hr {
-                border-color: var(--paper-grey-100);
+                border-color: var(--paper-grey-50);
+            }
+
+            #container #comments game-avatar {
+                background-color: white;
+                padding: 4vh 10%;
+            }
+
+            #container #comments game-avatar.grey {
+                background-color: var(--paper-grey-50);
             }
         </style>
 
@@ -256,8 +275,34 @@
                         <hr>
                     </div>
                     <div>
-                        <div class="title">نظرات کاربران</div>
+                        <div class="horizontal layout justified">
+                            <div class="horizontal layout center">
+                                <div class="title">نظرات کاربران</div>
+                                <div>([[number_of_comments]] نظر)</div>
+                            </div>
+                            <paper-button raised>نظر دهید</paper-button>
+                        </div>
                         <hr>
+                        <paper-listbox id="comments">
+                            <template is="dom-repeat" items="[[comments]]">
+                                <template is="dom-if" if="[[_isCommentsItemGrey(index)]]">
+                                    <game-avatar avatar="[[item.player.avatar]]"
+                                                 text="[[item.player.name]]: [[item.text]]"
+                                                 date="[[item.date]]"
+                                                 circle-avatar
+                                                 reorder
+                                                 class="grey"></game-avatar>
+
+                                </template>
+                                <template is="dom-if" if="[[!_isCommentsItemGrey(index)]]">
+                                    <game-avatar avatar="[[item.player.avatar]]"
+                                                 text="[[item.player.name]]: [[item.text]]"
+                                                 date="[[item.date]]"
+                                                 circle-avatar
+                                                 reorder></game-avatar>
+                                </template>
+                            </template>
+                        </paper-listbox>
                     </div>
                     <div>
                         <div class="title">بازی های مشابه</div>
@@ -282,7 +327,6 @@
                 selectedTab: {
                     type: Number,
                     value: 0,
-                    observer: '_updateSelectedTabName',
                 },
                 route: {
                     type: String,
@@ -303,6 +347,10 @@
                     observer: '_correctNumericValue',
                 },
             },
+
+            observers: [
+                '_updateSelectedTabName(title, selectedTab)'
+            ],
 
             cache: {},
 
@@ -358,7 +406,8 @@
                 if (!this.cache[`${this.selectedTabName}`])
                     this.cache[`${this.selectedTabName}`] = $.get({
                         url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}`,
-                        dataType: 'json'
+                        dataType: 'json',
+                        context: this,
                     }).promise();
 
                 this.cache[`${this.selectedTabName}`].done(this._handleTabResponse);
@@ -374,9 +423,9 @@
                             this._handleInfoResponse(response);
                             break;
                         case 'leaderboard':
-                            //
+                            this._handleLeaderBoardResponse(response);
                             break;
-                        case 'comments":':
+                        case 'comments':
                             this._handleCommentsResponse(response);
                             break;
                     }
@@ -384,15 +433,21 @@
             },
 
             _handleInfoResponse: function (response) {
-                var game = response.result['game'];
-                this.info = game['info'];
+                this.info = response.result['game']['info'];
+            },
+
+            _handleLeaderBoardResponse: function (response) {
+
             },
 
             _handleCommentsResponse: function (response) {
-
+                this.comments = response.result['comments'];
             },
 
-            _updateSelectedTabName: function (selectedTab) {
+            _updateSelectedTabName: function (title, selectedTab) {
+                if (!title)
+                    return;
+
                 switch (selectedTab) {
                     case 0:
                         this.selectedTabName = 'info';
@@ -406,6 +461,10 @@
                 }
 
                 this._sendTabAjaxRequest();
+            },
+
+            _isCommentsItemGrey(index) {
+                return index % 2 == 0;
             },
         });
     </script>
