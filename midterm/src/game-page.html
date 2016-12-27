@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -23,10 +24,11 @@
 <link rel="import" href="footer-view.html">
 <link rel="import" href="game-avatar.html">
 <link rel="import" href="top-player.html">
+<link rel="import" href="new-game-card.html">
 
 <dom-module id="game-page">
     <template>
-        <style include="iron-flex iron-flex-alignment">
+        <style include="iron-flex iron-flex-alignment app-grid-style">
             :host {
                 box-sizing: border-box;
                 color: var(--paper-grey-600);
@@ -42,6 +44,9 @@
 
                 --logo-view-text-color: var(--paper-grey-600);
                 background-color: white;
+
+                --app-grid-columns: 4;
+                --app-grid-item-height: 220px;
             }
 
             :host > * {
@@ -56,6 +61,24 @@
 
             :host [vspacer] {
                 margin-bottom: 10vh;
+            }
+
+            @media screen and (max-width: 1100px) {
+                :host {
+                    --app-grid-columns: 3;
+                }
+            }
+
+            @media screen and (max-width: 840px) {
+                :host {
+                    --app-grid-columns: 2;
+                }
+            }
+
+            @media screen and (max-width: 640px) {
+                :host {
+                    --app-grid-columns: 1;
+                }
             }
 
             app-toolbar {
@@ -222,8 +245,13 @@
                 padding: 2vh 1vw;
             }
 
-            table tr.white{
+            #container #leaderboard__bottom table tr.white {
                 background-color: white;
+            }
+
+            #leaderboard__bottom .table__content .table__displacement {
+                text-align: right;
+                direction: ltr;
             }
 
             #container #leaderboard__bottom game-avatar {
@@ -234,6 +262,10 @@
 
             #container #leaderboard__bottom .leaderboard--teal {
                 color: var(--paper-teal-400);
+            }
+
+            #container #leaderboard__bottom .leaderboard--red {
+                color: var(--paper-red-400);
             }
 
             #container iron-pages .leaderboard--margin-top {
@@ -332,14 +364,18 @@
                                                              circle-avatar></game-avatar>
                                             </td>
                                             <td class="leaderboard--teal">[[item.level]]</td>
-                                            <td>
+                                            <td class="table__displacement">
+                                                (
+                                                <template is="dom-if"
+                                                          if="[[_isDisplacementPositive(item.displacement)]]">+
+                                                </template>
+                                                [[item.displacement]])
                                                 <iron-icon icon="icons:arrow-drop-up"
                                                            hidden$="[[!_isDisplacementPositive(item.displacement)]]"
                                                            class="leaderboard--teal"></iron-icon>
                                                 <iron-icon icon="icons:arrow-drop-down"
                                                            hidden$="[[_isDisplacementPositive(item.displacement)]]"
-                                                           class="leaderboard--teal"></iron-icon>
-                                                ([[item.displacement]])
+                                                           class="leaderboard--red"></iron-icon>
                                             </td>
                                             <td class="leaderboard--teal">[[item.score]]</td>
                                         </tr>
@@ -380,6 +416,14 @@
                     <div>
                         <div class="title">بازی های مشابه</div>
                         <hr>
+                        <div class="app-grid">
+                            <template is="dom-repeat" items="[[relatedGames]]">
+                                <new-game-card image-url="[[item.small_image]]"
+                                               title="[[item.title]]"
+                                               categories="[[item.categories]]"
+                                               rate="[[rate]]"></new-game-card>
+                            </template>
+                        </div>
                     </div>
                     <div>
                         <div class="title">عکس ها و ویدئوها</div>
@@ -430,6 +474,16 @@
             cache: {},
 
             _pageRouteChanged: function (route) {
+            },
+
+            attached: function() {
+                this._updateGridStyles = this._updateGridStyles || function() {
+                            this.updateStyles();
+                        }.bind(this);
+                window.addEventListener('resize', this._updateGridStyles);
+            },
+            detached: function() {
+                window.removeEventListener('resize', this._updateGridStyles);
             },
 
             _handleHeaderResponse: function (request) {
@@ -503,6 +557,9 @@
                         case 'comments':
                             this._handleCommentsResponse(response);
                             break;
+                        case 'related_games':
+                            this._handleRelatedGamesResponse(response);
+                            break;
                     }
                 }
             },
@@ -521,6 +578,14 @@
                 this.comments = response.result['comments'];
             },
 
+            _handleRelatedGamesResponse: function (response) {
+                this.relatedGames = response.result['games'];
+                //TODO this should be removed at the end of testing
+                for (i = 0; i < 5; i++) {
+                    this.push('relatedGames', this.relatedGames[0])
+                }
+            },
+
             _updateSelectedTabName: function (title, selectedTab) {
                 if (!title)
                     return;
@@ -534,6 +599,9 @@
                         break;
                     case 2:
                         this.selectedTabName = 'comments';
+                        break;
+                    case 3:
+                        this.selectedTabName = 'related_games';
                         break;
                 }
 
