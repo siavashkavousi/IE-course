@@ -128,7 +128,7 @@
 
             #users-comments .title {
                 font-size: 18px;
-                color: var(--paper-grey-600);
+                color: var(--paper-grey-00);
                 margin-top: 4vh;
                 margin-bottom: 2vh;
             }
@@ -151,7 +151,7 @@
 
             #invitation::before {
                 content: '';
-                background-color: rgba(66, 165, 245, 0.6);
+                background-color: rgba(66, 165,245, 0.6);
                 position: absolute;
                 display: block;
                 height: 100%;
@@ -209,7 +209,7 @@
                     </div>
                 </div>
 
-                <div id="carousel" style="height: 20vh"></div>
+                <div id="carousel"></div>
             </div>
 
             <div spacer></div>
@@ -347,18 +347,18 @@
             _addSlides: function () {
                 for (var s = 0; s < this.sliderItems.length; s++) {
                     var div = document.createElement('div');
-                    var element = document.createElement('game-card');
-                    element.setId(s);
-                    element.setBackground(this.sliderItems[s]['small_image']);
-                    element.setTitle(this.sliderItems[s]['title']);
-                    div.appendChild(element);
+                    var $element = $('<game-card>', {
+                        'game-id': s,
+                        'title': this.sliderItems[s]['title'],
+                        'image-url': this.sliderItems[s]['small_image'],
+                        'type': 'image',
+                    });
+                    div.appendChild($element.get(0));
                     Polymer.dom(this.$['carousel']).appendChild(div);
                 }
             },
 
             _initSlick: function () {
-                this.scopeSubtree(this.$['carousel'], true);
-
                 var slickDefaults = {
                     dots: false,
                     infinite: true,
@@ -406,7 +406,7 @@
                     var currentSlide = $(slick.$slides.get(nextSlideIndex))[0].firstChild;
                     currentSlide.changeCard();
 
-                    that.currentId = currentSlide.getId();
+                    that.currentId = currentSlide.gameId;
 
                     currentSlideIndex = slick.slideCount - currentSlideIndex - 1;
                     currentSlide = $(slick.$slides.get(currentSlideIndex))[0].firstChild;
@@ -465,7 +465,6 @@
 
             _changeCurrentGameData: function () {
                 this.currentGameAbstract = this.sliderItems[this.currentId]['abstract'];
-
             },
 
             _changeHomePageBackgroundImage: function () {
