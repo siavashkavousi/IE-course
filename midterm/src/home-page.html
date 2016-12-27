@@ -105,6 +105,7 @@
                 top: -30px;
                 left: -145px;
                 width: 50%;
+                z-index: -1;
             }
 
             .slick-dots li {
@@ -209,7 +210,7 @@
                     </div>
                 </div>
 
-                <div id="carousel"></div>
+                <div id="games-carousel"></div>
             </div>
 
             <div spacer></div>
@@ -335,8 +336,8 @@
             },
 
             _initGamesCarousel: function () {
-                this._addSlides();
-                this._initSlick();
+                this._addGamesSlides();
+                this._initGamesSlick();
                 this._changeCurrentSlide();
                 this._changeSlideOnMouseHover();
                 this._changeCenterSlideOnMouseClick();
@@ -344,7 +345,7 @@
                 this._listenToCurrentGameTitleChanges();
             },
 
-            _addSlides: function () {
+            _addGamesSlides: function () {
                 for (var s = 0; s < this.sliderItems.length; s++) {
                     var div = document.createElement('div');
                     var $element = $('<game-card>', {
@@ -354,11 +355,11 @@
                         'type': 'image',
                     });
                     div.appendChild($element.get(0));
-                    Polymer.dom(this.$['carousel']).appendChild(div);
+                    Polymer.dom(this.$['games-carousel']).appendChild(div);
                 }
             },
 
-            _initSlick: function () {
+            _initGamesSlick: function () {
                 var slickDefaults = {
                     dots: false,
                     infinite: true,
@@ -396,12 +397,12 @@
                     ]
                 };
 
-                $(this.$['carousel']).slick(slickDefaults);
+                $(this.$['games-carousel']).slick(slickDefaults);
             },
 
             _changeCurrentSlide: function () {
                 var that = this;
-                $(this.$['carousel']).on('beforeChange', function (event, slick, currentSlideIndex, nextSlideIndex) {
+                $(this.$['games-carousel']).on('beforeChange', function (event, slick, currentSlideIndex, nextSlideIndex) {
                     nextSlideIndex = slick.slideCount - nextSlideIndex - 1;
                     var currentSlide = $(slick.$slides.get(nextSlideIndex))[0].firstChild;
                     currentSlide.changeCard();
@@ -419,7 +420,7 @@
                     this.changeCard('#2196f3');
                 });
                 $(this.$$('.slick-track')).on('mouseleave', 'game-card', function () {
-                    var slick = $(this).parents('#carousel').slick('getSlick');
+                    var slick = $(this).parents('#games-carousel').slick('getSlick');
                     var centerSlideIndex = slick.slideCount - slick.currentSlide - 1;
                     var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index');
                     if (centerSlideIndex != currentSlide)
@@ -431,7 +432,7 @@
 
             _changeCenterSlideOnMouseClick: function () {
                 $(this.$$('.slick-track')).on('click', 'game-card', function () {
-                    var $carousel = $(this).parents('#carousel');
+                    var $carousel = $(this).parents('#games-carousel');
                     var slick = $carousel.slick('getSlick');
                     var centerSlideIndex = slick.slideCount - slick.currentSlide - 1;
                     var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index');
