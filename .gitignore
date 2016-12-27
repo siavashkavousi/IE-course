@@ -1,2 +1,4 @@
 .idea
 ie/
+**/.github
+**/bower_components

@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
@@ -303,13 +304,15 @@
             }
         </style>
 
+        <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
+
         <app-header-layout>
             <app-header fixed class="fullbleed">
                 <app-toolbar class="layout horizontal justified">
                     <logo-view url="/"></logo-view>
                     <div class="layout horizontal center">
                         <div id="search" class="layout horizontal center center-justified">
-                            <input type="text" placeholder="جست و جو ..." required>
+                            <input id="search__input" type="text" placeholder="جست و جو ..." required>
                             <iron-icon icon="search"></iron-icon>
                         </div>
                         <iron-icon icon="social:person"></iron-icon>
@@ -483,10 +486,6 @@
                     type: Number,
                     value: 0,
                 },
-                route: {
-                    type: String,
-                    observer: '_pageRouteChanged',
-                },
                 imageUrl: {
                     type: String,
                     value: '../images/thumb.jpg',
@@ -512,12 +511,13 @@
             },
 
             observers: [
-                '_updateSelectedTabName(title, selectedTab)'
+                '_updateSelectedTabName(title, selectedTab)',
             ],
 
             cache: {},
 
-            _pageRouteChanged: function (route) {
+            ready: function () {
+                this._listenInputChanges();
             },
 
             attached: function () {
@@ -528,6 +528,14 @@
             },
             detached: function () {
                 window.removeEventListener('resize', this._updateGridStyles);
+            },
+
+            _listenInputChanges: function () {
+                var that = this;
+                $(this.$['search__input']).change(function () {
+                    that.queryParams = {'q': $(this).val()};
+                    that.set('route.path', '/games_list')
+                });
             },
 
             _handleHeaderResponse: function (request) {
