@@ -2,6 +2,8 @@
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
 
 <dom-module id="game-card">
     <template>
@@ -9,9 +11,9 @@
             :host {
                 box-sizing: border-box;
                 color: white;
-                height: 20vh;
-                /*TODO should fix width conflict problem*/
-                /*width: 230px;*/
+                height: var(--game-card-height, 20vh);
+                width: var(--game-card-width);
+                direction: rtl;
 
                 --paper-font-common-base: {
                     font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
@@ -37,10 +39,14 @@
                 position: relative;
                 padding-right: 0.5rem;
                 display: flex;
+                justify-content: space-between;
                 align-items: flex-end;
-                background-image: [[backgroundImage]];
                 background-position: center;
                 background-size: cover;
+            }
+
+            #main-card #views {
+                display: none;
             }
 
             #alternative-card {
@@ -69,14 +75,14 @@
         </style>
 
         <div id="main-card">
-            <span>بررسی</span>
-            <span>[[gameTitle]]</span>
+            <span>[[title]]</span>
+            <span id="views">[[views]] بازدید</span>
             <paper-ripple></paper-ripple>
         </div>
         <div id="alternative-card">
             <div spacer></div>
             <div spacer></div>
-            <div>[[gameTitle]]</div>
+            <div>[[title]]</div>
             <div class="comment">comments</div>
             <div spacer></div>
             <div spacer></div>
@@ -90,44 +96,27 @@
             is: 'game-card',
 
             properties: {
-                id: {
+                gameId: {
                     type: Number,
                     reflectToAttribute: true,
                 },
-                gameTitle: {
+                title: {
                     type: String,
-                    value: 'Call of Duty',
                     reflectToAttribute: true,
                 },
-                backgroundImage: {
+                imageUrl: {
                     type: String,
-                    value: "url('../images/app-main-bg.jpg')",
-                    reflectToAttribute: true,
+                    observer: '_setBackgroundImage'
                 },
-            },
-
-            setId: function (id) {
-                this.id = id;
-            },
-
-            getId: function () {
-                return this.id;
-            },
-
-            setTitle: function (title) {
-                this.gameTitle = title;
-            },
-
-            getTitle: function () {
-                return this.gameTitle;
-            },
-
-            setBackground: function (backgroundImageUrl) {
-                this.backgroundImage = "url('" + backgroundImageUrl + "')";
-            },
-
-            getBackground: function () {
-                return this.backgroundImage;
+                videoUrl: {
+                    type: String,
+                    observer: '_setVideoSource'
+                },
+                views: {
+                    type: Number,
+                    observer: '_shouldViewsHidden'
+                },
+                type: String,
             },
 
             changeCard: function (color) {
@@ -150,6 +139,25 @@
                 } else {
                     this._changeCardColor()
                 }
+            },
+
+            _setBackgroundImage: function (imageUrl) {
+                this.$['main-card'].style.backgroundImage = "url('" + imageUrl + "')";
+            },
+
+            _setVideoSource: function (videoUrl) {
+                if (videoUrl) {
+                    var video = document.createElement('video');
+                    video.setAttribute('s', 'video');
+                    video.setAttribute('width', '400px');
+                    video.setAttribute('height', '400px');
+                    Polymer.dom(this.$['main-card']).appendChild(video)
+                }
+            },
+
+            _shouldViewsHidden: function (views) {
+                if (views)
+                    this.$['views'].style.display = 'inline';
             }
         });
     </script>
