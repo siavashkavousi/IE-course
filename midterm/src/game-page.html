@@ -17,16 +17,21 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
 <!-- external components -->
 <link rel="import" href="jquery.html">
+<script src="../bower_components/slick-carousel/slick/slick.js"></script>
 <!-- custom elements -->
 <link rel="import" href="logo-view.html">
 <link rel="import" href="footer-view.html">
 <link rel="import" href="game-avatar.html">
 <link rel="import" href="top-player.html">
 <link rel="import" href="new-game-card.html">
+<link rel="import" href="game-card.html">
 
 <dom-module id="game-page">
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick.css"/>
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick-theme.css"/>
     <template>
         <style include="iron-flex iron-flex-alignment app-grid-style">
             :host {
@@ -280,6 +285,22 @@
             #container #comments game-avatar.grey {
                 background-color: var(--paper-grey-50);
             }
+
+            #container #gallery-carousel .slick-slide {
+                margin: 0 1vw;
+            }
+
+            #container #gallery-carousel .slick-list {
+                margin: 0 1vw;
+            }
+
+            #container #current-trailer {
+                margin: 20px 0;
+            }
+
+            #container #current-trailer game-card {
+                --game-card-height: 70vh;
+            }
         </style>
 
         <app-header-layout>
@@ -428,13 +449,28 @@
                     <div>
                         <div class="title">عکس ها و ویدئوها</div>
                         <hr>
+                        <paper-material id="current-trailer" elevation="3">
+                            <template is="dom-if" if="[[currentGalleryImage]]">
+                                <game-card title="تریلر بازی [[currentGalleryItem.title]]"
+                                           image-url="[[currentGalleryItem.url]]"
+                                           views="[[currentGalleryItem.views]]"></game-card>
+                                <!--<img src="[[currentGalleryImage]]" width="100%" height="100%"-->
+                                <!--style="overflow: hidden; display: block">-->
+                            </template>
+                            <template is="dom-if" if="[[!currentGalleryImage]]">
+                                <game-card title="[[currentGalleryItem.title]]"
+                                           video-url="[[currentGalleryItem.url]]"
+                                           views="[[currentGalleryItem.views]]"></game-card>
+                            </template>
+                        </paper-material>
+                        <div id="gallery-carousel" style="direction: ltr"></div>
                     </div>
                 </iron-pages>
             </div>
 
             <div vspacer></div>
 
-            <footer-view style="display: block"></footer-view>
+            <footer-view></footer-view>
         </app-header-layout>
     </template>
 
@@ -445,7 +481,7 @@
             properties: {
                 selectedTab: {
                     type: Number,
-                    value: 1,
+                    value: 0,
                 },
                 route: {
                     type: String,
@@ -465,6 +501,14 @@
                     value: 0.5,
                     observer: '_correctNumericValue',
                 },
+                currentGalleryImage: {
+                    type: Boolean,
+                    value: true,
+                },
+                isGallerySlidesAdded: {
+                    type: Boolean,
+                    value: false,
+                },
             },
 
             observers: [
@@ -476,13 +520,13 @@
             _pageRouteChanged: function (route) {
             },
 
-            attached: function() {
-                this._updateGridStyles = this._updateGridStyles || function() {
+            attached: function () {
+                this._updateGridStyles = this._updateGridStyles || function () {
                             this.updateStyles();
                         }.bind(this);
                 window.addEventListener('resize', this._updateGridStyles);
             },
-            detached: function() {
+            detached: function () {
                 window.removeEventListener('resize', this._updateGridStyles);
             },
 
@@ -560,6 +604,9 @@
                         case 'related_games':
                             this._handleRelatedGamesResponse(response);
                             break;
+                        case 'gallery':
+                            this._handleGalleryResponse(response);
+                            break;
                     }
                 }
             },
@@ -586,6 +633,11 @@
                 }
             },
 
+            _handleGalleryResponse: function (response) {
+                gallery = response.result['gallery'];
+                this._initGalleryCarousel(gallery);
+            },
+
             _updateSelectedTabName: function (title, selectedTab) {
                 if (!title)
                     return;
@@ -602,6 +654,9 @@
                         break;
                     case 3:
                         this.selectedTabName = 'related_games';
+                        break;
+                    case 4:
+                        this.selectedTabName = 'gallery';
                         break;
                 }
 
@@ -692,6 +747,100 @@
                     if (i % 2 != 0)
                         tableContents[i].className += ' white';
                 }
+            },
+
+            _initGalleryCarousel: function (galleryList) {
+                this._setCurrentTrailerItem(galleryList['images'][0])
+                this._addGallerySlides(galleryList);
+                this._initGallerySlick();
+                this._updateCurrentGalleryItem(galleryList);
+            },
+
+            _setCurrentTrailerItem: function (item) {
+                if (!item)
+                    return;
+
+                this.currentGalleryItem = item;
+            },
+
+            _addGallerySlides: function (galleryList) {
+                if (this.isGallerySlidesAdded)
+                    return;
+
+                for (var i = 0; i < galleryList['images'].length; i++) {
+                    var div = document.createElement('div');
+                    var gameTitle = galleryList['images'][i]['title'];
+                    var $element = $('<game-card>', {
+                        'game-id': i,
+                        'image-url': galleryList['images'][i]['url'],
+                        'type': 'image',
+                    });
+                    div.appendChild($element.get(0));
+                    Polymer.dom(this.$['gallery-carousel']).appendChild(div);
+                }
+
+
+                for (i = 0; i < galleryList['videos'].length; i++) {
+                    div = document.createElement('div');
+                    $element = $('<game-card>', {
+                        'game-id': i,
+                        //TODO this should be image thumbnail of video but API doesn't provide it...
+                        'image-url': '../images/app-main-bg.jpg',
+                        'type': 'video',
+                    });
+                    div.appendChild($element.get(0));
+                    Polymer.dom(this.$['gallery-carousel']).appendChild(div);
+                }
+
+                this.isGallerySlidesAdded = true;
+            },
+
+            _initGallerySlick: function () {
+                var slickDefaults = {
+                    dots: false,
+                    infinite: false,
+                    arrows: true,
+                    speed: 1000,
+                    slidesToShow: 4,
+                    lazyLoad: 'ondemand',
+                    pauseOnHover: true,
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 5,
+                            }
+                        },
+                        {
+                            breakpoint: 640,
+                            settings: {
+                                slidesToShow: 3,
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                            }
+                        }
+                    ]
+                };
+
+                $(this.$['gallery-carousel']).slick(slickDefaults);
+            },
+
+            _updateCurrentGalleryItem: function (galleryList) {
+                var that = this;
+                $(this.$$('.slick-track')).on('click', 'game-card', function () {
+                    var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index');
+                    if (this.type == 'image') {
+                        that.currentGalleryImage = true;
+                        that.currentGalleryItem = galleryList['images'][this.gameId];
+                    } else if (this.type == 'video') {
+                        that.currentGalleryImage = false;
+                        that.currentGalleryItem = galleryList['videos'][this.gameId];
+                    }
+                });
             },
         });
     </script>
