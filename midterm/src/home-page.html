@@ -152,7 +152,7 @@
 
             #invitation::before {
                 content: '';
-                background-color: rgba(66, 165,245, 0.6);
+                background-color: rgba(66, 165, 245, 0.6);
                 position: absolute;
                 display: block;
                 height: 100%;
@@ -201,7 +201,9 @@
                         <div>[[currentGameAbstract]]</div>
                         <div spacer></div>
                         <div class="layout horizontal">
-                            <paper-button raised class="light-blue">ورود به صفحه بازی</paper-button>
+                            <paper-button raised class="light-blue" id="enter-game-button" on-tap="_enterGamePanel">ورود
+                                به صفحه بازی
+                            </paper-button>
                             <paper-button>
                                 <iron-icon icon="av:play-circle-filled"></iron-icon>
                                 تریلر این بازی
@@ -527,6 +529,13 @@
 
             _computeHrHidden: function (list, index) {
                 return list.length - 1 === index;
+            },
+
+            _enterGamePanel: function () {
+                var that = this;
+                this.$['enter-game-button'].addEventListener('transitionend', function () {
+                    location.href = `/games?game=${that.currentGameTitle}`;
+                });
             },
         });
     </script>
