@@ -19,6 +19,7 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <!-- external components -->
 <link rel="import" href="jquery.html">
 <script src="../bower_components/slick-carousel/slick/slick.js"></script>
@@ -127,6 +128,7 @@
                 background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 1)), url('../images/header.jpg') center;
                 padding-left: 17%;
                 padding-right: 17%;
+                display: none;
             }
 
             #header * {
@@ -193,6 +195,10 @@
                 -ms-transform: scaleX(-1);
                 -o-transform: scaleX(-1);
                 transform: scaleX(-1);
+            }
+
+            .spinner {
+                height: 35vh;
             }
 
             #container > * {
@@ -321,7 +327,7 @@
                 </app-toolbar>
             </app-header>
 
-            <div id="header" class="horizontal layout center justified">
+            <div id="header" class="horizontal layout center justified" hidden$="[[isLoadingHeader]]">
                 <div class="horizontal layout center">
                     <img src="[[imageUrl]]">
                     <div class="vertical layout justified">
@@ -346,7 +352,13 @@
                         url="http://api.ie.ce-it.ir/F95/games/[[title]]/header.json"
                         handle-as="json"
                         on-response="_handleHeaderResponse"
+                        loading="{{isLoadingHeader}}"
                         debounce-duration="300"></iron-ajax>
+            </div>
+            <div class="spinner horizontal layout center center-justified" hidden$="[[!isLoadingHeader]]">
+                <div class="vertical layout center center-justified">
+                    <paper-spinner active="[[isLoadingHeader]]"></paper-spinner>
+                </div>
             </div>
 
             <div id="container">
@@ -357,7 +369,7 @@
                     <paper-tab>بازی های مشابه</paper-tab>
                     <paper-tab>عکس ها و ویدئوها</paper-tab>
                 </paper-tabs>
-                <iron-pages selected="[[selectedTab]]">
+                <iron-pages selected="[[selectedTab]]" hidden$="[[isLoadingTab]]">
                     <div>
                         <div class="title">اطلاعات بازی</div>
                         <hr>
@@ -469,6 +481,12 @@
                         <div id="gallery-carousel" style="direction: ltr"></div>
                     </div>
                 </iron-pages>
+
+                <div class="spinner horizontal layout center center-justified" hidden$="[[!isLoadingTab]]">
+                    <div class="vertical layout center center-justified">
+                        <paper-spinner active="[[isLoadingTab]]"></paper-spinner>
+                    </div>
+                </div>
             </div>
 
             <div vspacer></div>
@@ -508,6 +526,15 @@
                     type: Boolean,
                     value: false,
                 },
+                isLoadingHeader: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_changeHeaderDisplay',
+                },
+                isLoadingTab: {
+                    type: Boolean,
+                    value: false,
+                },
             },
 
             observers: [
@@ -526,8 +553,14 @@
                         }.bind(this);
                 window.addEventListener('resize', this._updateGridStyles);
             },
+
             detached: function () {
                 window.removeEventListener('resize', this._updateGridStyles);
+            },
+
+            _changeHeaderDisplay: function (isLoading) {
+                if (isLoading)
+                    this.$['header'].style.display = 'flex'
             },
 
             _listenInputChanges: function () {
@@ -589,6 +622,12 @@
                         url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}`,
                         dataType: 'json',
                         context: this,
+                        beforeSend: function () {
+                            this.isLoadingTab = true;
+                        },
+                        complete: function () {
+                            this.isLoadingTab = false;
+                        },
                     }).promise();
 
                 this.cache[`${this.selectedTabName}`].done(this._handleTabResponse);
