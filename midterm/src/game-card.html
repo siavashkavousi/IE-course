@@ -67,10 +67,11 @@
             #alternative-card > paper-button {
                 color: black;
                 background-color: white;
-                font-size: 12px;
-                padding: 5px 20px;
                 box-shadow: none;
                 border-radius: 0;
+                border: none;
+                padding: 5px 20px;
+                font-size: 12px;
             }
         </style>
 
@@ -87,7 +88,7 @@
             <div spacer></div>
             <div spacer></div>
             <div spacer></div>
-            <paper-button raised>صفحه بازی</paper-button>
+            <paper-button raised on-tap="_enterGamePanel">صفحه بازی</paper-button>
         </div>
     </template>
 
@@ -158,7 +159,14 @@
             _shouldViewsHidden: function (views) {
                 if (views)
                     this.$['views'].style.display = 'inline';
-            }
+            },
+
+            _enterGamePanel: function () {
+                var that = this;
+                this.$$('paper-button').addEventListener('transitionend', function () {
+                    location.href = `/games?game=${that.title}`;
+                });
+            },
         });
     </script>
 </dom-module>
