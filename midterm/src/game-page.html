@@ -405,11 +405,7 @@
                                             </td>
                                             <td class="leaderboard--teal">[[item.level]]</td>
                                             <td class="table__displacement">
-                                                (
-                                                <template is="dom-if"
-                                                          if="[[_isDisplacementPositive(item.displacement)]]">+
-                                                </template>
-                                                [[item.displacement]])
+                                                [[_computeDisplacement(item.displacement)]]
                                                 <iron-icon icon="icons:arrow-drop-up"
                                                            hidden$="[[!_isDisplacementPositive(item.displacement)]]"
                                                            class="leaderboard--teal"></iron-icon>
@@ -778,11 +774,11 @@
                 return `<iron-icon icon="icons:stars" style="color: ${color}"></iron-icon>`;
             },
 
-            _isDisplacementPositive: function (displacement) {
-                if (displacement > 0)
-                    return true;
+            _computeDisplacement: function (displacement) {
+                if(displacement > 0)
+                    return `(+ ${displacement})`;
                 else
-                    return false;
+                    return `(- ${displacement * -1})`;
             },
 
             _observeTableContentChanges: function () {
