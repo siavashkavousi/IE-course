@@ -1,0 +1,250 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<!-- custom elements -->
+<link rel="import" href="logo-view.html">
+<link rel="import" href="footer-view.html">
+<link rel="import" href="new-game-card.html">
+
+<dom-module id="games-page">
+    <template>
+        <style include="iron-flex iron-flex-alignment app-grid-style">
+            :host {
+                box-sizing: border-box;
+                color: var(--paper-grey-600);
+
+                --paper-font-common-base: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                };
+                --paper-font-common-code: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                    -webkit-font-smoothing: antialiased;
+                };
+
+                --logo-view-text-color: var(--paper-grey-600);
+                background-color: white;
+
+                --app-grid-columns: 3;
+                --app-grid-item-height: 220px;
+            }
+
+            :host > * {
+                width: inherit;
+                height: inherit;
+            }
+
+            :host * {
+                box-sizing: border-box;
+                background-color: inherit;
+            }
+
+            @media screen and (max-width: 1200px) {
+                :host {
+                    --app-grid-columns: 3;
+                }
+
+                #content > .content__sidebar {
+                    display: none;
+                }
+            }
+
+            @media screen and (max-width: 900px) {
+                :host {
+                    --app-grid-columns: 2;
+                }
+
+                #content > .content__sidebar {
+                    display: none;
+                }
+            }
+
+            @media screen and (max-width: 640px) {
+                :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            app-toolbar {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            paper-button {
+                font-size: var(--paper-font-button);
+                padding: 5px 5px;
+            }
+
+            #search {
+                background-color: white;
+                border: solid var(--paper-grey-300) thin;
+                display: flex;
+                border-radius: 2px;
+                padding: 0 5px;
+                margin-left: 20px;
+            }
+
+            #search input {
+                outline: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: none;
+                height: 80%;
+                font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                line-height: 1.5;
+            }
+
+            #search iron-icon {
+                height: 100%;
+                color: var(--paper-grey-400);
+            }
+
+            #header {
+                height: 25vh;
+                color: white;
+                font-size: 24px;
+                background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 1)), url('../images/header.jpg') center;
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            #content {
+                margin-top: 5vh;
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            #content > .content__sidebar > * {
+                background-color: var(--paper-grey-100);
+                padding: 10px;
+                width: 17vw;
+                border: solid var(--paper-grey-300) thin;
+                margin-bottom: 2vh;
+                margin-left: 1vw;
+            }
+
+            paper-item {
+                --paper-item: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                }
+            }
+
+            #content > div {
+                font-weight: bold;
+            }
+
+            .app-grid {
+                background-color: white;
+            }
+
+            .app-grid > * {
+                background-color: white;
+            }
+        </style>
+
+        <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
+
+        <app-header-layout>
+            <app-header fixed class="fullbleed">
+                <app-toolbar class="layout horizontal justified">
+                    <logo-view url="/"></logo-view>
+                    <div class="layout horizontal center">
+                        <div id="search" class="layout horizontal center center-justified">
+                            <input type="text" placeholder="جست و جو ..." required>
+                            <iron-icon icon="search"></iron-icon>
+                        </div>
+                        <iron-icon icon="social:person"></iron-icon>
+                        <paper-button>ورود</paper-button>
+                    </div>
+                </app-toolbar>
+            </app-header>
+
+            <div id="header" class="horizontal layout center">
+                <div>اکشن، اول شخص، مولتی پلیر</div>
+            </div>
+
+            <div id="content" class="horizontal layout center-justified center">
+                <div class="vertical layout content__sidebar">
+                    <div id="categories">
+                        <div>دسته بندی بازی ها</div>
+                        <paper-listbox>
+                            <paper-item>همه</paper-item>
+                            <paper-item>اکشن</paper-item>
+                            <paper-item>اکشن</paper-item>
+                            <paper-item>اکشن</paper-item>
+                            <paper-item>اکشن</paper-item>
+                            <paper-item>اکشن</paper-item>
+                            <paper-item>اکشن</paper-item>
+                        </paper-listbox>
+                    </div>
+                    <div id="scores">
+                        <div>امتیاز بازی ها</div>
+                    </div>
+                </div>
+                <div class="app-grid">
+                    <template is="dom-repeat" items="[[games]]">
+                        <new-game-card image-url="[[item.small_image]]"
+                                       title="[[item.title]]"
+                                       categories="[[item.categories]]"
+                                       rate="[[rate]]"
+                                       class="horizontal layout center center-justified"></new-game-card>
+                    </template>
+                </div>
+            </div>
+
+            <iron-ajax
+                    auto
+                    id="ajax"
+                    url="http://api.ie.ce-it.ir/F95/games.json"
+                    handle-as="json"
+                    on-response="_handleSearchResponse"
+                    debounce-duration="300"></iron-ajax>
+
+            <footer-view></footer-view>
+        </app-header-layout>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'games-page',
+
+            ready: function () {
+                this.$['ajax'].params = JSON.parse('{"q":"' + this.queryParams.q + '"}');
+            },
+
+            attached: function () {
+                this._updateGridStyles = this._updateGridStyles || function () {
+                            this.updateStyles();
+                        }.bind(this);
+                window.addEventListener('resize', this._updateGridStyles);
+
+            },
+            detached: function () {
+                window.removeEventListener('resize', this._updateGridStyles);
+            },
+
+            _handleSearchResponse: function (request) {
+                var response = request.detail.response.response;
+                console.log('ajax request (game search) response');
+                console.log(response);
+                if (response.ok) {
+                    this.games = response['result']['games'];
+                    console.log(this.games);
+                    for (var i = 0; i < 5; i++) {
+                        this.push('games', this.games[0]);
+                    }
+                }
+            },
+        });
+    </script>
+</dom-module>
