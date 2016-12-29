@@ -30,6 +30,7 @@
 <link rel="import" href="top-player.html">
 <link rel="import" href="new-game-card.html">
 <link rel="import" href="game-card.html">
+<link rel="import" href="game-stars.html">
 
 <dom-module id="game-page">
     <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick.css"/>
@@ -343,7 +344,7 @@
                             </template>
                         </div>
                         <div class="horizontal layout center rate-container">
-                            <div id="stars"></div>
+                            <game-stars rate="[[rate]]"></game-stars>
                             <span class="rate">[[rate]]</span>
                             <span>([[number_of_comments]] رای)</span>
                         </div>
@@ -515,7 +516,7 @@
                 },
                 rate: {
                     type: Number,
-                    value: 0.5,
+                    value: 0,
                     observer: '_correctNumericValue',
                 },
                 currentGalleryImage: {
@@ -582,8 +583,6 @@
                     this.categories = game['categories'];
                     this.rate = game['rate'];
                     this.number_of_comments = game['number_of_comments'];
-
-                    this._renderRateStars();
                 }
             },
 
@@ -591,29 +590,8 @@
                 return list.length - 1 === index;
             },
 
-            _renderRateStars: function () {
-                //TODO needs refactoring
-                if ($(this.$['stars']).children().length == 5)
-                    return;
-                var $starsContainer = $(this.$['stars']);
-                for (var i = 1; i <= this.rate; i++) {
-                    var $star = $("<iron-icon>", {"class": "star-blue", "icon": "star"});
-                    $starsContainer.append($star);
-                }
-                var remStars = 5 - this.rate;
-                if (this.rate <= 5 && this.rate % 1 >= 0.5) {
-                    $star = $("<iron-icon>", {"class": "star-blue", "icon": "star-half"});
-                    $starsContainer.append($star);
-                    remStars -= 1;
-                }
-                for (i = 0; i < remStars; i++) {
-                    $star = $("<iron-icon>", {"class": "star-grey", "icon": "star"});
-                    $starsContainer.append($star);
-                }
-            },
-
             _correctNumericValue: function (rate) {
-                this.rate = +rate;
+                this.rate = parseFloat(rate);
             },
 
             _sendTabAjaxRequest: function () {

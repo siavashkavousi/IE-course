@@ -1,0 +1,82 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+
+<dom-module id="game-stars">
+
+    <template>
+        <style>
+            :host {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            iron-icon.star-blue {
+                --iron-icon-fill-color: var(--paper-blue-500);
+                --iron-icon-width: 16px;
+                --iron-icon-height: 16px;
+            }
+
+            iron-icon.star-grey {
+                --iron-icon-fill-color: var(--paper-grey-300);
+                --iron-icon-width: 16px;
+                --iron-icon-height: 16px;
+            }
+
+            iron-icon[icon=star-half] {
+                -webkit-transform: scaleX(-1);
+                -moz-transform: scaleX(-1);
+                -ms-transform: scaleX(-1);
+                -o-transform: scaleX(-1);
+                transform: scaleX(-1);
+            }
+        </style>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'game-stars',
+
+            properties: {
+                rate: {
+                    type: Number,
+                    value: 0,
+                    observer: '_renderRateStars',
+                }
+            },
+
+            _renderRateStars: function (rate_number) {
+                var iconArray = Polymer.dom(this.root).querySelectorAll('iron-icon');
+                for (var i = 0; i < iconArray.length; i++) {
+                    Polymer.dom(this.root).removeChild(iconArray[i])
+                }
+
+                var rate = Math.round(rate_number * 2) / 2;
+                var starsCount = Math.floor(rate);
+                var halfStarsCount = rate - Math.floor(rate);
+                var emptyStars = 5 - (starsCount + (halfStarsCount * 2));
+
+                for (i = 1; i <= starsCount; i++) {
+                    var star = document.createElement('iron-icon');
+                    star.className = 'star-blue';
+                    star.setAttribute('icon', 'star');
+                    Polymer.dom(this.root).appendChild(star);
+                }
+                if (halfStarsCount != 0) {
+                    star = document.createElement('iron-icon');
+                    star.className = 'star-blue';
+                    star.setAttribute('icon', 'star-half');
+                    Polymer.dom(this.root).appendChild(star);
+                }
+                for (i = 0; i < emptyStars; i++) {
+                    star = document.createElement('iron-icon');
+                    star.className = 'star-grey';
+                    star.setAttribute('icon', 'star');
+                    Polymer.dom(this.root).appendChild(star);
+                }
+            },
+        });
+    </script>
+
+</dom-module>
