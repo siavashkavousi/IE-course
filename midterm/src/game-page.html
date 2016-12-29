@@ -290,12 +290,13 @@
                 margin-top: 8vh;
             }
 
-            #container #comments game-avatar {
+            #container #comments > div {
                 background-color: white;
-                padding: 4vh 10%;
+                padding: 4vh 15%;
+                padding-bottom: 4vh;
             }
 
-            #container #comments game-avatar.grey {
+            #container #comments > div.grey {
                 background-color: var(--paper-grey-50);
             }
 
@@ -457,20 +458,24 @@
                         <paper-listbox id="comments">
                             <template is="dom-repeat" items="[[comments]]">
                                 <template is="dom-if" if="[[_isCommentsItemGrey(index)]]">
-                                    <game-avatar avatar="[[item.player.avatar]]"
-                                                 text="[[item.player.name]]: [[item.text]]"
-                                                 date="[[item.date]]"
-                                                 circle-avatar
-                                                 reorder
-                                                 class="grey"></game-avatar>
-
+                                    <div class="horizontal layout center justified grey">
+                                        <game-avatar avatar="[[item.player.avatar]]"
+                                                     text="[[item.player.name]]: [[item.text]]"
+                                                     date="[[item.date]]"
+                                                     circle-avatar
+                                                     reorder></game-avatar>
+                                        <game-stars rate="[[item.rate]]"></game-stars>
+                                    </div>
                                 </template>
                                 <template is="dom-if" if="[[!_isCommentsItemGrey(index)]]">
-                                    <game-avatar avatar="[[item.player.avatar]]"
-                                                 text="[[item.player.name]]: [[item.text]]"
-                                                 date="[[item.date]]"
-                                                 circle-avatar
-                                                 reorder></game-avatar>
+                                    <div class="horizontal layout center justified">
+                                        <game-avatar avatar="[[item.player.avatar]]"
+                                                     text="[[item.player.name]]: [[item.text]]"
+                                                     date="[[item.date]]"
+                                                     circle-avatar
+                                                     reorder></game-avatar>
+                                        <game-stars rate="[[item.rate]]"></game-stars>
+                                    </div>
                                 </template>
                             </template>
                         </paper-listbox>
