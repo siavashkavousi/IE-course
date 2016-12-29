@@ -704,8 +704,12 @@
 
             _handleLeaderBoardResponse: function (response) {
                 this.players = response.result['leaderboard'];
-                this._createLeaderBoardTopElements();
-                this._observeTableContentChanges();
+                if (this.players.length > 0) {
+                    this._createLeaderBoardTopElements();
+                    this._observeTableContentChanges();
+                } else {
+                    Polymer.dom(this.$['leaderboard']).querySelector('table').style.display = 'none';
+                }
             },
 
             _handleCommentsResponse: function (response) {
