@@ -20,6 +20,7 @@
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <!-- external components -->
 <link rel="import" href="jquery.html">
 <script src="../bower_components/slick-carousel/slick/slick.js"></script>
@@ -298,6 +299,29 @@
                 background-color: var(--paper-grey-50);
             }
 
+            #container #comments__modal {
+                --paper-font-title: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                };
+                background-color: white;
+                width: 50vw;
+            }
+
+            #container #comments__modal paper-input {
+                width: 80%;
+                --paper-input-container-focus-color: var(--paper-blue-500);
+                --paper-input-container-underline: {
+                    border: solid var(--paper-grey-300) thin;
+                };
+                --paper-input-container-label: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    font-size: 14px;
+                };
+                --paper-input-container-label-floating: {
+                    transform: translateY(-75%) translateX(25%) scale(0.75);
+                };
+            }
+
             #container #gallery-carousel .slick-slide {
                 margin: 0 1vw;
             }
@@ -427,7 +451,7 @@
                                 <div class="title">نظرات کاربران</div>
                                 <div>([[number_of_comments]] نظر)</div>
                             </div>
-                            <paper-button raised>نظر دهید</paper-button>
+                            <paper-button raised on-tap="_writeNewComment">نظر دهید</paper-button>
                         </div>
                         <hr>
                         <paper-listbox id="comments">
@@ -439,6 +463,7 @@
                                                  circle-avatar
                                                  reorder
                                                  class="grey"></game-avatar>
+
                                 </template>
                                 <template is="dom-if" if="[[!_isCommentsItemGrey(index)]]">
                                     <game-avatar avatar="[[item.player.avatar]]"
@@ -450,10 +475,15 @@
                             </template>
                         </paper-listbox>
                         <div class="vertical layout center">
-                            <paper-button id="load-more-comments" raised on-tap="_loadMoreComments">بارگذاری نظرات
-                                بعدی
+                            <paper-button id="load-more-comments"
+                                          raised on-tap="_loadMoreComments">بارگذاری نظرات بعدی
                             </paper-button>
                         </div>
+                        <paper-dialog id="comments__modal" class="vertical layout center center-justified">
+                            <h2>نظر:</h2>
+                            <paper-input label="نظر شما ..."></paper-input>
+                            <paper-button dialog-confirm autofocus>ثبت</paper-button>
+                        </paper-dialog>
                     </div>
                     <div>
                         <div class="title">بازی های مشابه</div>
@@ -725,6 +755,10 @@
 
             _loadMoreComments: function () {
                 this._sendCommentAjaxRequest();
+            },
+
+            _writeNewComment: function () {
+                this.$['comments__modal'].open();
             },
 
             _isCommentsItemGrey(index) {
