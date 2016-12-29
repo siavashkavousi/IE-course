@@ -449,6 +449,11 @@
                                 </template>
                             </template>
                         </paper-listbox>
+                        <div class="vertical layout center">
+                            <paper-button id="load-more-comments" raised on-tap="_loadMoreComments">بارگذاری نظرات
+                                بعدی
+                            </paper-button>
+                        </div>
                     </div>
                     <div>
                         <div class="title">بازی های مشابه</div>
@@ -536,6 +541,14 @@
                     type: Boolean,
                     value: false,
                 },
+                comments: {
+                    type: Array,
+                    value: [],
+                },
+                commentsListOffset: {
+                    type: Number,
+                    value: 0,
+                },
             },
 
             observers: [
@@ -595,7 +608,7 @@
             },
 
             _sendTabAjaxRequest: function () {
-                if (!this.cache[`${this.selectedTabName}`])
+                if (!this.cache[`${this.selectedTabName}`]) {
                     this.cache[`${this.selectedTabName}`] = $.get({
                         url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}`,
                         dataType: 'json',
@@ -607,8 +620,27 @@
                             this.isLoadingTab = false;
                         },
                     }).promise();
+                }
 
                 this.cache[`${this.selectedTabName}`].done(this._handleTabResponse);
+            },
+
+            _sendCommentAjaxRequest: function () {
+                if (!this.cache[`${this.selectedTabName}-${this.commentsListOffset}`]) {
+                    this.cache[`${this.selectedTabName}-${this.commentsListOffset}`] = $.get({
+                        url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}?offset=${this.commentsListOffset}`,
+                        dataType: 'json',
+                        context: this,
+                        beforeSend: function () {
+                            this.isLoadingTab = true;
+                        },
+                        complete: function () {
+                            this.isLoadingTab = false;
+                        },
+                    }).promise();
+                }
+
+                this.cache[`${this.selectedTabName}-${this.commentsListOffset}`].done(this._handleTabResponse);
             },
 
             _handleTabResponse: function (data) {
@@ -647,7 +679,9 @@
             },
 
             _handleCommentsResponse: function (response) {
-                this.comments = response.result['comments'];
+                for (var i = 0; i < response.result['comments'].length; i++)
+                    this.push('comments', response.result['comments'][i]);
+                this.commentsListOffset = this.comments.length;
             },
 
             _handleRelatedGamesResponse: function (response) {
@@ -667,25 +701,30 @@
                 if (!title)
                     return;
 
-                switch (selectedTab) {
-                    case 0:
-                        this.selectedTabName = 'info';
-                        break;
-                    case 1:
-                        this.selectedTabName = 'leaderboard';
-                        break;
-                    case 2:
-                        this.selectedTabName = 'comments';
-                        break;
-                    case 3:
-                        this.selectedTabName = 'related_games';
-                        break;
-                    case 4:
-                        this.selectedTabName = 'gallery';
-                        break;
+                if (selectedTab == 2) {
+                    this.selectedTabName = 'comments';
+                    this._sendCommentAjaxRequest();
+                } else {
+                    switch (selectedTab) {
+                        case 0:
+                            this.selectedTabName = 'info';
+                            break;
+                        case 1:
+                            this.selectedTabName = 'leaderboard';
+                            break;
+                        case 3:
+                            this.selectedTabName = 'related_games';
+                            break;
+                        case 4:
+                            this.selectedTabName = 'gallery';
+                            break;
+                    }
+                    this._sendTabAjaxRequest();
                 }
+            },
 
-                this._sendTabAjaxRequest();
+            _loadMoreComments: function () {
+                this._sendCommentAjaxRequest();
             },
 
             _isCommentsItemGrey(index) {
@@ -753,7 +792,7 @@
             },
 
             _computeDisplacement: function (displacement) {
-                if(displacement > 0)
+                if (displacement > 0)
                     return `(+ ${displacement})`;
                 else
                     return `(- ${displacement * -1})`;
