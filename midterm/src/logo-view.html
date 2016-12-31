@@ -19,30 +19,33 @@
                 box-sizing: border-box;
             }
 
-            a {
+            #container {
                 position: relative;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                text-decoration: none;
+                cursor: pointer;
+            }
+
+            div {
                 color: var(--logo-view-text-color, white);
             }
 
-            a paper-icon-button {
+            paper-icon-button {
                 color: var(--logo-view-text-color, white) !important;
             }
 
-            a span {
-                color: var(--paper-blue-500);
+            span {
+                color: var(--paper-blue-200);
             }
         </style>
 
-        <a href="[[url]]">
-            <paper-icon-button icon="hardware:videogame-asset" disabled></paper-icon-button>
+        <div id="container">
+            <paper-icon-button icon="hardware:videogame-asset"></paper-icon-button>
             <div>امیرکبیر <span>استودیو</span></div>
             <paper-ripple center></paper-ripple>
-        </a>
+        </div>
     </template>
 
     <script>
@@ -54,6 +57,18 @@
                     type: String,
                     value: '/',
                 }
+            },
+
+            attached: function () {
+                this.listen(this.$['container'], 'click', '_returnHome');
+            },
+
+            detached: function () {
+                this.unlisten(this.$['container'], 'click', '_returnHome');
+            },
+
+            _returnHome: function () {
+                location.href = this.url;
             },
         });
     </script>

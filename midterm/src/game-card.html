@@ -164,7 +164,7 @@
             _enterGamePanel: function () {
                 var that = this;
                 this.$$('paper-button').addEventListener('transitionend', function () {
-                    location.href = `/games?game=${that.title}`;
+                    location.href = `/games?game=${that.title}&tab=0`;
                 });
             },
         });

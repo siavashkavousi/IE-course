@@ -7,17 +7,22 @@
         <style include="iron-flex iron-flex-alignment">
             :host {
                 box-sizing: border-box;
+                display: block;
                 font-size: 20px;
                 min-width: 180px;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
             }
 
             :host > * {
                 width: inherit;
                 height: inherit;
                 box-sizing: border-box;
+            }
+
+            div {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                cursor: pointer;
             }
 
             img {
@@ -39,10 +44,12 @@
             }
         </style>
 
-        <img id="avatar" src="[[avatar]]" alt="comment"/>
-        <div id="container" class="vertical layout center-justified">
-            <div id="text">[[text]]</div>
-            <div id="date">[[date]]</div>
+        <div on-click="_goToSpecificUrl">
+            <img id="avatar" src="[[avatar]]" alt="comment"/>
+            <div id="container" class="vertical layout center-justified">
+                <div id="text">[[text]]</div>
+                <div id="date">[[date]]</div>
+            </div>
         </div>
     </template>
 
@@ -68,6 +75,10 @@
                     value: false,
                     observer: '_setAvatarShape',
                 },
+                gameTitle: {
+                    type: String,
+                },
+                type: Number,
                 reorder: {
                     type: Boolean,
                     value: false,
@@ -89,6 +100,12 @@
                 if (!date)
                     this.$['date'].display = 'none';
             },
+
+            _goToSpecificUrl: function () {
+                if(!this.gameTitle || !this.type)
+                    return;
+                location.href = `/games?game=${this.gameTitle}&tab=${this.type}`;
+            }
         });
     </script>
 </dom-module>

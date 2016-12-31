@@ -6,7 +6,7 @@
   "license": "https://polymer.github.io/LICENSE.txt",
   "dependencies": {
     "app-layout": "PolymerElements/app-layout#^0.10.0",
-    "app-route": "PolymerElements/app-route#^0.9.0",
+    "app-route": "PolymerElements/app-route#^0.9.3",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0",
     "iron-icon": "PolymerElements/iron-icon#^1.0.0",
     "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.0.0",
@@ -28,13 +28,23 @@
     "jquery": "^3.1.1",
     "wincinderith-elements": "^1.0.0",
     "slick-carousel": "kenwheeler/slick#^1.6.0",
-    "times-slick-carousel": "aendrew/times-slick-carousel#^1.0.3"
+    "times-slick-carousel": "aendrew/times-slick-carousel#^1.0.3",
+    "iron-ajax": "PolymerElements/iron-ajax#^1.4.3",
+    "paper-card": "PolymerElements/paper-card#^1.1.4",
+    "paper-search": "Collaborne/paper-search#^1.2.1",
+    "paper-tabs": "PolymerElements/paper-tabs#^1.7.0",
+    "polymer-font-awesome-icons": "philya/font-awesome-polymer-icons#^4.2.0-b2",
+    "paper-listbox": "PolymerElements/paper-listbox#^1.1.2",
+    "paper-item": "PolymerElements/paper-item#^1.2.1",
+    "paper-styles": "PolymerElements/paper-styles#^1.1.5",
+    "components-font-awesome": "^4.7.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
   },
   "private": true,
   "resolutions": {
-    "jquery": ">=1.7"
+    "jquery": ">=1.7",
+    "polymer": "^1.6.0"
   }
 }

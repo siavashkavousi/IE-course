@@ -164,7 +164,7 @@
                             <iron-icon icon="search"></iron-icon>
                         </div>
                         <iron-icon icon="social:person"></iron-icon>
-                        <paper-button>ورود</paper-button>
+                        <paper-button id="sign-in-button" on-tap="_goToSignInPage">ورود</paper-button>
                     </div>
                 </app-toolbar>
             </app-header>
@@ -180,11 +180,13 @@
                         <paper-listbox>
                             <paper-item>همه</paper-item>
                             <paper-item>اکشن</paper-item>
-                            <paper-item>اکشن</paper-item>
-                            <paper-item>اکشن</paper-item>
-                            <paper-item>اکشن</paper-item>
-                            <paper-item>اکشن</paper-item>
-                            <paper-item>اکشن</paper-item>
+                            <paper-item>اول شخص</paper-item>
+                            <paper-item>سوم شخص</paper-item>
+                            <paper-item>ورزشی</paper-item>
+                            <paper-item>فکری</paper-item>
+                            <paper-item>نقش آفرینی</paper-item>
+                            <paper-item>استراتژیک</paper-item>
+                            <paper-item>ماجراجویی</paper-item>
                         </paper-listbox>
                     </div>
                     <div id="scores">
@@ -245,6 +247,14 @@
                     }
                 }
             },
+
+            _goToSignInPage: function () {
+                var that = this;
+                this.$['sign-in-button'].addEventListener('transitionend', function () {
+                    that.set('route.path', 'signin');
+                    that.queryParams = null;
+                });
+            }
         });
     </script>
 </dom-module>

@@ -1,0 +1,26 @@
+@font-face {
+    font-family: Shabnam;
+    src: url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-persian-digits-overwrite.eot');
+    src: url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-persian-digits-overwrite.eot?#iefix') format('embedded-opentype'),
+    url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-Bold-persian-digits-overwrite.woff') format('woff'),
+    url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-persian-digits-overwrite.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Shabnam;
+    src: url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-Bold-persian-digits-overwrite.eot');
+    src: url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-Bold-persian-digits-overwrite.eot?#iefix') format('embedded-opentype'),
+    url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-Bold-persian-digits-overwrite.woff') format('woff'),
+    url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-Bold-persian-digits-overwrite.ttf') format('truetype');
+    font-weight: bold;
+}
+
+body {
+    margin: 0;
+    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+    background-color: #eeeeee;
+    direction: rtl;
+}

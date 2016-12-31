@@ -4,32 +4,44 @@
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<!-- external components -->
 <link rel="import" href="jquery.html">
 
 <dom-module id="new-game-card">
     <template>
         <style>
             :host {
+                display: block;
                 box-sizing: border-box;
                 color: white;
-                height: 20vh;
+                height: 200px;
                 /*TODO should fix width conflict problem*/
                 /*width: 230px;*/
+                font-size: 16px;
             }
 
             :host > * {
                 box-sizing: border-box;
             }
 
+            a {
+                text-decoration: none;
+                color: var(--paper-grey-500);
+            }
+
             paper-card {
-                min-width: 200px;
-                min-height: 170px;
+                /*min-width: 200px;*/
+                /*min-height: 180px;*/
                 width: 200px;
-                height: 170px;
+                height: 190px;
             }
 
             paper-card div {
                 padding: 0 8px;
+            }
+
+            paper-card:hover {
+                @apply(--shadow-elevation-8dp);
             }
 
             paper-card #title {
@@ -38,7 +50,8 @@
             }
 
             paper-card #categories {
-                color: var(--paper-grey-300);
+                font-size: 12px;
+                color: var(--paper-grey-700);
             }
 
             paper-card iron-icon.star-blue {
@@ -63,14 +76,15 @@
         </style>
 
 
-        <paper-card image="[[imageUrl]]" alt="[[title]]" class="white">
+        <paper-card image="[[imageUrl]]" alt="[[title]]" class="white" on-tap="_enterGamePanel">
             <div id="title">[[title]]</div>
             <div id="categories">
-                <template is="dom-repeat" items="[[categories]]">
+                <template is="dom-repeat" items="{{categories}}">
                     <span>[[item]]</span>
                 </template>
             </div>
             <div id="stars"></div>
+            <paper-ripple></paper-ripple>
         </paper-card>
     </template>
 
@@ -89,7 +103,7 @@
                 },
                 categories: {
                     type: Array,
-                    value: ['action', 'adventure'],
+                    value: ["action", "adventure"],
                 },
                 rate: {
                     type: Number,
@@ -97,12 +111,14 @@
                 }
             },
 
-            ready: function () {
+            attached: function () {
                 this._renderRateStars();
             },
 
             _renderRateStars: function () {
                 //TODO needs refactoring
+                if ($(this.$['stars']).children().length == 5)
+                    return;
                 var $starsContainer = $(this.$['stars']);
                 for (var i = 1; i <= this.rate; i++) {
                     var $star = $("<iron-icon>", {"class": "star-blue", "icon": "star"});
@@ -118,6 +134,13 @@
                     $star = $("<iron-icon>", {"class": "star-grey", "icon": "star"});
                     $starsContainer.append($star);
                 }
+            },
+
+            _enterGamePanel: function () {
+                var that = this;
+                this.$$('paper-card').addEventListener('transitionend', function () {
+                    location.href = `/games?game=${that.title}&tab=0`;
+                });
             },
         });
     </script>

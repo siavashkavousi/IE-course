@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
-<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <!-- custom elements -->
 <link rel="import" href="logo-view.html">
@@ -37,6 +37,11 @@
 
             #container iron-icon {
                 margin-left: 10px;
+                --iron-icon-fill-color: var(--paper-grey-600)
+            }
+
+            #container logo-view {
+                --logo-view-text-color: var(--paper-grey-600);
             }
 
             #footer--bottom {
@@ -56,12 +61,12 @@
                     <a href="#">سوالات متداول</a>
                     <a href="#">حریم خصوصی</a>
                 </div>
-                <logo-view url="#"></logo-view>
+                <logo-view url="/"></logo-view>
             </div>
             <div class="horizontal layout center">
-                <iron-icon icon="social:pages"></iron-icon>
-                <iron-icon icon="social:pages"></iron-icon>
-                <iron-icon icon="social:pages"></iron-icon>
+                <iron-icon icon="communication:phone"></iron-icon>
+                <iron-icon icon="communication:email"></iron-icon>
+                <iron-icon icon="communication:rss-feed"></iron-icon>
             </div>
         </div>
         <div id="footer--bottom" class="vertical layout center center-justified">

@@ -50,6 +50,10 @@
                 background-size: cover;
             }
 
+            #homepage-top__container {
+                height: 80vh;
+            }
+
             app-header-layout [spacer] {
                 height: 5vh;
             }
@@ -101,11 +105,15 @@
                 height: 40vh;
             }
 
+            #homepage-bottom .homepage-bottom--title {
+                padding-bottom: 5px
+            }
+
             .slick-dots {
                 top: -30px;
                 left: -145px;
                 width: 50%;
-                z-index: -1;
+                height: 20px;
             }
 
             .slick-dots li {
@@ -164,6 +172,10 @@
                 font-weight: bold;
             }
 
+            #invitation > div {
+                z-index: 10;
+            }
+
             #invitation paper-button {
                 margin-top: 5vh;
                 color: var(--paper-grey-700);
@@ -179,7 +191,7 @@
 
         <app-header-layout>
             <div id="homepage-top" class="layout vertical">
-                <div style="height: 80vh">
+                <div id="homepage-top__container">
                     <app-header condenses reveals class="fullbleed">
                         <app-toolbar class="layout horizontal justified">
                             <logo-view url="#"></logo-view>
@@ -204,7 +216,7 @@
                             <paper-button raised class="light-blue" id="enter-game-button" on-tap="_enterGamePanel">ورود
                                 به صفحه بازی
                             </paper-button>
-                            <paper-button>
+                            <paper-button id="enter-gallery-button" on-tap="_goToGalleryTab">
                                 <iron-icon icon="av:play-circle-filled"></iron-icon>
                                 تریلر این بازی
                             </paper-button>
@@ -219,7 +231,7 @@
 
             <div id="homepage-bottom">
                 <div class="new-games-carousel">
-                    <div style="padding-bottom: 5px">جدیدترین بازی ها</div>
+                    <div class="homepage-bottom--title">جدیدترین بازی ها</div>
                     <div id="new-games-carousel"></div>
                 </div>
 
@@ -236,6 +248,8 @@
                                     <game-avatar avatar="[[item.player.avatar]]"
                                                  text="[[item.text]]"
                                                  date="[[item.date]]"
+                                                 game-title="[[item.game.title]]"
+                                                 type="2"
                                                  circle-avatar></game-avatar>
                                     <hr hidden$="[[_computeHrHidden(comments, index)]]">
                                 </template>
@@ -247,7 +261,9 @@
                                 <template is="dom-repeat" items="[[tutorials]]">
                                     <game-avatar avatar="[[item.game.small_image]]"
                                                  text="[[item.title]]"
-                                                 date="[[item.date]]"></game-avatar>
+                                                 date="[[item.date]]"
+                                                 game-title="[[item.game.title]]"
+                                                 type="0"></game-avatar>
                                     <hr hidden$="[[_computeHrHidden(tutorials, index)]]">
                                 </template>
                             </paper-listbox>
@@ -370,7 +386,7 @@
                     speed: 1000,
                     slidesToShow: 5,
                     autoplay: true,
-                    autoplaySpeed: 5000,
+                    autoplaySpeed: 1000,
                     centerMode: true,
                     centerPadding: '5px',
                     cssEase: 'linear',
@@ -381,13 +397,13 @@
                         {
                             breakpoint: 1024,
                             settings: {
-                                slidesToShow: 5,
+                                slidesToShow: 3,
                             }
                         },
                         {
-                            breakpoint: 640,
+                            breakpoint: 840,
                             settings: {
-                                slidesToShow: 3,
+                                slidesToShow: 2,
                             }
                         },
                         {
@@ -504,15 +520,21 @@
                     lazyLoad: 'ondemand',
                     responsive: [
                         {
-                            breakpoint: 1024,
+                            breakpoint: 1200,
                             settings: {
-                                slidesToShow: 4,
+                                slidesToShow: 3,
+                            }
+                        },
+                        {
+                            breakpoint: 900,
+                            settings: {
+                                slidesToShow: 3,
                             }
                         },
                         {
                             breakpoint: 640,
                             settings: {
-                                slidesToShow: 2,
+                                slidesToShow: 1,
                             }
                         },
                         {
@@ -534,9 +556,16 @@
             _enterGamePanel: function () {
                 var that = this;
                 this.$['enter-game-button'].addEventListener('transitionend', function () {
-                    location.href = `/games?game=${that.currentGameTitle}`;
+                    location.href = `/games?game=${that.currentGameTitle}&tab=0`;
                 });
             },
+
+            _goToGalleryTab: function () {
+                var that = this;
+                this.$['enter-gallery-button'].addEventListener('transitionend', function () {
+                    location.href = `/games?game=${that.currentGameTitle}&tab=4`;
+                });
+            }
         });
     </script>
 </dom-module>

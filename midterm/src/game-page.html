@@ -338,6 +338,17 @@
             #container #current-trailer game-card {
                 --game-card-height: 70vh;
             }
+
+            #container #current-trailer iframe {
+                height: 540px;
+                width: 69vw;
+                overflow: hidden;
+                display: block;
+            }
+
+            #gallery-carousel {
+                direction: ltr;
+            }
         </style>
 
         <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
@@ -352,7 +363,7 @@
                             <iron-icon icon="search"></iron-icon>
                         </div>
                         <iron-icon icon="social:person"></iron-icon>
-                        <paper-button>ورود</paper-button>
+                        <paper-button id="sign-in-button" on-tap="_goToSignInPage">ورود</paper-button>
                     </div>
                 </app-toolbar>
             </app-header>
@@ -510,16 +521,12 @@
                                 <game-card title="تریلر بازی [[currentGalleryItem.title]]"
                                            image-url="[[currentGalleryItem.url]]"
                                            views="[[currentGalleryItem.views]]"></game-card>
-                                <!--<img src="[[currentGalleryImage]]" width="100%" height="100%"-->
-                                <!--style="overflow: hidden; display: block">-->
                             </template>
                             <template is="dom-if" if="[[!currentGalleryImage]]">
-                                <game-card title="[[currentGalleryItem.title]]"
-                                           video-url="[[currentGalleryItem.url]]"
-                                           views="[[currentGalleryItem.views]]"></game-card>
+                                <iframe src="[[currentGalleryItem.url]]"></iframe>
                             </template>
                         </paper-material>
-                        <div id="gallery-carousel" style="direction: ltr"></div>
+                        <div id="gallery-carousel"></div>
                     </div>
                 </iron-pages>
 
@@ -543,7 +550,7 @@
             properties: {
                 selectedTab: {
                     type: Number,
-                    value: 0,
+                    observer: '_changeTabQueryParam',
                 },
                 imageUrl: {
                     type: String,
@@ -588,6 +595,7 @@
 
             observers: [
                 '_updateSelectedTabName(title, selectedTab)',
+                '_observeUrlQueryParams(queryParams)',
             ],
 
             cache: {},
@@ -610,6 +618,16 @@
             _changeHeaderDisplay: function (isLoading) {
                 if (isLoading)
                     this.$['header'].style.display = 'flex'
+            },
+
+            _observeUrlQueryParams: function (queryParams) {
+                if (queryParams['tab']) {
+                    this.selectedTab = parseInt(queryParams['tab']);
+                }
+            },
+
+            _changeTabQueryParam: function (selectedTab) {
+                this.set('queryParams.tab', selectedTab);
             },
 
             _listenInputChanges: function () {
@@ -709,7 +727,7 @@
 
             _handleLeaderBoardResponse: function (response) {
                 this.players = response.result['leaderboard'];
-                if (this.players.length > 0) {
+                if (this.players && this.players.length > 0) {
                     this._createLeaderBoardTopElements();
                     this._observeTableContentChanges();
                 } else {
@@ -721,6 +739,8 @@
                 for (var i = 0; i < response.result['comments'].length; i++)
                     this.push('comments', response.result['comments'][i]);
                 this.commentsListOffset = this.comments.length;
+                if (this.commentsListOffset == this.number_of_comments)
+                    this.$['load-more-comments'].style.display = 'none';
             },
 
             _handleRelatedGamesResponse: function (response) {
@@ -832,6 +852,13 @@
                     return "";
 
                 return `<iron-icon icon="icons:stars" style="color: ${color}"></iron-icon>`;
+            },
+
+            _isDisplacementPositive: function (displacement) {
+                if (displacement > 0)
+                    return true;
+                else
+                    return false;
             },
 
             _computeDisplacement: function (displacement) {
@@ -949,6 +976,14 @@
                     }
                 });
             },
+
+            _goToSignInPage: function () {
+                var that = this;
+                this.$['sign-in-button'].addEventListener('transitionend', function () {
+                    that.set('route.path', 'signin');
+                    that.queryParams = null;
+                });
+            }
         });
     </script>
 </dom-module>
