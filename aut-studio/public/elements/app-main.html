@@ -1,0 +1,75 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+
+<dom-module id="app-main">
+    <template>
+        <style>
+            :host {
+                box-sizing: border-box;
+                display: block;
+            }
+        </style>
+
+        <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"
+                tail="{{subroute}}">
+        </app-route>
+
+        <iron-pages selected="[[page]]"
+                    attr-for-selected="name"
+                    fallback-selection="view404"
+                    role="main">
+            <home-page name="home-page"></home-page>
+            <signin-page name="signin-page"></signin-page>
+            <signup-page name="signup-page"></signup-page>
+            <games-page name="games-page"></games-page>
+            <game-page name="game-page" title="{{queryParams.game}}"></game-page>
+            <view-404 name="view-404"></view-404>
+        </iron-pages>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'app-main',
+
+            properties: {
+                page: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_pageChanged',
+                },
+            },
+
+            observers: [
+                '_routePageChanged(routeData.page, queryParams)',
+            ],
+
+            _routePageChanged: function (page, queryParams) {
+                if (page == 'signin')
+                    this.page = 'signin-page';
+                else if (page == 'signup')
+                    this.page = 'signup-page';
+                else if (page == 'games' && queryParams['game'])
+                    this.page = 'game-page';
+                else if (page == 'games_list' && queryParams['q'])
+                    this.page = 'games-page';
+                else
+                    this.page = 'home-page';
+            },
+
+            _pageChanged: function (page) {
+                var resolvedPageUrl = this.resolveUrl(page + '.html');
+                this.importHref(resolvedPageUrl, null, this._showPage404, true);
+            },
+
+            _showPage404: function () {
+                this.page = 'view-404';
+            },
+        });
+    </script>
+</dom-module>

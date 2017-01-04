@@ -1,0 +1,156 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<!-- custom elements -->
+<link rel="import" href="logo-view.html">
+
+<dom-module id="signin-page">
+    <template>
+        <style is="custom-style" include="iron-flex iron-positioning iron-flex-alignment">
+            :host {
+                box-sizing: border-box;
+                display: flex;
+                width: 100vw;
+                height: 100vh;
+
+                --paper-font-common-base: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                };
+                --paper-font-common-code: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                    -webkit-font-smoothing: antialiased;
+                };
+
+                --paper-input-container-focus-color: var(--paper-pink-500);
+                --paper-input-container-underline: {
+                    border: solid var(--paper-grey-300) thin;
+                };
+                --paper-input-container-label: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    font-size: 14px;
+                };
+                --paper-input-container-label-floating: {
+                    transform: translateY(-75%) translateX(25%) scale(0.75);
+                };
+                /*--iron-icon-width: 40px;*/
+                /*--iron-icon-height: 40px;*/
+            }
+
+            :host > * {
+                width: inherit;
+                height: inherit;
+                box-sizing: border-box;
+            }
+
+            app-toolbar {
+                padding-left: 15%;
+                padding-right: 15%;
+                background-color: black;
+                color: white;
+            }
+
+            app-toolbar > iron-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .card-container {
+                height: 100%;
+                background-color: var(--paper-blue-500);
+            }
+
+            .card-container [spacer] {
+                margin-bottom: 20px;
+            }
+
+            .card-container .card-icon {
+                margin-left: 5px;
+                margin-top: 15px;
+            }
+
+            paper-card {
+                width: 30%;
+                background-color: var(--paper-grey-100);
+            }
+
+            paper-card #title {
+                font-weight: bold;
+            }
+
+            paper-card iron-icon {
+                margin-left: 10px;
+                color: var(--paper-grey-600);
+            }
+
+            paper-card paper-button {
+                width: 70%;
+                color: white;
+                background-color: var(--paper-pink-500);
+                font-weight: bold;
+                padding: 7px 5px;
+            }
+
+            paper-card .card-actions {
+                background-color: var(--paper-grey-300);
+            }
+
+            paper-card #no_acc {
+                margin-left: 4px;
+            }
+        </style>
+
+        <app-header-layout has-scrolling-region>
+            <app-header condenses reveals>
+                <app-toolbar class="layout horizontal justified">
+                    <logo-view url="/"></logo-view>
+                    <iron-icon icon="social:person"></iron-icon>
+                </app-toolbar>
+            </app-header>
+
+            <div class="horizontal layout center center-justified card-container">
+                <paper-card>
+                    <div class="card-content layout vertical center">
+                        <p id="title">ورود</p>
+                        <div class="layout horizontal center center-justified">
+                            <iron-icon icon="mail" class="card-icon"></iron-icon>
+                            <paper-input id="email" label="ایمیل یا شماره تلفن"></paper-input>
+                        </div>
+                        <div class="layout horizontal center center-justified">
+                            <iron-icon icon="lock" class="card-icon"></iron-icon>
+                            <paper-input id="password" label="رمزعبور" type="password"></paper-input>
+                        </div>
+
+                        <div spacer></div>
+                        <!--TODO link problem -->
+                        <paper-button raised>ورود</paper-button>
+                        <a href="#">رمزمو یادم رفته</a>
+                    </div>
+                    <div class="card-actions layout horizontal center center-justified">
+                        <p id="no_acc">حساب کاربری ندارید؟</p>
+                        <!--TODO link should be added -->
+                        <a href="#">ثبت‌نام کنید</a>
+                    </div>
+                </paper-card>
+            </div>
+        </app-header-layout>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'signin-page',
+
+            properties: {},
+        });
+    </script>
+</dom-module>

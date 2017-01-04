@@ -1,0 +1,75 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
+
+<dom-module id="logo-view">
+    <template>
+        <style>
+            :host {
+                box-sizing: border-box;
+                font-size: 20px;
+                min-width: 180px;
+            }
+
+            :host > * {
+                width: inherit;
+                height: inherit;
+                box-sizing: border-box;
+            }
+
+            #container {
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            div {
+                color: var(--logo-view-text-color, white);
+            }
+
+            paper-icon-button {
+                color: var(--logo-view-text-color, white) !important;
+            }
+
+            span {
+                color: var(--paper-blue-200);
+            }
+        </style>
+
+        <div id="container">
+            <paper-icon-button icon="hardware:videogame-asset"></paper-icon-button>
+            <div>امیرکبیر <span>استودیو</span></div>
+            <paper-ripple center></paper-ripple>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'logo-view',
+
+            properties: {
+                url: {
+                    type: String,
+                    value: '/',
+                }
+            },
+
+            attached: function () {
+                this.listen(this.$['container'], 'click', '_returnHome');
+            },
+
+            detached: function () {
+                this.unlisten(this.$['container'], 'click', '_returnHome');
+            },
+
+            _returnHome: function () {
+                location.href = this.url;
+            },
+        });
+    </script>
+</dom-module>

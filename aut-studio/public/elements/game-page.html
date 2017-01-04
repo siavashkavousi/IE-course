@@ -1,0 +1,989 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<!-- external components -->
+<link rel="import" href="jquery.html">
+<script src="../bower_components/slick-carousel/slick/slick.js"></script>
+<!-- custom elements -->
+<link rel="import" href="logo-view.html">
+<link rel="import" href="footer-view.html">
+<link rel="import" href="game-avatar.html">
+<link rel="import" href="top-player.html">
+<link rel="import" href="new-game-card.html">
+<link rel="import" href="game-card.html">
+<link rel="import" href="game-stars.html">
+
+<dom-module id="game-page">
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick.css"/>
+    <link rel="import" type="css" href="../bower_components/slick-carousel/slick/slick-theme.css"/>
+    <template>
+        <style include="iron-flex iron-flex-alignment app-grid-style">
+            :host {
+                box-sizing: border-box;
+                color: var(--paper-grey-600);
+
+                --paper-font-common-base: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                };
+                --paper-font-common-code: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                    -webkit-font-smoothing: antialiased;
+                };
+
+                --logo-view-text-color: var(--paper-grey-600);
+                background-color: white;
+
+                --app-grid-columns: 4;
+                --app-grid-item-height: 220px;
+            }
+
+            :host > * {
+                width: inherit;
+                height: inherit;
+            }
+
+            :host * {
+                box-sizing: border-box;
+                background-color: inherit;
+            }
+
+            :host [vspacer] {
+                margin-bottom: 10vh;
+            }
+
+            @media screen and (max-width: 1100px) {
+                :host {
+                    --app-grid-columns: 3;
+                }
+            }
+
+            @media screen and (max-width: 840px) {
+                :host {
+                    --app-grid-columns: 2;
+                }
+            }
+
+            @media screen and (max-width: 640px) {
+                :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            app-toolbar {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            paper-button {
+                font-size: var(--paper-font-button);
+                padding: 5px 5px;
+            }
+
+            #search {
+                background-color: white;
+                border: solid var(--paper-grey-300) thin;
+                display: flex;
+                border-radius: 2px;
+                padding: 0 5px;
+                margin-left: 20px;
+            }
+
+            #search input {
+                outline: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: none;
+                height: 80%;
+                font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                line-height: 1.5;
+            }
+
+            #search iron-icon {
+                height: 100%;
+                color: var(--paper-grey-400);
+            }
+
+            #header {
+                height: 35vh;
+                background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 1)), url('../images/header.jpg') center;
+                padding-left: 17%;
+                padding-right: 17%;
+                display: none;
+            }
+
+            #header * {
+                color: white;
+            }
+
+            #header img {
+                width: 20vh;
+                height: 20vh;
+                border-radius: 10px;
+                color: white;
+                margin-left: 2vw;
+            }
+
+            #header .title {
+                font-size: 30px;
+            }
+
+            #header span {
+                margin: 0;
+            }
+
+            #header span.item {
+                border-bottom: dotted white thin;
+                margin: 0;
+            }
+
+            #header > paper-button {
+                background-color: var(--paper-blue-500);
+                font-size: 18px;
+                padding: 6px 16px;
+                align-self: flex-start;
+                margin-top: 10vh;
+            }
+
+            #header .rate-container {
+                margin-top: 3vh;
+            }
+
+            #header .rate {
+                margin-left: 0.3vw;
+                margin-right: 1vw;
+            }
+
+            #header iron-icon {
+                margin-left: 5px;
+            }
+
+            #header iron-icon.star-blue {
+                --iron-icon-fill-color: var(--paper-blue-500);
+                --iron-icon-width: 16px;
+                --iron-icon-height: 16px;
+            }
+
+            #header iron-icon.star-grey {
+                --iron-icon-fill-color: var(--paper-grey-300);
+                --iron-icon-width: 16px;
+                --iron-icon-height: 16px;
+            }
+
+            #header iron-icon[icon=star-half] {
+                -webkit-transform: scaleX(-1);
+                -moz-transform: scaleX(-1);
+                -ms-transform: scaleX(-1);
+                -o-transform: scaleX(-1);
+                transform: scaleX(-1);
+            }
+
+            .spinner {
+                height: 35vh;
+            }
+
+            #container > * {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            #container paper-tabs {
+                background-color: var(--paper-grey-300);
+                --paper-tabs-selection-bar-color: var(--paper-blue-500);
+            }
+
+            #container paper-tabs paper-tab {
+                --paper-tab-ink: var(--paper-blue-300)
+            }
+
+            #container iron-pages {
+                margin-top: 2vh;
+            }
+
+            #container iron-pages .title {
+                padding: 2.5vh 0 2.5vh 0.5vw;
+                font-size: 26px;
+            }
+
+            #container iron-pages paper-button {
+                color: white;
+                background-color: var(--paper-blue-500);
+                padding: 1vh 2vw;
+                align-self: center;
+            }
+
+            #container iron-pages hr {
+                border-color: var(--paper-grey-50);
+            }
+
+            #container .container__info {
+                overflow: hidden;
+            }
+
+            #container #leaderboard {
+                width: 100%;
+                background-color: var(--paper-grey-50);
+            }
+
+            #container #leaderboard__top {
+                padding: 0 12vw;
+            }
+
+            #container #leaderboard__bottom table {
+                width: 100%;
+            }
+
+            #container #leaderboard__bottom table #table__header {
+                background-color: var(--paper-grey-300);
+                text-align: right;
+            }
+
+            #container #leaderboard__bottom table th, td {
+                padding: 2vh 1vw;
+            }
+
+            #container #leaderboard__bottom table tr.white {
+                background-color: white;
+            }
+
+            #leaderboard__bottom .table__content .table__displacement {
+                text-align: right;
+                direction: ltr;
+            }
+
+            #container #leaderboard__bottom game-avatar {
+                --game-avatar-img: {
+                    margin-left: 3vw;
+                }
+            }
+
+            #container #leaderboard__bottom .leaderboard--teal {
+                color: var(--paper-teal-400);
+            }
+
+            #container #leaderboard__bottom .leaderboard--red {
+                color: var(--paper-red-400);
+            }
+
+            #container iron-pages .leaderboard--margin-top {
+                margin-top: 8vh;
+            }
+
+            #container #comments > div {
+                background-color: white;
+                padding: 4vh 15%;
+                padding-bottom: 4vh;
+            }
+
+            #container #comments > div.grey {
+                background-color: var(--paper-grey-50);
+            }
+
+            #container #comments__modal {
+                --paper-font-title: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                };
+                background-color: white;
+                width: 50vw;
+            }
+
+            #container #comments__modal paper-input {
+                width: 80%;
+                --paper-input-container-focus-color: var(--paper-blue-500);
+                --paper-input-container-underline: {
+                    border: solid var(--paper-grey-300) thin;
+                };
+                --paper-input-container-label: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    font-size: 14px;
+                };
+                --paper-input-container-label-floating: {
+                    transform: translateY(-75%) translateX(25%) scale(0.75);
+                };
+            }
+
+            #container #gallery-carousel .slick-slide {
+                margin: 0 1vw;
+            }
+
+            #container #gallery-carousel .slick-list {
+                margin: 0 1vw;
+            }
+
+            #container #current-trailer {
+                margin: 20px 0;
+            }
+
+            #container #current-trailer game-card {
+                --game-card-height: 70vh;
+            }
+
+            #container #current-trailer iframe {
+                height: 540px;
+                width: 69vw;
+                overflow: hidden;
+                display: block;
+            }
+
+            #gallery-carousel {
+                direction: ltr;
+            }
+        </style>
+
+        <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
+
+        <app-header-layout>
+            <app-header fixed class="fullbleed">
+                <app-toolbar class="layout horizontal justified">
+                    <logo-view url="/"></logo-view>
+                    <div class="layout horizontal center">
+                        <div id="search" class="layout horizontal center center-justified">
+                            <input id="search__input" type="text" placeholder="جست و جو ..." required>
+                            <iron-icon icon="search"></iron-icon>
+                        </div>
+                        <iron-icon icon="social:person"></iron-icon>
+                        <paper-button id="sign-in-button" on-tap="_goToSignInPage">ورود</paper-button>
+                    </div>
+                </app-toolbar>
+            </app-header>
+
+            <div id="header" class="horizontal layout center justified" hidden$="[[isLoadingHeader]]">
+                <div class="horizontal layout center">
+                    <img src="[[imageUrl]]">
+                    <div class="vertical layout justified">
+                        <div class="title">[[title]]</div>
+                        <div>
+                            <template is="dom-repeat" items="[[categories]]">
+                                <span class="item">[[item]]</span>
+                                <span hidden$="[[_computeSpanHidden(categories, index)]]">،</span>
+                            </template>
+                        </div>
+                        <div class="horizontal layout center rate-container">
+                            <game-stars rate="[[rate]]"></game-stars>
+                            <span class="rate">[[rate]]</span>
+                            <span>([[number_of_comments]] رای)</span>
+                        </div>
+                    </div>
+                </div>
+                <paper-button raised>شروع بازی</paper-button>
+
+                <iron-ajax
+                        auto
+                        url="http://api.ie.ce-it.ir/F95/games/[[title]]/header.json"
+                        handle-as="json"
+                        on-response="_handleHeaderResponse"
+                        loading="{{isLoadingHeader}}"
+                        debounce-duration="300"></iron-ajax>
+            </div>
+            <div class="spinner horizontal layout center center-justified" hidden$="[[!isLoadingHeader]]">
+                <div class="vertical layout center center-justified">
+                    <paper-spinner active="[[isLoadingHeader]]"></paper-spinner>
+                </div>
+            </div>
+
+            <div id="container">
+                <paper-tabs selected="{{selectedTab}}">
+                    <paper-tab>اطلاعات بازی</paper-tab>
+                    <paper-tab>رتبه بندی و امتیازات</paper-tab>
+                    <paper-tab>نظرات کاربران</paper-tab>
+                    <paper-tab>بازی های مشابه</paper-tab>
+                    <paper-tab>عکس ها و ویدئوها</paper-tab>
+                </paper-tabs>
+                <iron-pages selected="[[selectedTab]]" hidden$="[[isLoadingTab]]">
+                    <div>
+                        <div class="title">اطلاعات بازی</div>
+                        <hr>
+                        <div class="container__info" inner-h-t-m-l="[[info]]"></div>
+                    </div>
+                    <div>
+                        <div class="title">رتبه بندی و امتیازات</div>
+                        <hr>
+                        <paper-card id="leaderboard">
+                            <div id="leaderboard__top" class="horizontal layout center around-justified"></div>
+                            <div id="leaderboard__bottom" class="vertical layout">
+                                <table cellpadding="0" cellspacing="0">
+                                    <tr id="table__header">
+                                        <th width="8%">رتبه</th>
+                                        <th width="7%"></th>
+                                        <th width="55%">بازیکن</th>
+                                        <th>سطح</th>
+                                        <th>تغییر رتبه</th>
+                                        <th>امتیاز</th>
+                                    </tr>
+                                    <template is="dom-repeat" items="[[players]]">
+                                        <tr class="table__content">
+                                            <td>[[_increaseIndex(index)]].</td>
+                                            <td inner-h-t-m-l="[[_showTopPlayerMedal(index)]]"></td>
+                                            <td>
+                                                <game-avatar avatar="[[item.player.avatar]]"
+                                                             text="[[item.player.name]]"
+                                                             circle-avatar></game-avatar>
+                                            </td>
+                                            <td class="leaderboard--teal">[[item.level]]</td>
+                                            <td class="table__displacement">
+                                                [[_computeDisplacement(item.displacement)]]
+                                                <iron-icon icon="icons:arrow-drop-up"
+                                                           hidden$="[[!_isDisplacementPositive(item.displacement)]]"
+                                                           class="leaderboard--teal"></iron-icon>
+                                                <iron-icon icon="icons:arrow-drop-down"
+                                                           hidden$="[[_isDisplacementPositive(item.displacement)]]"
+                                                           class="leaderboard--red"></iron-icon>
+                                            </td>
+                                            <td class="leaderboard--teal">[[item.score]]</td>
+                                        </tr>
+                                    </template>
+                                </table>
+                            </div>
+                        </paper-card>
+                    </div>
+                    <div>
+                        <div class="horizontal layout justified">
+                            <div class="horizontal layout center">
+                                <div class="title">نظرات کاربران</div>
+                                <div>([[number_of_comments]] نظر)</div>
+                            </div>
+                            <paper-button raised on-tap="_writeNewComment">نظر دهید</paper-button>
+                        </div>
+                        <hr>
+                        <paper-listbox id="comments">
+                            <template is="dom-repeat" items="[[comments]]">
+                                <template is="dom-if" if="[[_isCommentsItemGrey(index)]]">
+                                    <div class="horizontal layout center justified grey">
+                                        <game-avatar avatar="[[item.player.avatar]]"
+                                                     text="[[item.player.name]]: [[item.text]]"
+                                                     date="[[item.date]]"
+                                                     circle-avatar
+                                                     reorder></game-avatar>
+                                        <game-stars rate="[[item.rate]]"></game-stars>
+                                    </div>
+                                </template>
+                                <template is="dom-if" if="[[!_isCommentsItemGrey(index)]]">
+                                    <div class="horizontal layout center justified">
+                                        <game-avatar avatar="[[item.player.avatar]]"
+                                                     text="[[item.player.name]]: [[item.text]]"
+                                                     date="[[item.date]]"
+                                                     circle-avatar
+                                                     reorder></game-avatar>
+                                        <game-stars rate="[[item.rate]]"></game-stars>
+                                    </div>
+                                </template>
+                            </template>
+                        </paper-listbox>
+                        <div class="vertical layout center">
+                            <paper-button id="load-more-comments"
+                                          raised on-tap="_loadMoreComments">بارگذاری نظرات بعدی
+                            </paper-button>
+                        </div>
+                        <paper-dialog id="comments__modal" class="vertical layout center center-justified">
+                            <h2>نظر:</h2>
+                            <paper-input label="نظر شما ..."></paper-input>
+                            <paper-button dialog-confirm autofocus>ثبت</paper-button>
+                        </paper-dialog>
+                    </div>
+                    <div>
+                        <div class="title">بازی های مشابه</div>
+                        <hr>
+                        <div class="app-grid">
+                            <template is="dom-repeat" items="[[relatedGames]]">
+                                <new-game-card image-url="[[item.small_image]]"
+                                               title="[[item.title]]"
+                                               categories="[[item.categories]]"
+                                               rate="[[rate]]"></new-game-card>
+                            </template>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="title">عکس ها و ویدئوها</div>
+                        <hr>
+                        <paper-material id="current-trailer" elevation="3">
+                            <template is="dom-if" if="[[currentGalleryImage]]">
+                                <game-card title="تریلر بازی [[currentGalleryItem.title]]"
+                                           image-url="[[currentGalleryItem.url]]"
+                                           views="[[currentGalleryItem.views]]"></game-card>
+                            </template>
+                            <template is="dom-if" if="[[!currentGalleryImage]]">
+                                <iframe src="[[currentGalleryItem.url]]"></iframe>
+                            </template>
+                        </paper-material>
+                        <div id="gallery-carousel"></div>
+                    </div>
+                </iron-pages>
+
+                <div class="spinner horizontal layout center center-justified" hidden$="[[!isLoadingTab]]">
+                    <div class="vertical layout center center-justified">
+                        <paper-spinner active="[[isLoadingTab]]"></paper-spinner>
+                    </div>
+                </div>
+            </div>
+
+            <div vspacer></div>
+
+            <footer-view></footer-view>
+        </app-header-layout>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'game-page',
+
+            properties: {
+                selectedTab: {
+                    type: Number,
+                    observer: '_changeTabQueryParam',
+                },
+                imageUrl: {
+                    type: String,
+                    value: '../images/thumb.jpg',
+                },
+                title: String,
+                categories: {
+                    type: Object,
+                    value: ["اکشن", "اول شخص"],
+                },
+                rate: {
+                    type: Number,
+                    value: 0,
+                    observer: '_correctNumericValue',
+                },
+                currentGalleryImage: {
+                    type: Boolean,
+                    value: true,
+                },
+                isGallerySlidesAdded: {
+                    type: Boolean,
+                    value: false,
+                },
+                isLoadingHeader: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_changeHeaderDisplay',
+                },
+                isLoadingTab: {
+                    type: Boolean,
+                    value: false,
+                },
+                comments: {
+                    type: Array,
+                    value: [],
+                },
+                commentsListOffset: {
+                    type: Number,
+                    value: 0,
+                },
+            },
+
+            observers: [
+                '_updateSelectedTabName(title, selectedTab)',
+                '_observeUrlQueryParams(queryParams)',
+            ],
+
+            cache: {},
+
+            ready: function () {
+                this._listenInputChanges();
+            },
+
+            attached: function () {
+                this._updateGridStyles = this._updateGridStyles || function () {
+                            this.updateStyles();
+                        }.bind(this);
+                window.addEventListener('resize', this._updateGridStyles);
+            },
+
+            detached: function () {
+                window.removeEventListener('resize', this._updateGridStyles);
+            },
+
+            _changeHeaderDisplay: function (isLoading) {
+                if (isLoading)
+                    this.$['header'].style.display = 'flex'
+            },
+
+            _observeUrlQueryParams: function (queryParams) {
+                if (queryParams['tab']) {
+                    this.selectedTab = parseInt(queryParams['tab']);
+                }
+            },
+
+            _changeTabQueryParam: function (selectedTab) {
+                this.set('queryParams.tab', selectedTab);
+            },
+
+            _listenInputChanges: function () {
+                var that = this;
+                $(this.$['search__input']).change(function () {
+                    that.queryParams = {'q': $(this).val()};
+                    that.set('route.path', '/games_list')
+                });
+            },
+
+            _handleHeaderResponse: function (request) {
+                var response = request.detail.response.response;
+                console.log('ajax request (game header) response');
+                console.log(response);
+                if (response.ok) {
+                    var game = response.result['game'];
+                    this.imageUrl = game['small_image'];
+                    this.title = game['title'];
+                    this.categories = game['categories'];
+                    this.rate = game['rate'];
+                    this.number_of_comments = game['number_of_comments'];
+                }
+            },
+
+            _computeSpanHidden: function (list, index) {
+                return list.length - 1 === index;
+            },
+
+            _correctNumericValue: function (rate) {
+                this.rate = parseFloat(rate);
+            },
+
+            _sendTabAjaxRequest: function () {
+                if (!this.cache[`${this.selectedTabName}`]) {
+                    this.cache[`${this.selectedTabName}`] = $.get({
+                        url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}`,
+                        dataType: 'json',
+                        context: this,
+                        beforeSend: function () {
+                            this.isLoadingTab = true;
+                        },
+                        complete: function () {
+                            this.isLoadingTab = false;
+                        },
+                    }).promise();
+                }
+
+                this.cache[`${this.selectedTabName}`].done(this._handleTabResponse);
+            },
+
+            _sendCommentAjaxRequest: function () {
+                if (!this.cache[`${this.selectedTabName}-${this.commentsListOffset}`]) {
+                    this.cache[`${this.selectedTabName}-${this.commentsListOffset}`] = $.get({
+                        url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}?offset=${this.commentsListOffset}`,
+                        dataType: 'json',
+                        context: this,
+                        beforeSend: function () {
+                            this.isLoadingTab = true;
+                        },
+                        complete: function () {
+                            this.isLoadingTab = false;
+                        },
+                    }).promise();
+                }
+
+                this.cache[`${this.selectedTabName}-${this.commentsListOffset}`].done(this._handleTabResponse);
+            },
+
+            _handleTabResponse: function (data) {
+                var response = data.response;
+                console.log('ajax request (game tab) response');
+                console.log(response);
+                if (response.ok) {
+                    switch (this.selectedTabName) {
+                        case 'info':
+                            this._handleInfoResponse(response);
+                            break;
+                        case 'leaderboard':
+                            this._handleLeaderBoardResponse(response);
+                            break;
+                        case 'comments':
+                            this._handleCommentsResponse(response);
+                            break;
+                        case 'related_games':
+                            this._handleRelatedGamesResponse(response);
+                            break;
+                        case 'gallery':
+                            this._handleGalleryResponse(response);
+                            break;
+                    }
+                }
+            },
+
+            _handleInfoResponse: function (response) {
+                this.info = response.result['game']['info'];
+            },
+
+            _handleLeaderBoardResponse: function (response) {
+                this.players = response.result['leaderboard'];
+                if (this.players && this.players.length > 0) {
+                    this._createLeaderBoardTopElements();
+                    this._observeTableContentChanges();
+                } else {
+                    Polymer.dom(this.$['leaderboard']).querySelector('table').style.display = 'none';
+                }
+            },
+
+            _handleCommentsResponse: function (response) {
+                for (var i = 0; i < response.result['comments'].length; i++)
+                    this.push('comments', response.result['comments'][i]);
+                this.commentsListOffset = this.comments.length;
+                if (this.commentsListOffset == this.number_of_comments)
+                    this.$['load-more-comments'].style.display = 'none';
+            },
+
+            _handleRelatedGamesResponse: function (response) {
+                this.relatedGames = response.result['games'];
+                //TODO this should be removed at the end of testing
+                for (i = 0; i < 5; i++) {
+                    this.push('relatedGames', this.relatedGames[0])
+                }
+            },
+
+            _handleGalleryResponse: function (response) {
+                gallery = response.result['gallery'];
+                this._initGalleryCarousel(gallery);
+            },
+
+            _updateSelectedTabName: function (title, selectedTab) {
+                if (!title)
+                    return;
+
+                if (selectedTab == 2) {
+                    this.selectedTabName = 'comments';
+                    this._sendCommentAjaxRequest();
+                } else {
+                    switch (selectedTab) {
+                        case 0:
+                            this.selectedTabName = 'info';
+                            break;
+                        case 1:
+                            this.selectedTabName = 'leaderboard';
+                            break;
+                        case 3:
+                            this.selectedTabName = 'related_games';
+                            break;
+                        case 4:
+                            this.selectedTabName = 'gallery';
+                            break;
+                    }
+                    this._sendTabAjaxRequest();
+                }
+            },
+
+            _loadMoreComments: function () {
+                this._sendCommentAjaxRequest();
+            },
+
+            _writeNewComment: function () {
+                this.$['comments__modal'].open();
+            },
+
+            _isCommentsItemGrey(index) {
+                return index % 2 == 0;
+            },
+
+            _createLeaderBoardTopElements() {
+                var players = this.players;
+
+                if (!this.$$('#third-player')) {
+                    var $element = $('<top-player>', {
+                        'id': 'third-player',
+                        'image-url': players[2]['player']['avatar'],
+                        'name': players[2]['player']['name'],
+                        'level': players[2]['level'],
+                        'score': players[2]['score'],
+                        'border-color': 'brown',
+                        'image-size': 80,
+                        'class': 'leaderboard--margin-top',
+                    });
+                    Polymer.dom(this.$['leaderboard__top']).appendChild($element.get(0));
+                }
+
+                if (!this.$$('#first-player')) {
+                    $element = $('<top-player>', {
+                        'id': 'first-player',
+                        'image-url': players[0]['player']['avatar'],
+                        'name': players[0]['player']['name'],
+                        'level': players[0]['level'],
+                        'score': players[0]['score'],
+                    });
+                    Polymer.dom(this.$['leaderboard__top']).appendChild($element.get(0));
+                }
+
+                if (!this.$$('#second-player')) {
+                    $element = $('<top-player>', {
+                        'id': 'second-player',
+                        'image-url': players[1]['player']['avatar'],
+                        'name': players[1]['player']['name'],
+                        'level': players[1]['level'],
+                        'score': players[1]['score'],
+                        'border-color': 'silver',
+                        'image-size': 90,
+                        'class': 'leaderboard--margin-top',
+                    });
+                    Polymer.dom(this.$['leaderboard__top']).appendChild($element.get(0));
+                }
+            },
+
+            _increaseIndex: function (index) {
+                return index + 1;
+            },
+
+            _showTopPlayerMedal: function (index) {
+                if (index == 0)
+                    color = 'gold';
+                else if (index == 1)
+                    color = 'silver';
+                else if (index == 2)
+                    color = 'brown';
+                else
+                    return "";
+
+                return `<iron-icon icon="icons:stars" style="color: ${color}"></iron-icon>`;
+            },
+
+            _isDisplacementPositive: function (displacement) {
+                if (displacement > 0)
+                    return true;
+                else
+                    return false;
+            },
+
+            _computeDisplacement: function (displacement) {
+                if (displacement > 0)
+                    return `(+ ${displacement})`;
+                else
+                    return `(- ${displacement * -1})`;
+            },
+
+            _observeTableContentChanges: function () {
+                var that = this;
+                var observer = Polymer.dom(this.$['leaderboard']).observeNodes(function (info) {
+                    that._changeTableRowColor(info.addedNodes);
+                });
+            },
+
+            _changeTableRowColor: function (info) {
+                var tableContents = Polymer.dom(this.root).querySelectorAll('.table__content');
+                for (var i = 0; i < tableContents.length; i++) {
+                    if (i % 2 != 0)
+                        tableContents[i].className += ' white';
+                }
+            },
+
+            _initGalleryCarousel: function (galleryList) {
+                this._setCurrentTrailerItem(galleryList['images'][0])
+                this._addGallerySlides(galleryList);
+                this._initGallerySlick();
+                this._updateCurrentGalleryItem(galleryList);
+            },
+
+            _setCurrentTrailerItem: function (item) {
+                if (!item)
+                    return;
+
+                this.currentGalleryItem = item;
+            },
+
+            _addGallerySlides: function (galleryList) {
+                if (this.isGallerySlidesAdded)
+                    return;
+
+                for (var i = 0; i < galleryList['images'].length; i++) {
+                    var div = document.createElement('div');
+                    var gameTitle = galleryList['images'][i]['title'];
+                    var $element = $('<game-card>', {
+                        'game-id': i,
+                        'image-url': galleryList['images'][i]['url'],
+                        'type': 'image',
+                    });
+                    div.appendChild($element.get(0));
+                    Polymer.dom(this.$['gallery-carousel']).appendChild(div);
+                }
+
+
+                for (i = 0; i < galleryList['videos'].length; i++) {
+                    div = document.createElement('div');
+                    $element = $('<game-card>', {
+                        'game-id': i,
+                        //TODO this should be image thumbnail of video but API doesn't provide it...
+                        'image-url': '../images/app-main-bg.jpg',
+                        'type': 'video',
+                    });
+                    div.appendChild($element.get(0));
+                    Polymer.dom(this.$['gallery-carousel']).appendChild(div);
+                }
+
+                this.isGallerySlidesAdded = true;
+            },
+
+            _initGallerySlick: function () {
+                var slickDefaults = {
+                    dots: false,
+                    infinite: false,
+                    arrows: true,
+                    speed: 1000,
+                    slidesToShow: 4,
+                    lazyLoad: 'ondemand',
+                    pauseOnHover: true,
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 5,
+                            }
+                        },
+                        {
+                            breakpoint: 640,
+                            settings: {
+                                slidesToShow: 3,
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                            }
+                        }
+                    ]
+                };
+
+                $(this.$['gallery-carousel']).slick(slickDefaults);
+            },
+
+            _updateCurrentGalleryItem: function (galleryList) {
+                var that = this;
+                $(this.$$('.slick-track')).on('click', 'game-card', function () {
+                    var currentSlide = $(this).parents('.slick-slide').attr('data-slick-index');
+                    if (this.type == 'image') {
+                        that.currentGalleryImage = true;
+                        that.currentGalleryItem = galleryList['images'][this.gameId];
+                    } else if (this.type == 'video') {
+                        that.currentGalleryImage = false;
+                        that.currentGalleryItem = galleryList['videos'][this.gameId];
+                    }
+                });
+            },
+
+            _goToSignInPage: function () {
+                var that = this;
+                this.$['sign-in-button'].addEventListener('transitionend', function () {
+                    that.set('route.path', 'signin');
+                    that.queryParams = null;
+                });
+            }
+        });
+    </script>
+</dom-module>

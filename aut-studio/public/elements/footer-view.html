@@ -1,0 +1,84 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<!-- custom elements -->
+<link rel="import" href="logo-view.html">
+
+<dom-module id="footer-view">
+    <template>
+        <style>
+            :host {
+                box-sizing: border-box;
+                color: white;
+            }
+
+            :host * {
+                box-sizing: border-box;
+            }
+
+            :host > * {
+                background-color: var(--paper-grey-100);
+            }
+
+            a {
+                text-decoration: none;
+                color: var(--paper-blue-500);
+            }
+
+            #container {
+                padding: 15px 15%;
+            }
+
+            #container a {
+                margin-left: 30px;
+            }
+
+            #container iron-icon {
+                margin-left: 10px;
+                --iron-icon-fill-color: var(--paper-grey-600)
+            }
+
+            #container logo-view {
+                --logo-view-text-color: var(--paper-grey-600);
+            }
+
+            #footer--bottom {
+                width: 100%;
+                height: 10vh;
+                background-color: var(--paper-grey-300);
+                color: var(--paper-grey-500);
+            }
+        </style>
+
+        <div id="container" class="vertical layout">
+            <div class="horizontal layout justified">
+                <div class="horizontal layout center">
+                    <a href="#">صفحه بازی</a>
+                    <a href="#">درباره ما</a>
+                    <a href="#">ارتباط با سازندگان</a>
+                    <a href="#">سوالات متداول</a>
+                    <a href="#">حریم خصوصی</a>
+                </div>
+                <logo-view url="/"></logo-view>
+            </div>
+            <div class="horizontal layout center">
+                <iron-icon icon="communication:phone"></iron-icon>
+                <iron-icon icon="communication:email"></iron-icon>
+                <iron-icon icon="communication:rss-feed"></iron-icon>
+            </div>
+        </div>
+        <div id="footer--bottom" class="vertical layout center center-justified">
+            <div>تمامی حقوق محفوظ و متعلق به دانشگاه امیرکبیر است</div>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'footer-view',
+
+            properties: {},
+        });
+    </script>
+</dom-module>

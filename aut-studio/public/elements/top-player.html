@@ -1,0 +1,117 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+
+<dom-module id="top-player">
+    <template>
+        <style include="iron-flex iron-flex-alignment">
+            :host {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            :host > * {
+                margin: 1px;
+            }
+
+            .hexagon {
+                position: relative;
+                top: -1.4rem;
+                right: -1.5rem;
+                margin-bottom: -1.4rem;
+                color: white;
+            }
+
+            .square {
+                width: 1.25rem;
+                height: 1.5rem;
+                background-color: #4d4d4d;
+                z-index: 1;
+                padding-top: 0.1rem;
+                border-top: solid white thin;
+                border-bottom: solid white thin;
+            }
+
+            .triangle1 {
+                border-top: 0.9rem solid transparent;
+                border-bottom: 0.9rem solid transparent;
+                border-left: 0.4rem solid #4d4d4d;
+            }
+
+            .triangle2 {
+                border-top: 0.9rem solid transparent;
+                border-bottom: 0.9rem solid transparent;
+                border-right: 0.4rem solid #4d4d4d;
+            }
+
+            #title {
+                font-weight: bold;
+            }
+
+            #score {
+                color: var(--paper-teal-400);
+            }
+        </style>
+
+        <img src="[[imageUrl]]"/>
+        <div class="horizontal layout center center-justified hexagon">
+            <div class="triangle1"></div>
+            <div class="square vertical layout center center-justified">[[level]]</div>
+            <div class="triangle2"></div>
+        </div>
+        <p id="title">[[name]]</p>
+        <p id="score">[[score]]</p>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'top-player',
+
+            properties: {
+                imageUrl: {
+                    type: String,
+                    value: '../images/avatar.jpg',
+                    reflectToAttribute: true,
+                },
+                name: {
+                    type: String,
+                    value: 'کریم عبدالجبار',
+                    reflectToAttribute: true,
+                },
+                level: {
+                    type: Number,
+                    value: 30,
+                    reflectToAttribute: true,
+                },
+                score: {
+                    type: Number,
+                    value: 150000000,
+                    reflectToAttribute: true,
+                },
+                borderColor: {
+                    type: String,
+                    value: 'gold',
+                    reflectToAttribute: true,
+                    observer: '_styleBorder',
+                },
+                imageSize: {
+                    type: Number,
+                    value: 100,
+                    reflectToAttribute: true,
+                    observer: '_changeImage',
+                },
+            },
+
+            _styleBorder: function (color) {
+                this.$$('img').style.border = `solid ${color} medium`;
+            },
+
+            _changeImage: function (imageSize) {
+                this.$$('img').style.width = `${imageSize}px`;
+                this.$$('img').style.height = `${imageSize}px`;
+                this.$$('img').style.borderRadius = `${imageSize / 2}px`;
+            },
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,111 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+
+<dom-module id="game-avatar">
+    <template>
+        <style include="iron-flex iron-flex-alignment">
+            :host {
+                box-sizing: border-box;
+                display: block;
+                font-size: 20px;
+                min-width: 180px;
+            }
+
+            :host > * {
+                width: inherit;
+                height: inherit;
+                box-sizing: border-box;
+            }
+
+            div {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                cursor: pointer;
+            }
+
+            img {
+                margin-left: 8px;
+                width: 50px;
+                height: 50px;
+
+                @apply(--game-avatar-img);
+            }
+
+            #text {
+                font-size: 16px;
+                color: var(--paper-blue-500);
+            }
+
+            #date {
+                font-size: 12px;
+                color: var(--paper-grey-500);
+            }
+        </style>
+
+        <div on-click="_goToSpecificUrl">
+            <img id="avatar" src="[[avatar]]" alt="comment"/>
+            <div id="container" class="vertical layout center-justified">
+                <div id="text">[[text]]</div>
+                <div id="date">[[date]]</div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'game-avatar',
+
+            properties: {
+                avatar: {
+                    type: String,
+                    value: '../images/app-main-bg.jpg',
+                },
+                text: {
+                    type: String,
+                    value: 'خوبه',
+                },
+                date: {
+                    type: String,
+                    observer: '_shouldDateHidden',
+                },
+                circleAvatar: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_setAvatarShape',
+                },
+                gameTitle: {
+                    type: String,
+                },
+                type: Number,
+                reorder: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_reorderElements',
+                },
+            },
+
+            _setAvatarShape: function (circleAvatar) {
+                if (circleAvatar)
+                    this.$['avatar'].style.borderRadius = '25px';
+            },
+
+            _reorderElements: function (reorder) {
+                if (reorder)
+                    this.$['container'].style.flexDirection = 'column-reverse'
+            },
+
+            _shouldDateHidden: function (date) {
+                if (!date)
+                    this.$['date'].display = 'none';
+            },
+
+            _goToSpecificUrl: function () {
+                if(!this.gameTitle || !this.type)
+                    return;
+                location.href = `/games?game=${this.gameTitle}&tab=${this.type}`;
+            }
+        });
+    </script>
+</dom-module>
