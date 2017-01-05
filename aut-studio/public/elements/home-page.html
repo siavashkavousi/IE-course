@@ -281,12 +281,12 @@
             <footer-view></footer-view>
         </app-header-layout>
 
-        <!--<iron-ajax-->
-                <!--auto-->
-                <!--url="http://api.ie.ce-it.ir/F95/home"-->
-                <!--handle-as="json"-->
-                <!--on-response="_handleResponse"-->
-                <!--debounce-duration="300"></iron-ajax>-->
+        <iron-ajax
+                auto
+                url="http://localhost:8000/home"
+                handle-as="json"
+                on-response="_handleResponse"
+                debounce-duration="300"></iron-ajax>
     </template>
 
     <script>
@@ -317,7 +317,7 @@
             },
 
             _handleResponse: function (request) {
-                var response = request.detail.response.response;
+                var response = request.detail.response;
                 console.log('ajax request (home) response');
                 console.log(response);
                 if (response.ok) {
