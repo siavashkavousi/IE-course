@@ -49,3 +49,19 @@ function getCategories(Game $game)
         array_push($list, $category->name);
     return $list;
 }
+
+function filterComments($comments)
+{
+    $result = $comments->toArray();
+    foreach ($comments as $index => $comment) {
+        $result[$index]['game'] = filterGame($comment->game);
+        $result[$index]['player'] = filterPlayer($comment->player);
+        $result[$index] = array_except($result[$index], ['id', 'game_id', 'player_id']);
+    }
+    return $result;
+}
+
+function filterPlayer($player)
+{
+    return array_except($player, 'id');
+}

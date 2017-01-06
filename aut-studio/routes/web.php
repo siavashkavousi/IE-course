@@ -24,3 +24,5 @@ Route::get('/home', 'HomeController@index');
 Route::get('/games', 'GameController@game');
 Route::get('/games/{title}/header', 'GameController@header');
 Route::get('/games/{title}/info', 'GameController@info');
+Route::get('/games/{title}/leaderboard', 'GameController@leaderboard');
+Route::get('/games/{title}/comments', 'GameController@comments');
