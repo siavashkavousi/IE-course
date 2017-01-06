@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    public $timestamps = false;
+
     public function players()
     {
-        return $this->hasMany(Player::class);
+        return $this->belongsTo(Player::class);
     }
 
     public function game()
     {
-        return $this->hasOne(Game::class);
+        return $this->belongsTo(Game::class);
     }
 }

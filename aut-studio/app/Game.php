@@ -8,6 +8,16 @@ class Game extends Model
 {
     public function categories()
     {
-        return $this->hasMany(Category::class);
+        return $this->belongsToMany(Category::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function tutorial()
+    {
+        return $this->hasOne(Tutorial::class);
     }
 }

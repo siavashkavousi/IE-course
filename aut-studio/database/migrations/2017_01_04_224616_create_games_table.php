@@ -1,9 +1,7 @@
 <?php
 
-use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateGamesTable extends Migration
@@ -27,10 +25,7 @@ class CreateGamesTable extends Migration
             $table->timestamps();
         });
 
-        $games = loadJSON('games.json');
-        foreach ($games as $game) {
-            DB::table('games')->insert(array_merge($game, ['created_at' => Carbon::now()]));
-        }
+        addInitialData('games');
     }
 
     /**

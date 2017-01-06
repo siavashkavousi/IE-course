@@ -19,6 +19,8 @@ class CreatePlayersTable extends Migration
             $table->string('avatar');
             $table->timestamps();
         });
+
+        addInitialData('players');
     }
 
     /**
