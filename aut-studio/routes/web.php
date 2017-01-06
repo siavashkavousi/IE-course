@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,3 +20,7 @@ Route::get('/', function () {
 //Auth::routes();
 
 Route::get('/home', 'HomeController@index');
+
+Route::get('/games', 'GameController@game');
+Route::get('/games/{title}/header', 'GameController@header');
+Route::get('/games/{title}/info', 'GameController@info');

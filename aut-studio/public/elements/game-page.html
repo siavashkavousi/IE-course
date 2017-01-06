@@ -390,7 +390,7 @@
 
                 <iron-ajax
                         auto
-                        url="http://api.ie.ce-it.ir/F95/games/[[title]]/header.json"
+                        url="http://localhost:8000/games/[[title]]/header"
                         handle-as="json"
                         on-response="_handleHeaderResponse"
                         loading="{{isLoadingHeader}}"
@@ -639,7 +639,7 @@
             },
 
             _handleHeaderResponse: function (request) {
-                var response = request.detail.response.response;
+                var response = request.detail.response;
                 console.log('ajax request (game header) response');
                 console.log(response);
                 if (response.ok) {
@@ -663,7 +663,7 @@
             _sendTabAjaxRequest: function () {
                 if (!this.cache[`${this.selectedTabName}`]) {
                     this.cache[`${this.selectedTabName}`] = $.get({
-                        url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}`,
+                        url: `http://localhost:8000/games/${this.title}/${this.selectedTabName}`,
                         dataType: 'json',
                         context: this,
                         beforeSend: function () {
@@ -681,7 +681,7 @@
             _sendCommentAjaxRequest: function () {
                 if (!this.cache[`${this.selectedTabName}-${this.commentsListOffset}`]) {
                     this.cache[`${this.selectedTabName}-${this.commentsListOffset}`] = $.get({
-                        url: `http://api.ie.ce-it.ir/F95/games/${this.title}/${this.selectedTabName}?offset=${this.commentsListOffset}`,
+                        url: `http://localhost:8000/games/${this.title}/${this.selectedTabName}?offset=${this.commentsListOffset}`,
                         dataType: 'json',
                         context: this,
                         beforeSend: function () {
@@ -696,8 +696,7 @@
                 this.cache[`${this.selectedTabName}-${this.commentsListOffset}`].done(this._handleTabResponse);
             },
 
-            _handleTabResponse: function (data) {
-                var response = data.response;
+            _handleTabResponse: function (response) {
                 console.log('ajax request (game tab) response');
                 console.log(response);
                 if (response.ok) {
