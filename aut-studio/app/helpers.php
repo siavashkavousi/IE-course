@@ -14,12 +14,16 @@ function loadJSON($filename)
     }
 }
 
-function addInitialData($table_name)
+function addInitialData($table_name, $hasTimestamps = true)
 {
     $list = loadJSON($table_name . '.json');
-    foreach ($list as $item) {
-        DB::table($table_name)->insert(
-            array_merge($item, ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()])
-        );
+    if ($hasTimestamps) {
+        foreach ($list as $item) {
+            DB::table($table_name)->insert(
+                array_merge($item, ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()])
+            );
+        }
+    } else {
+        DB::table($table_name)->insert($list);
     }
 }

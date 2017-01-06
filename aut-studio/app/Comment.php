@@ -8,7 +8,7 @@ class Comment extends Model
 {
     public $timestamps = false;
 
-    public function players()
+    public function player()
     {
         return $this->belongsTo(Player::class);
     }

@@ -22,17 +22,7 @@ class CreateCategoryGamePivotTable extends Migration
             $table->primary(['category_id', 'game_id']);
         });
 
-        $this->addInitialData();
-    }
-
-    private function addInitialData()
-    {
-        DB::table('category_game')->insert(
-            ["category_id" => 0, "game_id" => 0],
-            ["category_id" => 1, "game_id" => 0],
-            ["category_id" => 0, "game_id" => 1],
-            ["category_id" => 1, "game_id" => 1]
-        );
+        addInitialData('category_game', false);
     }
 
     /**
