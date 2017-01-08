@@ -15,13 +15,16 @@ class CreateRecordsTable extends Migration
     {
         Schema::create('records', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('player_id')->unsigned();
             $table->integer('score');
             $table->integer('level');
             $table->integer('displacement');
-            $table->timestamps();
+            $table->integer('player_id')->unsigned();
             $table->foreign('player_id')->references('id')->on('players')->onDelete('cascade');
+            $table->integer('game_id')->unsigned();
+            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
         });
+
+        addInitialData('records', false);
     }
 
     /**

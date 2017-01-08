@@ -11,8 +11,8 @@ class Player extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function record()
+    public function records()
     {
-
+        return $this->hasMany(Record::class);
     }
 }

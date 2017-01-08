@@ -744,10 +744,6 @@
 
             _handleRelatedGamesResponse: function (response) {
                 this.relatedGames = response.result['games'];
-                //TODO this should be removed at the end of testing
-                for (i = 0; i < 5; i++) {
-                    this.push('relatedGames', this.relatedGames[0])
-                }
             },
 
             _handleGalleryResponse: function (response) {

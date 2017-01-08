@@ -16,6 +16,11 @@ class Game extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function records()
+    {
+        return $this->hasMany(Record::class);
+    }
+
     public function tutorial()
     {
         return $this->hasOne(Tutorial::class);
