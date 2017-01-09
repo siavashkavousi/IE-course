@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Game extends Model
 {
+    protected $hidden = ['id', 'pivot'];
+
     public function categories()
     {
         return $this->belongsToMany(Category::class);

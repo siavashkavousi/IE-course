@@ -17,20 +17,20 @@ class GameController extends Controller
     public function header($title)
     {
         $game = Game::where('title', $title)->first();
-        return makeSuccessResponse(['game' => filterGame($game)]);
+        return make_success_response(['game' => filter_game($game)]);
     }
 
     public function info($title)
     {
         $game = Game::where('title', $title)->first();
-        return makeSuccessResponse(['game' => filterGame($game)]);
+        return make_success_response(['game' => filter_game($game)]);
     }
 
     public function leaderboard($title)
     {
         $game = Game::where('title', $title)->first();
         $records = Record::where('game_id', $game->id)->get();
-        return makeSuccessResponse(['leaderboard' => $this->filterRecords($records)]);
+        return make_success_response(['leaderboard' => $this->filterRecords($records)]);
     }
 
     public function comments(Request $request, $title)
@@ -39,10 +39,10 @@ class GameController extends Controller
         $comments = Comment::where('game_id', $game->id)->get();
 
         $offset = $request->query('offset');
-        $comments = filterComments($comments);
+        $comments = filter_comments($comments);
         $comments = array_slice($comments, $offset, 2);
 
-        return makeSuccessResponse(['comments' => $comments]);
+        return make_success_response(['comments' => $comments]);
     }
 
     public function relatedGames($title)
@@ -57,16 +57,13 @@ class GameController extends Controller
             }
         }
         list($keys, $values) = array_divide($relatedGames);
-        return makeSuccessResponse(['games' => $values]);
+        return make_success_response(['games' => $values]);
     }
 
     private function filterRecords($records)
     {
-        $result = $records->toArray();
-        foreach ($records as $index => $record) {
-            $result[$index]['player'] = filterPlayer($record->player);
-            $result[$index] = array_except($result[$index], ['id', 'game_id', 'player_id']);
-        }
-        return $result;
+        foreach ($records as $index => $record)
+            $records[$index]['player'] = $record->player;
+        return $records;
     }
 }

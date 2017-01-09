@@ -6,7 +6,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-function loadJSON($filename)
+function load_json($filename)
 {
     if (Storage::exists($filename)) {
         return json_decode(Storage::get($filename), true);
@@ -17,7 +17,7 @@ function loadJSON($filename)
 
 function addInitialData($table_name, $hasTimestamps = true)
 {
-    $list = loadJSON($table_name . '.json');
+    $list = load_json($table_name . '.json');
     if ($hasTimestamps) {
         foreach ($list as $item) {
             DB::table($table_name)->insert(
@@ -29,39 +29,32 @@ function addInitialData($table_name, $hasTimestamps = true)
     }
 }
 
-function makeSuccessResponse($data)
+function make_success_response($data)
 {
     return ['ok' => true, 'result' => $data];
 }
 
-function filterGame(Game $game)
+function filter_game(Game $game)
 {
-    $result = $game->toArray();
-    $result['categories'] = getCategories($game);
-    return array_except($result, 'id');
+    $game['categories'] = get_categories($game);
+    return $game;
 }
 
-function getCategories(Game $game)
+function get_categories(Game $game)
 {
     $list = [];
     $categories = $game->categories;
     foreach ($categories as $category)
         array_push($list, $category->name);
+    $game->setRelations([]);
     return $list;
 }
 
-function filterComments($comments)
+function filter_comments($comments)
 {
-    $result = $comments->toArray();
     foreach ($comments as $index => $comment) {
-        $result[$index]['game'] = filterGame($comment->game);
-        $result[$index]['player'] = filterPlayer($comment->player);
-        $result[$index] = array_except($result[$index], ['id', 'game_id', 'player_id']);
+        $comments[$index]['game'] = filter_game($comment->game);
+        $comments[$index]['player'] = $comment->player;
     }
-    return $result;
-}
-
-function filterPlayer($player)
-{
-    return array_except($player, 'id');
+    return $comments;
 }
