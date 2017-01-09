@@ -5,5 +5,5 @@
 @endsection
 
 @section('content')
-    <login-page url="{{ url('/login') }}" csrf_token="{{ csrf_token() }}"></login-page>
+    <login-page url="{{ url('/login') }}" csrf-token="{{ csrf_token() }}"></login-page>
 @endsection

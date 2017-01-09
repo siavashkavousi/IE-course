@@ -33,7 +33,7 @@
                     -webkit-font-smoothing: antialiased;
                 };
 
-                --paper-font-caption:{
+                --paper-font-caption: {
                     font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
                     font-size: 12px;
                 };
@@ -126,7 +126,7 @@
             <div class="horizontal layout center center-justified card-container">
                 <paper-card>
                     <form id="native-form" method="post" action="[[url]]">
-                        <input type="hidden" name="_token" value="[[csrf_token]]">
+                        <input type="hidden" name="_token" value="[[csrfToken]]">
                     </form>
                     <form is="iron-form" id="form">
                         <div class="card-content layout vertical center">
@@ -134,7 +134,8 @@
                             <div class="layout horizontal center center-justified">
                                 <iron-icon icon="mail" class="card-icon"></iron-icon>
                                 <paper-input name="email" label="ایمیل یا شماره تلفن" type="email" required
-                                             autofocus auto-validate error-message="لطفا ایمیل را وارد نمایید"></paper-input>
+                                             autofocus auto-validate
+                                             error-message="لطفا ایمیل را وارد نمایید"></paper-input>
                             </div>
                             <div class="layout horizontal center center-justified">
                                 <iron-icon icon="lock" class="card-icon"></iron-icon>
@@ -163,7 +164,7 @@
 
             properties: {
                 url: String,
-                csrf_token: String,
+                csrfToken: String,
             },
 
             _submit: function () {
