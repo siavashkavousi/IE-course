@@ -12,6 +12,7 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <!-- custom elements -->
 <link rel="import" href="logo-view.html">
 
@@ -113,6 +114,16 @@
             paper-card #no_acc {
                 margin-left: 4px;
             }
+
+            paper-checkbox {
+                direction: ltr;
+                margin-left: 5px;
+
+                --paper-checkbox-checked-color: var(--paper-pink-700);
+                --paper-checkbox-checked-ink-color: var(--paper-pink-700);
+                --paper-checkbox-unchecked-color: var(--paper-pink-900);
+                --paper-checkbox-unchecked-ink-color: var(--paper-pink-900);
+            }
         </style>
 
         <app-header-layout has-scrolling-region>
@@ -143,6 +154,11 @@
                                              auto-validate error-message="لطفا رمز را وارد نمایید"></paper-input>
                             </div>
 
+                            <div spacer></div>
+                            <div class="layout horizontal center end-justified">
+                                <paper-checkbox name="remember" type="checkbox"></paper-checkbox>
+                                <span>مرا به خاطر بسپار</span>
+                            </div>
                             <div spacer></div>
                             <paper-button raised on-tap="_submit">ورود</paper-button>
                             <a href="#">رمزمو یادم رفته</a>
