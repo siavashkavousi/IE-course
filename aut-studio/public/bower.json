@@ -33,7 +33,8 @@
     "paper-input": "PolymerElements/paper-input#^1.1.22",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.2",
     "paper-spinner": "PolymerElements/paper-spinner#^1.2.1",
-    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0"
+    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
+    "iron-form": "PolymerElements/iron-form#^1.1.4"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

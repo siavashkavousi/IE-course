@@ -59,7 +59,7 @@
 
     {{--<link rel="import" href="elements/shared-styles.html">--}}
     <link rel="stylesheet" href="elements/shared_styles.css">
-    <link rel="import" href="elements/app-main.html">
+    @yield('element-import')
 </head>
 <body>
 @yield('content')

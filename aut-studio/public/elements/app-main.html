@@ -25,8 +25,8 @@
                     fallback-selection="view404"
                     role="main">
             <home-page name="home-page"></home-page>
-            <signin-page name="signin-page"></signin-page>
-            <signup-page name="signup-page"></signup-page>
+            <login-page name="login-page"></login-page>
+            <register-page name="register-page"></register-page>
             <games-page name="games-page"></games-page>
             <game-page name="game-page" title="{{queryParams.game}}"></game-page>
             <view-404 name="view-404"></view-404>
@@ -50,10 +50,10 @@
             ],
 
             _routePageChanged: function (page, queryParams) {
-                if (page == 'signin')
-                    this.page = 'signin-page';
-                else if (page == 'signup')
-                    this.page = 'signup-page';
+                if (page == 'login')
+                    this.page = 'login-page';
+                else if (page == 'register')
+                    this.page = 'register-page';
                 else if (page == 'games' && queryParams['game'])
                     this.page = 'game-page';
                 else if (page == 'games_list' && queryParams['q'])

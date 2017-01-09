@@ -164,7 +164,7 @@
                             <iron-icon icon="search"></iron-icon>
                         </div>
                         <iron-icon icon="social:person"></iron-icon>
-                        <paper-button id="sign-in-button" on-tap="_goToSignInPage">ورود</paper-button>
+                        <paper-button id="sign-in-button" on-tap="_goToLoginPage">ورود</paper-button>
                     </div>
                 </app-toolbar>
             </app-header>
@@ -248,10 +248,10 @@
                 }
             },
 
-            _goToSignInPage: function () {
+            _goToLoginPage: function () {
                 var that = this;
                 this.$['sign-in-button'].addEventListener('transitionend', function () {
-                    that.set('route.path', 'signin');
+                    that.set('route.path', 'login');
                     that.queryParams = null;
                 });
             }

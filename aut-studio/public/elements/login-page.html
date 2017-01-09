@@ -7,15 +7,15 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <!-- custom elements -->
 <link rel="import" href="logo-view.html">
 
-<dom-module id="signup-page">
+<dom-module id="login-page">
     <template>
         <style is="custom-style" include="iron-flex iron-positioning iron-flex-alignment">
             :host {
@@ -33,7 +33,11 @@
                     -webkit-font-smoothing: antialiased;
                 };
 
-                --paper-input-container-focus-color: var(--paper-blue-700);
+                --paper-font-caption:{
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    font-size: 12px;
+                };
+                --paper-input-container-focus-color: var(--paper-pink-500);
                 --paper-input-container-underline: {
                     border: solid var(--paper-grey-300) thin;
                 };
@@ -97,27 +101,17 @@
             paper-card paper-button {
                 width: 70%;
                 color: white;
-                background-color: var(--paper-blue-700);
+                background-color: var(--paper-pink-500);
                 font-weight: bold;
                 padding: 7px 5px;
             }
 
-            paper-card #terms-container {
-                margin-top: 15px;
+            paper-card .card-actions {
+                background-color: var(--paper-grey-300);
             }
 
-            paper-card #terms-container paper-checkbox {
-                direction: ltr;
-                margin-left: 5px;
-
-                --paper-checkbox-checked-color: var(--paper-blue-700);
-                --paper-checkbox-checked-ink-color: var(--paper-blue-700);
-                --paper-checkbox-unchecked-color: var(--paper-blue-900);
-                --paper-checkbox-unchecked-ink-color: var(--paper-blue-900);
-            }
-
-            paper-card #terms-container a {
-                margin-left: 3px;
+            paper-card #no_acc {
+                margin-left: 4px;
             }
         </style>
 
@@ -131,30 +125,32 @@
 
             <div class="horizontal layout center center-justified card-container">
                 <paper-card>
-                    <div class="card-content layout vertical center">
-                        <p id="title">ثبت نام</p>
-                        <div class="layout horizontal center center-justified">
-                            <iron-icon icon="social:person" class="card-icon"></iron-icon>
-                            <paper-input id="username" label="نام کاربری من"></paper-input>
-                        </div>
-                        <div class="layout horizontal center center-justified">
-                            <iron-icon icon="mail" class="card-icon"></iron-icon>
-                            <paper-input id="email" label="ایمیل" type="email"></paper-input>
-                        </div>
-                        <div class="layout horizontal center center-justified">
-                            <iron-icon icon="lock" class="card-icon"></iron-icon>
-                            <paper-input id="password" label="رمزعبور" type="password"></paper-input>
-                        </div>
+                    <form id="native-form" method="post" action="[[url]]">
+                        <input type="hidden" name="_token" value="[[csrf_token]]">
+                    </form>
+                    <form is="iron-form" id="form">
+                        <div class="card-content layout vertical center">
+                            <p id="title">ورود</p>
+                            <div class="layout horizontal center center-justified">
+                                <iron-icon icon="mail" class="card-icon"></iron-icon>
+                                <paper-input name="email" label="ایمیل یا شماره تلفن" type="email" required
+                                             autofocus auto-validate error-message="لطفا ایمیل را وارد نمایید"></paper-input>
+                            </div>
+                            <div class="layout horizontal center center-justified">
+                                <iron-icon icon="lock" class="card-icon"></iron-icon>
+                                <paper-input name="password" label="رمزعبور" type="password" required
+                                             auto-validate error-message="لطفا رمز را وارد نمایید"></paper-input>
+                            </div>
 
-                        <div id="terms-container" class="layout horizontal center end-justified">
-                            <paper-checkbox></paper-checkbox>
-                            <!--TODO link problem -->
-                            <a class="link" id="terms" href="#">قوانین</a>را می‌پذیرم
+                            <div spacer></div>
+                            <paper-button raised on-tap="_submit">ورود</paper-button>
+                            <a href="#">رمزمو یادم رفته</a>
                         </div>
-
-                        <div spacer></div>
-                        <!--TODO link problem -->
-                        <paper-button raised>ثبت نام</paper-button>
+                    </form>
+                    <div class="card-actions layout horizontal center center-justified">
+                        <p id="no_acc">حساب کاربری ندارید؟</p>
+                        <!--TODO link should be added -->
+                        <a href="/register">ثبت‌نام کنید</a>
                     </div>
                 </paper-card>
             </div>
@@ -163,9 +159,29 @@
 
     <script>
         Polymer({
-            is: 'signup-page',
+            is: 'login-page',
 
-            properties: {},
+            properties: {
+                url: String,
+                csrf_token: String,
+            },
+
+            _submit: function () {
+                var form = this.$['form'];
+                if (form.validate()) {
+                    // For each element the iron-form wants to submit, create a hidden
+                    // input in the submission form.
+                    var serializedItems = form.serialize();
+                    for (var name in serializedItems) {
+                        var input = document.createElement('input');
+                        input.hidden = true;
+                        input.name = name;
+                        input.value = serializedItems[name];
+                        this.$['native-form'].appendChild(input);
+                    }
+                    this.$['native-form'].submit();
+                }
+            },
         });
     </script>
 </dom-module>
