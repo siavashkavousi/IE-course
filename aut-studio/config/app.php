@@ -166,7 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        \Schuppo\PasswordStrength\PasswordStrengthServiceProvider::class,
         //
 
         /*
