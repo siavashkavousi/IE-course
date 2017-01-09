@@ -22,6 +22,7 @@ class CreateCommentsTable extends Migration
             $table->foreign('player_id')->references('id')->on('players')->onDelete('cascade');
             $table->integer('game_id')->unsigned();
             $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
+            $table->unique(['game_id', 'player_id']);
         });
 
         addInitialData('comments', false);
