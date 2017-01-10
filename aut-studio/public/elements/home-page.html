@@ -7,6 +7,7 @@
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
@@ -193,15 +194,18 @@
             <div id="homepage-top" class="layout vertical">
                 <div id="homepage-top__container">
                     <app-header condenses reveals class="fullbleed">
-                        <app-toolbar class="layout horizontal justified">
+                        <app-toolbar class="layout horizontal justified center">
                             <logo-view url="#"></logo-view>
-                            <div>
+                            <div hidden$="[[isLoggedIn]]">
                                 <a href="/login">
                                     <paper-button>ورود</paper-button>
                                 </a>
                                 <a href="/register">
                                     <paper-button raised class="light-blue">ثبت نام</paper-button>
                                 </a>
+                            </div>
+                            <div hidden$="[[!isLoggedIn]]">
+                                <paper-icon-button icon="social:person" on-tap="_goToUserProfile"></paper-icon-button>
                             </div>
                         </app-toolbar>
                     </app-header>
@@ -313,6 +317,10 @@
                 newGamesItems: {
                     type: Array,
                     value: [],
+                },
+                isLoggedIn: {
+                    type: Boolean,
+                    value: false,
                 }
             },
 
@@ -565,7 +573,11 @@
                 this.$['enter-gallery-button'].addEventListener('transitionend', function () {
                     location.href = `/games?game=${that.currentGameTitle}&tab=4`;
                 });
-            }
+            },
+
+            _goToUserProfile: function () {
+                location.href = '/profile'
+            },
         });
     </script>
 </dom-module>

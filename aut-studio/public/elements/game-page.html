@@ -621,9 +621,10 @@
             },
 
             _observeUrlQueryParams: function (queryParams) {
-                if (queryParams['tab']) {
+                if (queryParams['tab'])
                     this.selectedTab = parseInt(queryParams['tab']);
-                }
+                if (queryParams['game'])
+                    this.title = queryParams['game'];
             },
 
             _changeTabQueryParam: function (selectedTab) {

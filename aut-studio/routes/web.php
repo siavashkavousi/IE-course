@@ -35,3 +35,7 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 // Registration Routes...
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
+
+Route::get('profile', 'ProfileController@profile');
+Route::get('images/user-avatars/{avatar}', 'ProfileController@avatar');
+Route::post('profile/upload-avatar', 'ProfileController@uploadAvatar');

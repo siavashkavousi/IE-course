@@ -1,5 +1,9 @@
 @extends('layouts.base')
 
+@section('element-import')
+    <link rel="import" href="elements/game-page.html">
+@endsection
+
 @section('content')
-    <app-main></app-main>
+    <game-page></game-page>
 @endsection
