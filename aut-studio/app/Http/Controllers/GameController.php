@@ -40,7 +40,7 @@ class GameController extends Controller
 
         $offset = $request->query('offset');
         $comments = filter_comments($comments);
-        $comments = array_slice($comments, $offset, 2);
+        $comments = array_slice($comments->toArray(), $offset, 2);
 
         return make_success_response(['comments' => $comments]);
     }
@@ -62,8 +62,10 @@ class GameController extends Controller
 
     private function filterRecords($records)
     {
-        foreach ($records as $index => $record)
+        foreach ($records as $index => $record) {
             $records[$index]['player'] = $record->user;
+            $record->setRelations([]);
+        }
         return $records;
     }
 }

@@ -805,7 +805,7 @@
             _createLeaderBoardTopElements() {
                 var players = this.players;
 
-                if (!this.$$('#third-player')) {
+                if (!this.$$('#third-player') && players[2]) {
                     var $element = $('<top-player>', {
                         'id': 'third-player',
                         'image-url': players[2]['player']['avatar'],
@@ -819,7 +819,7 @@
                     Polymer.dom(this.$['leaderboard__top']).appendChild($element.get(0));
                 }
 
-                if (!this.$$('#first-player')) {
+                if (!this.$$('#first-player') && players[0]) {
                     $element = $('<top-player>', {
                         'id': 'first-player',
                         'image-url': players[0]['player']['avatar'],
@@ -830,7 +830,7 @@
                     Polymer.dom(this.$['leaderboard__top']).appendChild($element.get(0));
                 }
 
-                if (!this.$$('#second-player')) {
+                if (!this.$$('#second-player') && players[1]) {
                     $element = $('<top-player>', {
                         'id': 'second-player',
                         'image-url': players[1]['player']['avatar'],

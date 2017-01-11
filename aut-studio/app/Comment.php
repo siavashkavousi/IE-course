@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $hidden = ['id', 'game_id', 'player_id'];
+    protected $hidden = ['id', 'game_id', 'user_id'];
 
     public $timestamps = false;
 
