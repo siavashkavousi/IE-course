@@ -18,10 +18,11 @@ class CreateRecordsTable extends Migration
             $table->integer('score');
             $table->integer('level');
             $table->integer('displacement');
-            $table->integer('player_id')->unsigned();
-            $table->foreign('player_id')->references('id')->on('players')->onDelete('cascade');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('game_id')->unsigned();
             $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
+//            $table->unique(['game_id', 'user_id']);
         });
 
         addInitialData('records', false);

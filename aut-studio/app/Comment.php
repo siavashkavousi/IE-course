@@ -10,9 +10,9 @@ class Comment extends Model
 
     public $timestamps = false;
 
-    public function player()
+    public function user()
     {
-        return $this->belongsTo(Player::class);
+        return $this->belongsTo(User::class);
     }
 
     public function game()

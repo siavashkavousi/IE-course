@@ -63,7 +63,7 @@ class GameController extends Controller
     private function filterRecords($records)
     {
         foreach ($records as $index => $record)
-            $records[$index]['player'] = $record->player;
+            $records[$index]['player'] = $record->user;
         return $records;
     }
 }

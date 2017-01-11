@@ -54,7 +54,7 @@ function filter_comments($comments)
 {
     foreach ($comments as $index => $comment) {
         $comments[$index]['game'] = filter_game($comment->game);
-        $comments[$index]['player'] = $comment->player;
+        $comments[$index]['player'] = $comment->user;
     }
     return $comments;
 }

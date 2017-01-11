@@ -1,14 +1,20 @@
 [
   {
     "name": "سارا",
+    "email": "sara@gmail.com",
+    "password": "123",
     "avatar": "http://semantic-ui.com/images/avatar/small/zoe.jpg"
   },
   {
     "name": "سجاد",
+    "email": "sajad@gmail.com",
+    "password": "123",
     "avatar": "http://semantic-ui.com/images/avatar/small/elliot.jpg"
   },
   {
-    "name": "سیاوش",
+    "name": "آرمین",
+    "email": "armin@gmail.com",
+    "password": "123",
     "avatar": "http://semantic-ui.com/images/avatar/small/christian.jpg"
   }
 ]
