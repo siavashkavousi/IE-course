@@ -41,4 +41,24 @@ class ProfileController extends Controller
             $user->save();
         }
     }
+
+    public function changeUserPassword(Request $request)
+    {
+        $content = json_decode($request->getContent(), true);
+        $user = Auth::user();
+        if (array_key_exists('username', $content)) {
+            validator($content, [
+                'username' => 'required|max:255',
+            ])->validate();
+            $user->name = $content['username'];
+            $user->save();
+        }
+        if (array_key_exists('password', $content)) {
+            validator($content, [
+                'password' => 'required|min:6|case_diff|numbers|letters',
+            ])->validate();
+            $user->password = bcrypt($content['password']);
+            $user->save();
+        }
+    }
 }

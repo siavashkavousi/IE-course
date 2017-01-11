@@ -5,9 +5,11 @@
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 <!-- custom elements -->
 <link rel="import" href="logo-view.html">
@@ -72,6 +74,24 @@
                 padding: 5px 20px;
                 font-size: var(--paper-font-button);
             }
+
+            paper-input {
+                --paper-font-caption: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    font-size: 12px;
+                };
+                --paper-input-container-focus-color: var(--paper-blue-500);
+                --paper-input-container-underline: {
+                    border: solid var(--paper-grey-300) thin;
+                };
+                --paper-input-container-label: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    font-size: 14px;
+                };
+                --paper-input-container-label-floating: {
+                    transform: translateY(-75%) translateX(25%) scale(0.75);
+                };
+            }
         </style>
 
         <app-header-layout>
@@ -92,9 +112,23 @@
                 <iron-image src="[[url]]" style="width:300px; height:300px;" sizing="contain"></iron-image>
 
                 <vaadin-upload accept="image/*" target="[[uploadUrl]]"
-                               headers="{'X-CSRFToken': [[csrfToken]]}"></vaadin-upload>
+                               headers="{'X-CSRF-Token': [[csrfToken]]}"></vaadin-upload>
+                <paper-input type="text" style="width: 200px;" label="نام کاربری"
+                             on-change="_changeUsername"></paper-input>
+                <paper-input type="password" style="width: 200px;" label="رمز عبور"
+                             on-change="_changePassword"></paper-input>
+                <div spacer></div>
             </div>
         </app-header-layout>
+
+        <iron-ajax
+                id="user-pass-ajax"
+                url="http://localhost:8000/profile/change-user-password"
+                handle-as="json"
+                method="post"
+                header='{"X-CSRF-Token": [[csrfToken]]}'
+                on-response="_handleResponse"
+                debounce-duration="300"></iron-ajax>
     </template>
 
     <script>
@@ -108,6 +142,20 @@
                 },
                 uploadUrl: String,
                 csrfToken: String,
+            },
+
+            _changeUsername: function (event) {
+                this.$['user-pass-ajax'].body = JSON.stringify({"username": event.target.value});
+                this.$['user-pass-ajax'].generateRequest();
+            },
+
+            _changePassword: function (event) {
+                this.$['user-pass-ajax'].body = JSON.stringify({"password": event.target.value});
+                this.$['user-pass-ajax'].generateRequest();
+            },
+
+            _handleResponse: function (request) {
+
             },
 
             _logout: function () {
