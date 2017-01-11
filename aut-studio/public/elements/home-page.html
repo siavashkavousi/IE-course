@@ -204,8 +204,12 @@
                                     <paper-button raised class="light-blue">ثبت نام</paper-button>
                                 </a>
                             </div>
-                            <div hidden$="[[!isLoggedIn]]">
+                            <div hidden$="[[!isLoggedIn]]" class="layout horizontal center">
                                 <paper-icon-button icon="social:person" on-tap="_goToUserProfile"></paper-icon-button>
+                                <paper-button on-tap="_logout">خروج</paper-button>
+                                <form id="logout-form" action="/logout" method="POST" style="display: none;">
+                                    <input type="hidden" name="_token" value="[[csrfToken]]">
+                                </form>
                             </div>
                         </app-toolbar>
                     </app-header>
@@ -321,7 +325,8 @@
                 isLoggedIn: {
                     type: Boolean,
                     value: false,
-                }
+                },
+                csrfToken: String,
             },
 
             _handleResponse: function (request) {
@@ -577,6 +582,10 @@
 
             _goToUserProfile: function () {
                 location.href = '/profile'
+            },
+
+            _logout: function () {
+                this.$['logout-form'].submit();
             },
         });
     </script>

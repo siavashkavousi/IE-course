@@ -5,5 +5,9 @@
 @endsection
 
 @section('content')
-    <game-page></game-page>
+    @if (Auth::check())
+        <game-page is-logged-in="true" csrf-token="{{ csrf_token() }}"></game-page>
+    @else
+        <game-page></game-page>
+    @endif
 @endsection

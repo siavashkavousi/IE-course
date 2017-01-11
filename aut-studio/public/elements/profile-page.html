@@ -19,6 +19,15 @@
                 box-sizing: border-box;
                 display: flex;
                 color: var(--paper-grey-600);
+
+                --paper-font-common-base: {
+                    font-family: Shabnam, 'Roboto', 'Noto', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                };
+                --paper-font-common-code: {
+                    font-family: Shabnam, 'Roboto Mono', 'Consolas', 'Menlo', monospace;
+                    -webkit-font-smoothing: antialiased;
+                };
             }
 
             :host > * {
@@ -60,6 +69,8 @@
             paper-button {
                 background-color: var(--paper-blue-500);
                 color: white;
+                padding: 5px 20px;
+                font-size: var(--paper-font-button);
             }
         </style>
 
@@ -69,6 +80,10 @@
                     <logo-view url="/"></logo-view>
                     <div class="layout horizontal center">
                         <paper-icon-button icon="social:person"></paper-icon-button>
+                        <paper-button on-tap="_logout">خروج</paper-button>
+                        <form id="logout-form" action="/logout" method="POST" style="display: none;">
+                            <input type="hidden" name="_token" value="[[csrfToken]]">
+                        </form>
                     </div>
                 </app-toolbar>
             </app-header>
@@ -93,6 +108,10 @@
                 },
                 uploadUrl: String,
                 csrfToken: String,
+            },
+
+            _logout: function () {
+                this.$['logout-form'].submit();
             },
         });
     </script>

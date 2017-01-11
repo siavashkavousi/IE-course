@@ -12,6 +12,7 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -362,8 +363,15 @@
                             <input id="search__input" type="text" placeholder="جست و جو ..." required>
                             <iron-icon icon="search"></iron-icon>
                         </div>
-                        <iron-icon icon="social:person"></iron-icon>
-                        <paper-button id="sign-in-button" on-tap="_goToLoginPage">ورود</paper-button>
+                        <paper-button id="sign-in-button" on-tap="_goToLoginPage" hidden$="[[isLoggedIn]]">ورود
+                        </paper-button>
+                        <div hidden$="[[!isLoggedIn]]" class="layout horizontal center">
+                            <paper-icon-button icon="social:person" on-tap="_goToUserProfile"></paper-icon-button>
+                            <paper-button on-tap="_logout">خروج</paper-button>
+                            <form id="logout-form" action="/logout" method="POST" style="display: none;">
+                                <input type="hidden" name="_token" value="[[csrfToken]]">
+                            </form>
+                        </div>
                     </div>
                 </app-toolbar>
             </app-header>
@@ -590,6 +598,10 @@
                 commentsListOffset: {
                     type: Number,
                     value: 0,
+                },
+                isLoggedIn: {
+                    type: Boolean,
+                    value: false,
                 },
             },
 
@@ -979,7 +991,15 @@
                     that.set('route.path', 'login');
                     that.queryParams = null;
                 });
-            }
+            },
+
+            _goToUserProfile: function () {
+                location.href = '/profile'
+            },
+
+            _logout: function () {
+                this.$['logout-form'].submit();
+            },
         });
     </script>
 </dom-module>
