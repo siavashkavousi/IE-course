@@ -1,3 +1,7 @@
+<?php
+    Session::set('backUrl', URL::previous());
+?>
+
 @extends('layouts.base')
 
 @section('element-import')

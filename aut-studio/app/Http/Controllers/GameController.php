@@ -70,7 +70,6 @@ class GameController extends Controller
             if (array_key_exists('text', $content) && array_key_exists('rate', $content)) {
                 $comment = new Comment();
                 $comment->text = $content['text'];
-                //TODO should fix date in all models
                 $comment->date = Carbon::now();
                 $comment->rate = $content['rate'];
                 $comment->user()->associate(Auth::user());
