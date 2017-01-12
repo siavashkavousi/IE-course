@@ -69,9 +69,9 @@ class GameController extends Controller
             $content = json_decode($request->getContent(), true);
             if (array_key_exists('text', $content) && array_key_exists('rate', $content)) {
                 $comment = new Comment();
-                $comment->text = $content['text'];
+                $comment->text = htmlspecialchars($content['text'], ENT_QUOTES, 'UTF-8');
                 $comment->date = Carbon::now();
-                $comment->rate = $content['rate'];
+                $comment->rate = htmlspecialchars($content['rate'], ENT_QUOTES, 'UTF-8');
                 $comment->user()->associate(Auth::user());
                 $comment->game()->associate($game);
                 $comment->save();
