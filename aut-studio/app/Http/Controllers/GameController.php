@@ -31,7 +31,16 @@ class GameController extends Controller
     public function leaderboard($title)
     {
         $game = Game::where('title', $title)->first();
-        $records = Record::where('game_id', $game->id)->get();
+        $records = Record::where('game_id', $game->id)->orderBy('score', 'desc')->take(10)->get();
+        if (auth()->check()) {
+            $user_record = Record::where('user_id', auth()->user()->id)->get();
+            if (count($user_record) > 0 && $records->last()->score > $user_record[0]->score) {
+                $records->push($user_record[0]);
+                return make_success_response(['leaderboard' => $this->filterRecords($records)]);
+            } else {
+                return make_success_response(['leaderboard' => $this->filterRecords($records)]);
+            }
+        }
         return make_success_response(['leaderboard' => $this->filterRecords($records)]);
     }
 
