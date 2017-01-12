@@ -22,6 +22,7 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 <!-- external components -->
 <link rel="import" href="jquery.html">
 <script src="../bower_components/slick-carousel/slick/slick.js"></script>
@@ -350,6 +351,12 @@
             #gallery-carousel {
                 direction: ltr;
             }
+
+            paper-slider {
+                --paper-slider-active-color: var(--paper-blue-500);
+                --paper-slider-knob-color: var(--paper-blue-500);
+                --paper-slider-pin-color: var(--paper-blue-500);
+            }
         </style>
 
         <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
@@ -505,8 +512,13 @@
                         </div>
                         <paper-dialog id="comments__modal" class="vertical layout center center-justified">
                             <h2>نظر:</h2>
-                            <paper-input label="نظر شما ..."></paper-input>
-                            <paper-button dialog-confirm autofocus>ثبت</paper-button>
+                            <paper-input label="نظر شما ..." type="text" required></paper-input>
+                            <h2>امتیاز:</h2>
+                            <paper-slider min="0" max="5" step="1" pin></paper-slider>
+                            <div class="layout horizontal center center-justified">
+                                <paper-button dialog-dismiss>لغو</paper-button>
+                                <paper-button autofocus on-tap="_submitComment">ثبت</paper-button>
+                            </div>
                         </paper-dialog>
                     </div>
                     <div>
@@ -795,7 +807,10 @@
             },
 
             _writeNewComment: function () {
-                this.$['comments__modal'].open();
+                if (this.isLoggedIn)
+                    this.$['comments__modal'].open();
+                else
+                    location.href = '/login';
             },
 
             _isCommentsItemGrey(index) {
@@ -863,10 +878,7 @@
             },
 
             _isDisplacementPositive: function (displacement) {
-                if (displacement > 0)
-                    return true;
-                else
-                    return false;
+                return displacement > 0;
             },
 
             _computeDisplacement: function (displacement) {
@@ -986,10 +998,8 @@
             },
 
             _goToLoginPage: function () {
-                var that = this;
                 this.$['sign-in-button'].addEventListener('transitionend', function () {
-                    that.set('route.path', 'login');
-                    that.queryParams = null;
+                    location.href = '/login';
                 });
             },
 
@@ -999,6 +1009,26 @@
 
             _logout: function () {
                 this.$['logout-form'].submit();
+            },
+
+            _submitComment: function () {
+                var text = Polymer.dom(this.$['comments__modal']).querySelector('paper-input').value;
+                var rate = Polymer.dom(this.$['comments__modal']).querySelector('paper-slider').value;
+                if (!text || !rate) return;
+
+                this.$['comments__modal'].close();
+                var commentSubmission = $.post({
+                    url: `http://localhost:8000/games/${this.title}/submit-comment`,
+                    dataType: 'json',
+                    data: JSON.stringify({"text": text, "rate": rate}),
+                });
+
+                commentSubmission.done(function (data) {
+                    console.log('done');
+                    console.log(data);
+//                        this.isLoadingTab = !this.isLoadingTab;
+//                        this.isLoadingTab = !this.isLoadingTab;
+                });
             },
         });
     </script>

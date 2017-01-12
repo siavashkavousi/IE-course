@@ -35,7 +35,8 @@
     "paper-spinner": "PolymerElements/paper-spinner#^1.2.1",
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
     "iron-form": "PolymerElements/iron-form#^1.1.4",
-    "vaadin-upload": "^1.1.1"
+    "vaadin-upload": "^1.1.1",
+    "paper-slider": "PolymerElements/paper-slider#^1.0.12"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

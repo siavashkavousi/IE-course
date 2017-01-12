@@ -25,6 +25,7 @@ Route::get('games/{title}/info', 'GameController@info');
 Route::get('games/{title}/leaderboard', 'GameController@leaderboard');
 Route::get('games/{title}/comments', 'GameController@comments');
 Route::get('games/{title}/related_games', 'GameController@relatedGames');
+Route::post('games/{title}/submit-comment', 'GameController@submitComment');
 
 
 // Authentication Routes...

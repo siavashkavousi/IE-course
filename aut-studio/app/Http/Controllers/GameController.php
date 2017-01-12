@@ -6,6 +6,7 @@ use App\Comment;
 use App\Game;
 use App\Record;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
@@ -58,6 +59,26 @@ class GameController extends Controller
         }
         list($keys, $values) = array_divide($relatedGames);
         return make_success_response(['games' => $values]);
+    }
+
+    public function submitComment(Request $request, $title)
+    {
+        $game = Game::where('title', $title)->first();
+        if (Auth::check()) {
+            $content = json_decode($request->getContent(), true);
+            if (array_key_exists('text', $content) && array_key_exists('rate', $content)) {
+                $comment = new Comment();
+                $comment->text = $content['text'];
+                //TODO should fix date in all models
+                $comment->date = '۱۲ دی ۱۳۹۵';
+                $comment->rate = $content['rate'];
+                $comment->user()->associate(Auth::user());
+                $comment->game()->associate($game);
+                $comment->save();
+            }
+        } else {
+            abort(301, "Unauthorized Action");
+        }
     }
 
     private function filterRecords($records)
