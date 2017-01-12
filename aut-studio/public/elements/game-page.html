@@ -658,8 +658,8 @@
             _listenInputChanges: function () {
                 var that = this;
                 $(this.$['search__input']).change(function () {
-                    that.queryParams = {'q': $(this).val()};
-                    that.set('route.path', '/games_list')
+                    var queryParam = $(this).val();
+                    location.href = `/games_list?q=${queryParam}`;
                 });
             },
 

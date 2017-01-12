@@ -11,9 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
-    public function game()
+    public function game(Request $request)
     {
-        return view('game');
+        if ($request->input('game'))
+            return view('game');
+        elseif ($request->input('q'))
+            return $this->queryOnGames($request->input('q'));
+        else
+            return abort(404, 'Not Found');
     }
 
     public function header($title)
@@ -97,5 +102,16 @@ class GameController extends Controller
             $record->setRelations([]);
         }
         return $records;
+    }
+
+    public function games()
+    {
+        return view('games');
+    }
+
+    public function queryOnGames($query_string)
+    {
+        $games = Game::where('title', 'like', '%' . htmlspecialchars($query_string) . '%')->get();
+        return make_success_response(['games' => filter_games($games)]);
     }
 }

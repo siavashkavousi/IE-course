@@ -26,6 +26,13 @@ function make_success_response($data)
     return ['ok' => true, 'result' => $data];
 }
 
+function filter_games($games)
+{
+    foreach ($games as $index => $game)
+        $games[$index] = filter_game($game);
+    return $games;
+}
+
 function filter_game(Game $game)
 {
     $game['categories'] = get_categories($game);
