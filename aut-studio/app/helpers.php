@@ -3,30 +3,22 @@
 use App\Game;
 use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 function load_json($filename)
 {
-    if (Storage::exists($filename)) {
-        return json_decode(Storage::get($filename), true);
-    } else {
+    if (Storage::exists($filename . '.json'))
+        return json_decode(Storage::get($filename . '.json'), true);
+    else
         throw new FileNotFoundException("file $filename does not exists");
-    }
+
 }
 
-function addInitialData($table_name, $hasTimestamps = true)
+function attach_timestamps($data)
 {
-    $list = load_json($table_name . '.json');
-    if ($hasTimestamps) {
-        foreach ($list as $item) {
-            DB::table($table_name)->insert(
-                array_merge($item, ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()])
-            );
-        }
-    } else {
-        DB::table($table_name)->insert($list);
-    }
+    foreach ($data as $index => $item)
+        $data[$index] = array_merge($item, ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+    return $data;
 }
 
 function make_success_response($data)

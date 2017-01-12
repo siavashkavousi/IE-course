@@ -18,14 +18,13 @@ class CreateRecordsTable extends Migration
             $table->integer('score');
             $table->integer('level');
             $table->integer('displacement');
+            $table->timestamps();
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('game_id')->unsigned();
             $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
-//            $table->unique(['game_id', 'user_id']);
+            $table->unique(['game_id', 'user_id']);
         });
-
-        addInitialData('records', false);
     }
 
     /**

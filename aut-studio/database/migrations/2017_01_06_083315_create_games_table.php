@@ -24,8 +24,6 @@ class CreateGamesTable extends Migration
             $table->integer('number_of_comments');
             $table->timestamps();
         });
-
-        addInitialData('games');
     }
 
     /**

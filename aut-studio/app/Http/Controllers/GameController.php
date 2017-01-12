@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Comment;
 use App\Game;
 use App\Record;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -70,7 +71,7 @@ class GameController extends Controller
                 $comment = new Comment();
                 $comment->text = $content['text'];
                 //TODO should fix date in all models
-                $comment->date = '۱۲ دی ۱۳۹۵';
+                $comment->date = Carbon::now();
                 $comment->rate = $content['rate'];
                 $comment->user()->associate(Auth::user());
                 $comment->game()->associate($game);

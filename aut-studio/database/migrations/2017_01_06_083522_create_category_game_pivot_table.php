@@ -21,8 +21,6 @@ class CreateCategoryGamePivotTable extends Migration
             $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
             $table->primary(['category_id', 'game_id']);
         });
-
-        addInitialData('category_game', false);
     }
 
     /**
