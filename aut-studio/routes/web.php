@@ -13,11 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
-
-Route::get('home', 'HomeController@index');
+Route::get('/', 'HomeController@index');
+Route::get('home', 'HomeController@home');
 
 Route::get('games', 'GameController@game');
 Route::get('games/{title}/header', 'GameController@header');
@@ -25,7 +22,6 @@ Route::get('games/{title}/info', 'GameController@info');
 Route::get('games/{title}/leaderboard', 'GameController@leaderboard');
 Route::get('games/{title}/comments', 'GameController@comments');
 Route::get('games/{title}/related_games', 'GameController@relatedGames');
-Route::post('games/{title}/submit-comment', 'GameController@submitComment');
 Route::post('games/{title}/submit-comment', 'GameController@submitComment');
 
 Route::get('games_list', 'GameController@games');

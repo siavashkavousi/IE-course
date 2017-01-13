@@ -11,6 +11,11 @@ class HomeController extends Controller
 {
     public function index()
     {
+        return view('index');
+    }
+
+    public function home()
+    {
         if (auth()->check())
             $popularGames = $this->getUserFavoriteGames();
         else
