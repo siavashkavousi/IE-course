@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
@@ -36,7 +35,7 @@ class ProfileController extends Controller
     {
         if ($request->hasFile('file') && $request->file('file')->isValid()) {
             $path = $request->file('file')->store('images/user-avatars', 'public');
-            $user = Auth::user();
+            $user = auth()->user();
             $user->avatar = $path;
             $user->save();
         }
@@ -45,7 +44,7 @@ class ProfileController extends Controller
     public function changeUserPassword(Request $request)
     {
         $content = json_decode($request->getContent(), true);
-        $user = Auth::user();
+        $user = auth()->user();
         if (array_key_exists('username', $content)) {
             validator($content, [
                 'username' => 'required|max:255',

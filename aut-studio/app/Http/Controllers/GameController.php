@@ -7,7 +7,6 @@ use App\Game;
 use App\Record;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
@@ -58,7 +57,16 @@ class GameController extends Controller
         $comments = filter_comments($comments);
         $comments = array_slice($comments->toArray(), $offset, 2);
 
-        return make_success_response(['comments' => $comments]);
+        if (auth()->check()) {
+            $user_comment = Comment::where('user_id', auth()->user()->id)->first();
+
+            if ($user_comment)
+                return make_success_response(['commented' => true, 'comments' => $comments]);
+            else
+                return make_success_response(['comments' => $comments]);
+        } else {
+            return make_success_response(['comments' => $comments]);
+        }
     }
 
     public function relatedGames($title)
@@ -66,7 +74,8 @@ class GameController extends Controller
         $game = Game::where('title', $title)->first();
         $relatedGames = [];
         foreach ($game->categories as $category) {
-            foreach ($category->games as $item) {
+            $gamesInCategory = filter_games($category->games);
+            foreach ($gamesInCategory as $item) {
                 if ($item['title'] == $title)
                     continue;
                 $relatedGames = array_add($relatedGames, $item['title'], $item);
@@ -79,14 +88,14 @@ class GameController extends Controller
     public function submitComment(Request $request, $title)
     {
         $game = Game::where('title', $title)->first();
-        if (Auth::check()) {
+        if (auth()->check()) {
             $content = json_decode($request->getContent(), true);
             if (array_key_exists('text', $content) && array_key_exists('rate', $content)) {
                 $comment = new Comment();
-                $comment->text = htmlspecialchars($content['text'], ENT_QUOTES, 'UTF-8');
+                $comment->text = e($content['text']);
                 $comment->date = Carbon::now();
-                $comment->rate = htmlspecialchars($content['rate'], ENT_QUOTES, 'UTF-8');
-                $comment->user()->associate(Auth::user());
+                $comment->rate = e($content['rate']);
+                $comment->user()->associate(auth()->user());
                 $comment->game()->associate($game);
                 $comment->save();
             }
@@ -111,7 +120,7 @@ class GameController extends Controller
 
     public function queryOnGames($query_string)
     {
-        $games = Game::where('title', 'like', '%' . htmlspecialchars($query_string) . '%')->get();
+        $games = Game::where('title', 'like', '%' . e($query_string) . '%')->get();
         return make_success_response(['games' => filter_games($games)]);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Game;
+use App\Libraries\IntlDateTime;
 use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
@@ -58,6 +59,8 @@ function filter_categories($categories)
 function filter_comments($comments)
 {
     foreach ($comments as $index => $comment) {
+        $date = new IntlDateTime(new DateTime($comment->date), 'Asia/Tehran', 'persian', 'fa');
+        $comments[$index]['date'] = $date->format('E dd LLL yyyy');
         $comments[$index]['game'] = filter_game($comment->game);
         $comments[$index]['player'] = $comment->user;
     }

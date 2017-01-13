@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Comment;
 use App\Game;
+use App\Libraries\IntlDateTime;
 use App\Tutorial;
+use DateTime;
 
 class HomeController extends Controller
 {
@@ -16,7 +18,7 @@ class HomeController extends Controller
 
     public function home()
     {
-        if (auth()->check())
+        if (auth()->check() && !auth()->user()->categories->isEmpty())
             $popularGames = $this->getUserFavoriteGames();
         else
             $popularGames = $this->getPopularGames(Category::all());
@@ -60,8 +62,11 @@ class HomeController extends Controller
 
     private function filterTutorials($tutorials)
     {
-        foreach ($tutorials as $index => $tutorial)
+        foreach ($tutorials as $index => $tutorial) {
+            $date = new IntlDateTime(new DateTime($tutorial->date), 'Asia/Tehran', 'persian', 'fa');
+            $tutorials[$index]['date'] = $date->format('E dd LLL yyyy');
             $tutorials[$index]['game'] = filter_game($tutorial->game);
+        }
         return $tutorials;
     }
 }

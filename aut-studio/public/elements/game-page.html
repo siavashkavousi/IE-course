@@ -478,7 +478,7 @@
                                 <div class="title">نظرات کاربران</div>
                                 <div>([[number_of_comments]] نظر)</div>
                             </div>
-                            <paper-button raised on-tap="_writeNewComment">نظر دهید</paper-button>
+                            <paper-button id="write-comment" raised on-tap="_writeNewComment">نظر دهید</paper-button>
                         </div>
                         <hr>
                         <paper-listbox id="comments">
@@ -512,12 +512,12 @@
                         </div>
                         <paper-dialog id="comments__modal" class="vertical layout center center-justified">
                             <h2>نظر:</h2>
-                            <paper-input label="نظر شما ..." type="text" required></paper-input>
+                            <paper-input autofocus label="نظر شما ..." type="text" required></paper-input>
                             <h2>امتیاز:</h2>
                             <paper-slider min="0" max="5" step="1" pin></paper-slider>
                             <div class="layout horizontal center center-justified">
                                 <paper-button dialog-dismiss>لغو</paper-button>
-                                <paper-button autofocus on-tap="_submitComment">ثبت</paper-button>
+                                <paper-button on-tap="_submitComment">ثبت</paper-button>
                             </div>
                         </paper-dialog>
                     </div>
@@ -663,8 +663,8 @@
                 });
             },
 
-            _handleHeaderResponse: function (request) {
-                var response = request.detail.response;
+            _handleHeaderResponse: function (response) {
+                response = response.detail.response;
                 console.log('ajax request (game header) response');
                 console.log(response);
                 if (response.ok) {
@@ -765,6 +765,8 @@
                 this.commentsListOffset = this.comments.length;
                 if (this.commentsListOffset == this.number_of_comments)
                     this.$['load-more-comments'].style.display = 'none';
+                if (response.result['commented'])
+                    this.$['write-comment'].style.display = 'none';
             },
 
             _handleRelatedGamesResponse: function (response) {
@@ -1017,18 +1019,12 @@
                 if (!text || !rate) return;
 
                 this.$['comments__modal'].close();
-                var commentSubmission = $.post({
-                    url: `http://localhost:8000/games/${this.title}/submit-comment`,
-                    dataType: 'json',
-                    data: JSON.stringify({"text": text, "rate": rate}),
-                });
-
-                commentSubmission.done(function (data) {
-                    console.log('done');
-                    console.log(data);
-//                        this.isLoadingTab = !this.isLoadingTab;
-//                        this.isLoadingTab = !this.isLoadingTab;
-                });
+                var that = this;
+                $.post(`http://localhost:8000/games/${this.title}/submit-comment`,
+                        JSON.stringify({"text": text, "rate": rate}),
+                        function () {
+                            that.$['write-comment'].style.display = 'none';
+                        });
             },
         });
     </script>

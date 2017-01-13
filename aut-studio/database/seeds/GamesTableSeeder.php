@@ -20,7 +20,7 @@ class GamesTableSeeder extends Seeder
                 "rate" => 4.6,
                 "large_image" => "http://cdn.zoomg.ir/2016/12/ecbef6aa-a03e-4bc6-8668-9fa7186ac9ef.jpeg",
                 "small_image" => "http://cdn.zoomg.ir/2016/10/b4472213-741a-4810-be30-7f6d09e9421d-400x267.jpg",
-                "number_of_comments" => 4,
+                "number_of_comments" => 3,
             ],
             [
                 "title" => "بررسی بازی Super Mario Run",
@@ -29,7 +29,7 @@ class GamesTableSeeder extends Seeder
                 "rate" => 5,
                 "large_image" => "http://cdn.zoomg.ir/2016/12/113277e9-9494-4b9d-a28d-f0337242405a.jpg",
                 "small_image" => "http://cdn.zoomg.ir/2016/12/113277e9-9494-4b9d-a28d-f0337242405a.jpg",
-                "number_of_comments" => 1,
+                "number_of_comments" => 2,
             ],
         ];
         DB::table('games')->insert(attach_timestamps($data));
