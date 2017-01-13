@@ -6,28 +6,15 @@ use App\Category;
 use App\Comment;
 use App\Game;
 use App\Tutorial;
-use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        if (!Auth::check())
-            return $this->indexWithoutAuth();
+        if (auth()->check())
+            $popularGames = $this->getUserFavoriteGames();
         else
-            return null;
-    }
-
-    private function indexWithoutAuth()
-    {
-        $categories = Category::all();
-        $popularGames = [];
-        foreach ($categories as $category) {
-            $gamesInCategory = $category->games->sortByDesc('rate')->take(5)->all();
-            foreach ($gamesInCategory as $item)
-                $popularGames = array_add($popularGames, $item['title'], $item);
-        }
-        list($keys, $popularGames) = array_divide($popularGames);
+            $popularGames = $this->getPopularGames(Category::all());
 
         $latestGames = Game::take(10)->get();
         $latestComments = Comment::take(5)->get();
@@ -40,6 +27,23 @@ class HomeController extends Controller
                 'tutorials' => $this->filterTutorials($latestTutorials)]
             ]];
         return $response;
+    }
+
+    public function getPopularGames($categories)
+    {
+        $popularGames = [];
+        foreach ($categories as $category) {
+            $gamesInCategory = $category->games->sortByDesc('rate')->take(5)->all();
+            foreach ($gamesInCategory as $item)
+                $popularGames = array_add($popularGames, $item['title'], $item);
+        }
+        list($keys, $popularGames) = array_divide($popularGames);
+        return $popularGames;
+    }
+
+    public function getUserFavoriteGames()
+    {
+        return $this->getPopularGames(auth()->user()->categories);
     }
 
     private function filterGames($games)
