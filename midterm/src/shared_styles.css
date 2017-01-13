@@ -2,7 +2,7 @@
     font-family: Shabnam;
     src: url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-persian-digits-overwrite.eot');
     src: url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-persian-digits-overwrite.eot?#iefix') format('embedded-opentype'),
-    url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-Bold-persian-digits-overwrite.woff') format('woff'),
+    url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-persian-digits-overwrite.woff') format('woff'),
     url('../bower_components/shabnam-font/persian-digits-overwrite/Shabnam-persian-digits-overwrite.ttf') format('truetype');
     font-weight: normal;
 }

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
@@ -59,6 +59,36 @@ class ProfileController extends Controller
             ])->validate();
             $user->password = bcrypt($content['password']);
             $user->save();
+        }
+    }
+
+    public function categories()
+    {
+        $categories = Category::all();
+        $user_categories = auth()->user()->categories;
+        if (!$user_categories->isEmpty()) {
+            foreach ($categories as $index => $category) {
+                foreach ($user_categories as $item) {
+                    if ($category['name'] == $item['name'])
+                        $categories[$index]['selected'] = true;
+                }
+            }
+            return $categories;
+        } else {
+            return Category::all();
+        }
+    }
+
+    public function updateFavoriteCategories(Request $request)
+    {
+        $content = explode(',', $request->getContent());
+        if ($content) {
+            $content_list = [];
+            foreach ($content as $item)
+                array_push($content_list, Category::where('name', e($item))->first()['id']);
+            auth()->user()->categories()->sync($content_list);
+        } else {
+            abort(404, 'Not Found');
         }
     }
 }

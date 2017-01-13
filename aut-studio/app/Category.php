@@ -12,4 +12,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Game::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

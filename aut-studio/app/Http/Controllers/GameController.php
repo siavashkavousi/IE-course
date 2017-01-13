@@ -39,7 +39,7 @@ class GameController extends Controller
         $records = Record::where('game_id', $game->id)->orderBy('score', 'desc')->take(10)->get();
         if (auth()->check()) {
             $user_record = Record::where('user_id', auth()->user()->id)->get();
-            if (count($user_record) > 0 && $records->last()->score > $user_record[0]->score) {
+            if (!$user_record->isEmpty() && $records->last()->score > $user_record[0]->score) {
                 $records->push($user_record[0]);
                 return make_success_response(['leaderboard' => $this->filterRecords($records)]);
             } else {

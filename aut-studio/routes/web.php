@@ -43,3 +43,5 @@ Route::get('profile', 'ProfileController@profile');
 Route::get('images/user-avatars/{avatar}', 'ProfileController@avatar');
 Route::post('profile/upload-avatar', 'ProfileController@uploadAvatar');
 Route::post('profile/change-user-password', 'ProfileController@changeUserPassword');
+Route::get('profile/categories', 'ProfileController@categories');
+Route::post('profile/update-favorite-categories', 'ProfileController@updateFavoriteCategories');

@@ -10,6 +10,8 @@
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 <!-- custom elements -->
 <link rel="import" href="logo-view.html">
@@ -118,6 +120,9 @@
                 <paper-input type="password" style="width: 200px;" label="رمز عبور"
                              on-change="_changePassword"></paper-input>
                 <div spacer></div>
+                <paper-listbox id="categories-list" multi></paper-listbox>
+                <paper-button raised on-tap="_submitFavoriteCategories">اضافه کردن دسته بندی ها</paper-button>
+                <div spacer></div>
             </div>
         </app-header-layout>
 
@@ -128,6 +133,21 @@
                 method="post"
                 header='{"X-CSRF-Token": [[csrfToken]]}'
                 on-response="_handleResponse"
+                debounce-duration="300"></iron-ajax>
+
+        <iron-ajax
+                id="categories-ajax"
+                url="http://localhost:8000/profile/categories"
+                handle-as="json"
+                on-response="_handleCategoriesResponse"
+                debounce-duration="300"></iron-ajax>
+
+        <iron-ajax
+                id="favorite-categories-ajax"
+                url="http://localhost:8000/profile/update-favorite-categories"
+                handle-as="json"
+                method="post"
+                on-response="_handleFavoriteCategoriesResponse"
                 debounce-duration="300"></iron-ajax>
     </template>
 
@@ -144,6 +164,10 @@
                 csrfToken: String,
             },
 
+            ready: function () {
+                this.$['categories-ajax'].generateRequest();
+            },
+
             _changeUsername: function (event) {
                 this.$['user-pass-ajax'].body = JSON.stringify({"username": event.target.value});
                 this.$['user-pass-ajax'].generateRequest();
@@ -154,12 +178,38 @@
                 this.$['user-pass-ajax'].generateRequest();
             },
 
-            _handleResponse: function (request) {
+            _handleResponse: function (response) {
 
+            },
+
+            _handleCategoriesResponse: function (response) {
+                if (response.detail.status = 200) {
+                    var categories = response.detail.response;
+                    var paperList = this.$['categories-list'];
+                    for (var i = 0; i < categories.length; i++) {
+                        var paperItem = document.createElement('paper-item');
+                        paperItem.innerText = categories[i].name;
+                        paperList.appendChild(paperItem);
+                        if (categories[i].selected)
+                            paperList.select(i);
+                    }
+                }
             },
 
             _logout: function () {
                 this.$['logout-form'].submit();
+            },
+
+            _submitFavoriteCategories: function () {
+                var list = this.$$('paper-listbox').selectedItems;
+                if (list) {
+                    var data = [];
+                    for (var i = 0; i < list.length; i++)
+                        data.push(list[i].innerText);
+                    console.log(data);
+                    this.$['favorite-categories-ajax'].body = data;
+                    this.$['favorite-categories-ajax'].generateRequest();
+                }
             },
         });
     </script>

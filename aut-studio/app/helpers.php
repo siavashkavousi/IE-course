@@ -41,11 +41,17 @@ function filter_game(Game $game)
 
 function get_categories(Game $game)
 {
-    $list = [];
     $categories = $game->categories;
+    $list = filter_categories($categories);
+    $game->setRelations([]);
+    return $list;
+}
+
+function filter_categories($categories)
+{
+    $list = [];
     foreach ($categories as $category)
         array_push($list, $category->name);
-    $game->setRelations([]);
     return $list;
 }
 
