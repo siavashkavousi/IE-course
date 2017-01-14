@@ -18,10 +18,10 @@ class CreateGamesTable extends Migration
             $table->string('title')->unique();
             $table->text('abstract');
             $table->longText('info');
-            $table->decimal('rate');
+            $table->decimal('rate')->nullable();
             $table->string('large_image');
             $table->string('small_image');
-            $table->integer('number_of_comments');
+            $table->integer('number_of_comments')->default(0);
             $table->timestamps();
         });
     }

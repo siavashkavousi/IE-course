@@ -41,3 +41,10 @@ Route::post('profile/upload-avatar', 'ProfileController@uploadAvatar');
 Route::post('profile/change-user-password', 'ProfileController@changeUserPassword');
 Route::get('profile/categories', 'ProfileController@categories');
 Route::post('profile/update-favorite-categories', 'ProfileController@updateFavoriteCategories');
+
+Route::get('/admin', 'AdminController@index')->name('games');
+Route::get('game/create', 'AdminController@createGame');
+Route::post('game/create', 'AdminController@create');
+Route::delete('game/{id}', 'AdminController@delete');
+Route::get('game/{id}/edit', 'AdminController@editGame');
+Route::put('game/{id}/edit', 'AdminController@edit');

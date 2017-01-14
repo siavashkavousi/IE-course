@@ -56,6 +56,9 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->back();
+        if($request->headers->get('referer') == route('games'))
+            return redirect('/');
+        else
+            return redirect()->back();
     }
 }

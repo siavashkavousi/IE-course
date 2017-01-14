@@ -12,6 +12,12 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('users')->insert(['name' => 'سیاوش',
+            'email' => 'siavash@gmail.com',
+            'password' => bcrypt('123'),
+            "avatar" => "http://semantic-ui.com/images/avatar/small/elliot.jpg",
+            'is_admin' => true]);
+
         $data = [
             ['name' => 'سارا',
                 'email' => 'sara@gmail.com',
