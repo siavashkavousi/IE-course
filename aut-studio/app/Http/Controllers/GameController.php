@@ -41,8 +41,6 @@ class GameController extends Controller
             if (!$user_record->isEmpty() && $records->last()->score > $user_record[0]->score) {
                 $records->push($user_record[0]);
                 return make_success_response(['leaderboard' => $this->filterRecords($records)]);
-            } else {
-                return make_success_response(['leaderboard' => $this->filterRecords($records)]);
             }
         }
         return make_success_response(['leaderboard' => $this->filterRecords($records)]);
@@ -62,11 +60,8 @@ class GameController extends Controller
 
             if ($user_comment)
                 return make_success_response(['commented' => true, 'comments' => $comments]);
-            else
-                return make_success_response(['comments' => $comments]);
-        } else {
-            return make_success_response(['comments' => $comments]);
         }
+        return make_success_response(['comments' => $comments]);
     }
 
     public function relatedGames($title)
@@ -88,7 +83,11 @@ class GameController extends Controller
     public function submitComment(Request $request, $title)
     {
         $game = Game::where('title', $title)->first();
-        if (auth()->check()) {
+        if (auth()->check() && $game) {
+            $lastComment = Comment::where('user_id', auth()->user()->id);
+            if ($lastComment)
+                abort(400, 'User has already commented on this game');
+
             $content = json_decode($request->getContent(), true);
             if (array_key_exists('text', $content) && array_key_exists('rate', $content)) {
                 $comment = new Comment();
@@ -122,5 +121,30 @@ class GameController extends Controller
     {
         $games = Game::where('title', 'like', '%' . e($query_string) . '%')->get();
         return make_success_response(['games' => filter_games($games)]);
+    }
+
+    public function submitRecord(Request $request, $title)
+    {
+        $game = Game::where('title', $title)->first();
+        if (auth()->check() && $game) {
+            $content = json_decode($request->getContent(), true);
+            if (array_key_exists('record', $content)) {
+                $lastRecord = Record::where('user_id', auth()->user()->id);
+                if ($lastRecord) {
+                    $lastRecord->score = e($content['score']);
+                    $lastRecord->save();
+                } else {
+                    $record = new Record();
+                    $record->score = e($content['score']);
+                    $record->level = 120;
+                    $record->displacement = 5;
+                    $record->user()->associate(auth()->user());
+                    $record->game()->associate($game);
+                    $record->save();
+                }
+            }
+        } else {
+            abort(301, "Unauthorized Action");
+        }
     }
 }

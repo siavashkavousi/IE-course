@@ -33,6 +33,14 @@ class CategoryGamePivotTableSeeder extends Seeder
                 "category_id" => 3,
                 "game_id" => 2,
             ],
+            [
+                "category_id" => 4,
+                "game_id" => 3,
+            ],
+            [
+                "category_id" => 5,
+                "game_id" => 3,
+            ],
         ];
         DB::table('category_game')->insert($data);
     }

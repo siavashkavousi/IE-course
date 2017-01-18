@@ -23,6 +23,7 @@ Route::get('games/{title}/leaderboard', 'GameController@leaderboard');
 Route::get('games/{title}/comments', 'GameController@comments');
 Route::get('games/{title}/related_games', 'GameController@relatedGames');
 Route::post('games/{title}/submit-comment', 'GameController@submitComment');
+Route::post('games/{title}/leaderboard', 'GameController@submitRecord');
 
 Route::get('games_list', 'GameController@games');
 
