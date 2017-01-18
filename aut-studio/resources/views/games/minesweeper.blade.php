@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="{{ asset('minesweeper/css/minesweeper.css'}}">
+    <link rel="stylesheet" href="{{ asset('minesweeper/css/minesweeper.css') }}">
 </head>
 
 <body>

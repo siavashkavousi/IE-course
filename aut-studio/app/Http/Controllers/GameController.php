@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    public function game(Request $request)
+    public function index(Request $request)
     {
         if ($request->input('game'))
             return view('game');
@@ -18,6 +18,14 @@ class GameController extends Controller
             return $this->queryOnGames($request->input('q'));
         else
             return abort(404, 'Not Found');
+    }
+
+    public function game($title)
+    {
+        if ($title == 'بازی مین روب')
+            return view('games.minesweeper');
+        else
+            return view('errors.503');
     }
 
     public function header($title)
@@ -84,7 +92,7 @@ class GameController extends Controller
     {
         $game = Game::where('title', $title)->first();
         if (auth()->check() && $game) {
-            $lastComment = Comment::where('user_id', auth()->user()->id);
+            $lastComment = Comment::where('user_id', auth()->user()->id)->first();
             if ($lastComment)
                 abort(400, 'User has already commented on this game');
 
@@ -129,7 +137,7 @@ class GameController extends Controller
         if (auth()->check() && $game) {
             $content = json_decode($request->getContent(), true);
             if (array_key_exists('record', $content)) {
-                $lastRecord = Record::where('user_id', auth()->user()->id);
+                $lastRecord = Record::where('user_id', auth()->user()->id)->first();
                 if ($lastRecord) {
                     $lastRecord->score = e($content['score']);
                     $lastRecord->save();

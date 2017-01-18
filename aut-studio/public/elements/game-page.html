@@ -401,7 +401,7 @@
                         </div>
                     </div>
                 </div>
-                <paper-button raised>شروع بازی</paper-button>
+                <paper-button raised on-tap="_startGame">شروع بازی</paper-button>
 
                 <iron-ajax
                         auto
@@ -1025,6 +1025,13 @@
                         function () {
                             that.$['write-comment'].style.display = 'none';
                         });
+            },
+
+            _startGame: function (event) {
+                var that = this;
+                event.target.addEventListener('transitionend', function () {
+                    location.href = `/games/${that.title}`
+                });
             },
         });
     </script>

@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'HomeController@index');
 Route::get('home', 'HomeController@home');
 
-Route::get('games', 'GameController@game');
+Route::get('games', 'GameController@index');
+Route::get('games/{title}', 'GameController@game');
 Route::get('games/{title}/header', 'GameController@header');
 Route::get('games/{title}/info', 'GameController@info');
 Route::get('games/{title}/leaderboard', 'GameController@leaderboard');
