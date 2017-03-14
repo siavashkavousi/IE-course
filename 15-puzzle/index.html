@@ -17,11 +17,13 @@
     }
 
     table {
-      width: 300px;
+      width: 340px;
       height: 300px;
       border-collapse: separate;
       border-spacing: 5px;
       margin: 50px;
+      background-color: #658b92;
+      box-shadow: 5px 5px 2px #888888;
     }
 
     tr {
@@ -29,6 +31,8 @@
     }
 
     td {
+      width: 85px;
+      height: 75px;
       color: white;
     }
   </style>
@@ -37,19 +41,28 @@
 
 <table id="unsorted-table">
   <tr>
-    <td>4</td>
-    <td>5</td>
+    <td>13</td>
     <td>2</td>
-  </tr>
-  <tr>
+    <td>10</td>
     <td>3</td>
-    <td>1</td>
-    <td>9</td>
   </tr>
   <tr>
+    <td>1</td>
+    <td>12</td>
     <td>8</td>
-    <td>7</td>
+    <td>4</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td class="missing"></td>
+    <td>9</td>
     <td>6</td>
+  </tr>
+  <tr>
+    <td>15</td>
+    <td>14</td>
+    <td>11</td>
+    <td>7</td>
   </tr>
 </table>
 
@@ -58,16 +71,25 @@
     <td>1</td>
     <td>2</td>
     <td>3</td>
+    <td>4</td>
   </tr>
   <tr>
-    <td>4</td>
     <td>5</td>
     <td>6</td>
-  </tr>
-  <tr>
     <td>7</td>
     <td>8</td>
+  </tr>
+  <tr>
     <td>9</td>
+    <td>10</td>
+    <td>11</td>
+    <td>12</td>
+  </tr>
+  <tr>
+    <td>13</td>
+    <td>14</td>
+    <td>15</td>
+    <td class="missing"></td>
   </tr>
 </table>
 
@@ -83,8 +105,17 @@
             color += letters[Math.floor(Math.random() * 16)];
 
         u_tds[t].style.backgroundColor = color;
-        s_tds[t].style.backgroundColor = color;
+
+        for (let s = 0; s < s_tds.length; s++) {
+            if (s_tds[s].innerHTML === u_tds[t].innerHTML) {
+                s_tds[s].style.backgroundColor = color;
+            }
+        }
     }
+
+    let missing_tds = document.getElementsByClassName('missing');
+    for (let t = 0; t < missing_tds.length; t++)
+        missing_tds[t].style.backgroundColor = 'white';
 </script>
 </body>
 </html>

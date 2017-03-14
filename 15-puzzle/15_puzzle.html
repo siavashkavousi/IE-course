@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>15-puzzle (mock)</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+  <style>
+    html * {
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #c2c2c2;
+    }
+
+    nav {
+      background-color: white;
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+      box-shadow: 2px 2px 2px #888888;
+    }
+
+    table {
+      width: 340px;
+      height: 300px;
+      border-collapse: separate;
+      border-spacing: 5px;
+      margin: 100px 50px;
+      background-color: #658b92;
+      box-shadow: 5px 5px 2px #888888;
+    }
+
+    tr {
+      text-align: center;
+    }
+
+    td {
+      cursor: pointer;
+      width: 85px;
+      height: 75px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav px-5 py-3">
+  <a class="nav-link active" href="#">Touch Mode</a>
+  <!--<button type="button" class="btn">Touch Mode</button>-->
+  <!--<a class="nav-link" href="#">Link</a>-->
+  <!--<a class="nav-link" href="#">Link</a>-->
+  <!--<a class="nav-link disabled" href="#">Disabled</a>-->
+</nav>
+
+<div class="d-flex flex-row justify-content-around align-items-center" style="width: 80%;">
+  <div class="card" style="width: 300px;">
+    <div class="card-block">
+      <span class="glyphicon glyphicon-sort">i</span>
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <table>
+    <tr>
+      <td>13</td>
+      <td>2</td>
+      <td>10</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>12</td>
+      <td>8</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td class="missing"></td>
+      <td>9</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>14</td>
+      <td>11</td>
+      <td>7</td>
+    </tr>
+  </table>
+</div>
+
+<script>
+    let tds = document.getElementsByTagName('td');
+    let letters = '0123456789ABCDEF';
+    for (let t = 0; t < tds.length; t++) {
+        let color = '#';
+        for (let i = 0; i < 6; i++)
+            color += letters[Math.floor(Math.random() * 16)];
+
+        tds[t].style.backgroundColor = color;
+    }
+
+    let missing_tds = document.getElementsByClassName('missing');
+    for (let t = 0; t < missing_tds.length; t++)
+        missing_tds[t].style.backgroundColor = 'white';
+</script>
+</body>
+</html>
